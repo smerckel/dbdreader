@@ -1,0 +1,6 @@
+include README.txt COPYING MANIFEST.in INSTALL 
+include extension/*
+include extension/include/*
+include tests/*.py
+include data/*.[st]bd
+include examples/*.py
