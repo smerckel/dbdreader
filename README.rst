@@ -24,7 +24,7 @@ install dbdreader``.
 
 Documentation
 -------------
-Comprehensive documentation is provided <here>
+Comprehensive documentation is provided at http://dockserver0.hzg.de/software/dbdreader/index.html
 
 Quick-start
 -----------
