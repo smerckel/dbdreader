@@ -302,7 +302,8 @@ class DBDHeader(object):
                        'mission_name':'string',
                        'fileopen_time':'string',
                        'encoding_ver':'int',
-                       'full_filename':'string'}
+                       'full_filename':'string',
+                       'the8x3_filename':'string'}
         self.info={}
         self.cacheDir=cacheDir
         
