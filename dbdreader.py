@@ -1,17 +1,3 @@
-# # python 2/3 compatibility imports
-# from __future__ import division
-# from __future__ import print_function
-# from __future__ import unicode_literals
-# from __future__ import absolute_import
-# from builtins import dict
-# from builtins import map
-# from builtins import open
-# from builtins import range
-# from builtins import zip
-# from builtins import int
-# from future import standard_library
-# standard_library.install_aliases()
-# # python 2/3 compatibility imports (end)
 import warnings
 import os
 import struct
@@ -1214,24 +1200,30 @@ class MultiDBD(object):
         #tmp=[eval("i.%s(*p)"%(method)) for i in self.dbds[ft] 
         #     if i not in self.__ignore_cache]
         tmp=[]
+        error_mesgs = []
         for i in self.dbds[ft]:
             if i in self.__ignore_cache:
                 continue
             try:
                 r=eval("i.%s(*p)"%(method)) 
-                tmp.append(r)
             except DbdError as e:
                 # ignore only the no_data_to_interpolate_to error
                 # as the file is probably (close to) empty
                 if e.value==DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO:
                     continue
                 elif e.value==DBD_ERROR_NO_VALID_PARAMETERS:
+                    if e.mesg not in error_mesgs:
+                        error_mesgs.append(e.mesg)
                     continue
                 else:
                     # in all other cases reraise the error..
                     raise e
+            else:
+                tmp.append(r)
+
         if tmp==[]:
             # nothing has been added, so all files should have returned nothing:
-            raise(DbdError(DBD_ERROR_NO_VALID_PARAMETERS))
+            raise(DbdError(DBD_ERROR_NO_VALID_PARAMETERS,
+                           "\n".join(error_mesgs)))
         return numpy.concatenate(tmp,axis=1)
 
