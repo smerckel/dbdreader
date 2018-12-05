@@ -1,17 +1,3 @@
-# # python 2/3 compatibility imports
-# from __future__ import division
-# from __future__ import print_function
-# from __future__ import unicode_literals
-# from __future__ import absolute_import
-# from builtins import dict
-# from builtins import map
-# from builtins import open
-# from builtins import range
-# from builtins import zip
-# from builtins import int
-# from future import standard_library
-# standard_library.install_aliases()
-# # python 2/3 compatibility imports (end)
 import warnings
 import os
 import struct
@@ -200,13 +186,15 @@ class DBDPatternSelect(object):
     ''' A class for selecting dbd files based on a date condition.
         The class opens files and reads the headers only.
 
-        Times are based on the opening time of the file only. This
-        is not because I am lazy, but it is so much more efficient.
+        Times are based on the opening time of the file only.
 
     '''
+    cache = {}
+    
     def __init__(self, date_format="%d %m %Y"):
         self.set_date_format(date_format)
 
+        
     def set_date_format(self,date_format):
         ''' Set date format
 
@@ -253,14 +241,9 @@ class DBDPatternSelect(object):
         Raises:
              ValueError if nor pattern or filenames is given.
         '''
-        if not pattern and not filenames:
-                raise ValueError("Expected some pattern to search files for or file list.")
-        if pattern:
-            all_filenames=DBDList(glob.glob(pattern))
-        elif filenames:
-            all_filenames=DBDList(filenames)
-        all_filenames.sort()
 
+        all_filenames = self.get_filenames(pattern, filenames)
+        
         if not from_date and not until_date:
             # just get all files.
             t0=t1=None
@@ -276,19 +259,86 @@ class DBDPatternSelect(object):
                 t1=1e11
             return self.__select(all_filenames,t0,t1)
 
-    def __select(self,fns,t0,t1):
-        _fns=[]
-        for i in fns:
-            dbd=DBD(i)
-            t_open=dbd.get_fileopen_time()
-            if t_open>=t0 and t_open<=t1:
-                _fns.append(i)
-                datestr=dbd.headerInfo['fileopen_time'].replace("_"," ")
-            dbd.close()
-        return _fns
+    def bins(self, pattern=None, filenames=None, width=86400, t_start=None, t_end=None):
+        '''list filenames, binned in time
 
+        The method makes a list of all filenames, matching either
+        pattern or filenames and bins these in time windows of width. If
+        t_start and t_end are not given, they are computed from the first and
+        last timestamps of the files specified, respectively.
+
+
+        This method returns a list of tuples, where each tuple
+        contains the centred time of the bin, and a list of all
+        filenames that fall within this bin.
+
+        Args:
+            pattern: string
+
+            filenames: list of filenames
+        
+            width: width of time bin in seconds
+
+            t_start: None | timestamp in seconds since 1/1/1970
+
+            t-end: None | timestamp in seconds since 1/1/1970
+
+        Returns:
+             list of filenames that match the criteria
+
+        Raises:
+             ValueError if nor pattern or filenames is given.
+        
+        '''
+        fns = self.get_filenames(pattern, filenames)
+        if t_start is None:
+            t_start = numpy.min(list(self.cache.keys()))
+        if t_end is None:
+            t_end = numpy.max(list(self.cache.keys()))
+        bin_edges = numpy.arange(t_start, t_end+width, width)
+        bins = [((left+right)/2, self.__select(fns, left, right))
+                for left, right in zip(bin_edges[0:-1], bin_edges[1:])]
+        return bins
+
+        
+    def get_filenames(self, pattern, filenames):
+        if not pattern and not filenames:
+            raise ValueError("Expected some pattern to search files for or file list.")
+        if pattern:
+            all_filenames=DBDList(glob.glob(pattern))
+        elif filenames:
+            all_filenames=DBDList(filenames)
+        all_filenames.sort()
+        self.__update_cache(all_filenames)
+        return all_filenames
+    
+    def __update_cache(self, fns):
+        cached_filenames = DBDList(self.cache.values())
+        cached_filenames.sort()
+        for fn in fns:
+            if fn not in cached_filenames:
+                dbd=DBD(fn)
+                t_open=dbd.get_fileopen_time()
+                dbd.close()
+                self.cache[t_open]=fn
+                
+    def __select(self,fns,t0,t1):
+        open_times = numpy.array(list(self.cache.keys()))
+        open_times = numpy.sort(open_times)
+        selected_times = open_times.compress(numpy.logical_and(open_times>=t0,
+                                                          open_times<=t1))
+        fns = DBDList([self.cache[t] for t in selected_times])
+        fns.sort()
+        return fns
+
+            
+                                                          
+            
+        
+        
 class DBDHeader(object):
-    ''' Class to read the headers of DBD files. This file is typically used
+
+        ''' Class to read the headers of DBD files. This file is typically used
         by DBD and MultiDBD and not directly.
     '''
     def __init__(self,cacheDir):
@@ -1214,24 +1264,30 @@ class MultiDBD(object):
         #tmp=[eval("i.%s(*p)"%(method)) for i in self.dbds[ft] 
         #     if i not in self.__ignore_cache]
         tmp=[]
+        error_mesgs = []
         for i in self.dbds[ft]:
             if i in self.__ignore_cache:
                 continue
             try:
                 r=eval("i.%s(*p)"%(method)) 
-                tmp.append(r)
             except DbdError as e:
                 # ignore only the no_data_to_interpolate_to error
                 # as the file is probably (close to) empty
                 if e.value==DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO:
                     continue
                 elif e.value==DBD_ERROR_NO_VALID_PARAMETERS:
+                    if e.mesg not in error_mesgs:
+                        error_mesgs.append(e.mesg)
                     continue
                 else:
                     # in all other cases reraise the error..
                     raise e
+            else:
+                tmp.append(r)
+
         if tmp==[]:
             # nothing has been added, so all files should have returned nothing:
-            raise(DbdError(DBD_ERROR_NO_VALID_PARAMETERS))
+            raise(DbdError(DBD_ERROR_NO_VALID_PARAMETERS,
+                           "\n".join(error_mesgs)))
         return numpy.concatenate(tmp,axis=1)
 
