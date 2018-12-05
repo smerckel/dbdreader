@@ -1,7 +1,7 @@
 from distutils.core import setup, Extension
 
 setup(name="dbdreader",
-      version="0.3.8",
+      version="0.3.9",
       py_modules = ['dbdreader'],
       scripts = ['dbdrename.py','cac_gen.py'],
       ext_modules = [
