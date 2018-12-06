@@ -338,7 +338,7 @@ class DBDPatternSelect(object):
         
 class DBDHeader(object):
 
-        ''' Class to read the headers of DBD files. This file is typically used
+    ''' Class to read the headers of DBD files. This file is typically used
         by DBD and MultiDBD and not directly.
     '''
     def __init__(self,cacheDir):
