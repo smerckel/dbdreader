@@ -3,7 +3,7 @@ from distutils.core import setup, Extension
 setup(name="dbdreader",
       version="0.3.9",
       py_modules = ['dbdreader'],
-      scripts = ['dbdrename.py','cac_gen.py'],
+      scripts = ['dbdrename.py','cac_gen.py', 'dbd_correct_timestamp.py'],
       ext_modules = [
           Extension("_dbdreader",
                     ["extension/py_dbdreader.c","extension/dbdreader.c"],
