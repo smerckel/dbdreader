@@ -9,6 +9,7 @@ import datetime
 from calendar import timegm
 import _dbdreader
 
+__version__ = "0.3.10"
 
 
 def strptimeToEpoch(datestr, fmt):
@@ -1034,7 +1035,7 @@ class MultiDBD(object):
 
     def has_parameter(self,parameter):
         '''Returns True if this instance has found parameter '''
-        return i in self.parameterNames
+        return (parameter in self.parameterNames['sci'] or parameter in self.parameterNames['eng'])
 
     @classmethod
     def isScienceDataFile(cls,fn):

@@ -1,7 +1,11 @@
 from distutils.core import setup, Extension
+import sys
+sys.path.insert(0, ".")
+
+import dbdreader
 
 setup(name="dbdreader",
-      version="0.3.9",
+      version=dbdreader.__version__,
       py_modules = ['dbdreader'],
       scripts = ['dbdrename.py','cac_gen.py', 'dbd_correct_timestamp.py'],
       ext_modules = [
