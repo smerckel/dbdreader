@@ -9,9 +9,6 @@ import datetime
 from calendar import timegm
 import _dbdreader
 
-__version__ = "0.3.10"
-
-
 def strptimeToEpoch(datestr, fmt):
     ''' Converts datestr into seconds
 
