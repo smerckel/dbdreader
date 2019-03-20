@@ -81,7 +81,10 @@ def toDec(x,y=None):
 # required (and only tested) encoding version.
 ENCODING_VER=5
 
-HOME=os.environ['HOME']
+
+#HOME = os.environ['HOME'] # this works on Linux only it seems
+HOME = os.path.expanduser("~") # <- multiplatform proof
+
 CACHEDIR=os.path.join(HOME,'.dbdreader')
 
 if not os.path.exists(CACHEDIR):
