@@ -23,15 +23,17 @@ py_get(PyObject *self, PyObject *args)
   PyObject *tiList, *viList;
   PyObject *tmp;
   int i,j,k;
+  int return_nans;       /* int flagging to return nans in the array or not.*/
 
-  if (!PyArg_ParseTuple(args,"iilOsiO:get",
+  if (!PyArg_ParseTuple(args,"iilOsiOi:get",
 			&n_state_bytes,
 			&n_sensors,
 			&bin_offset,
 			&byteSizes,
 			&filename,
 			&ti,
-			&viTuple))
+			&viTuple,
+			&return_nans))
     {
       return NULL;
     }
@@ -53,7 +55,7 @@ py_get(PyObject *self, PyObject *args)
   FileInfo.n_sensors=n_sensors;
   FileInfo.fd=open_dbd_file(filename);
 
-  data=get_variable(ti,vi,nv,FileInfo,ndata);
+  data=get_variable(ti,vi,nv,FileInfo,return_nans,ndata);
   close_dbd_file(FileInfo.fd);
   /* good, got the data, now populate the lists */
   containerList=PyList_New(2*nv);/* exclude time */

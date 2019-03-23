@@ -9,7 +9,9 @@
 
 #define UPDATED         2
 #define SAME            1
+#define NOTSET          0
 
+#define FILLVALUE       1e9
 #define BLOCKSIZE 1000
 
 typedef char byte;
@@ -40,6 +42,7 @@ double ***get_variable(int ti,
 		       int *vi,
 		       int nv,
 		       file_info_t FileInfo,
+		       int return_nans,
 		       int *n_data);
 
 

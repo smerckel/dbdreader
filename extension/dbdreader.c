@@ -14,6 +14,7 @@ static void get_by_read_per_byte(int ti,
 				 int *vi,
 				 int nv,
 				 file_info_t FileInfo,
+				 int return_nans,
 				 double ***data,
 				 int *ndata);
 
@@ -50,6 +51,7 @@ double ***get_variable(int ti,
 		       int *vi,
 		       int nv,
 		       file_info_t FileInfo,
+		       int return_nans,
 		       int *ndata)
 {
   int i,j;
@@ -88,7 +90,7 @@ double ***get_variable(int ti,
   for(i=i;i<nv+1;i++){
     vit[i]=vi[i-1];
   }
-  get_by_read_per_byte(nti,vit,nvt,FileInfo,data,ndata);
+  get_by_read_per_byte(nti,vit,nvt,FileInfo,return_nans,data,ndata);
   free(vit);
   return(data);
 }
@@ -101,6 +103,7 @@ static void get_by_read_per_byte(int nti,
 				 int *vi,
 				 int nv,
 				 file_info_t FileInfo,
+				 int return_nans,
 				 double ***result,
 				 int *ndata)
 {
@@ -117,6 +120,13 @@ static void get_by_read_per_byte(int nti,
   double *memory_result;
   int *read_vi;
 
+  int min_offset_value;
+
+  if (return_nans==1)
+    min_offset_value=-2; // include the notfound/samevalue/update
+  else
+    min_offset_value=-1; // include samevalue/update
+  
   byteSizes=(unsigned *)malloc(nv*sizeof(unsigned));
   offsets=(signed *)malloc(nv*sizeof(signed));
   read_result=(double *)malloc(nv*sizeof(double));
@@ -159,17 +169,15 @@ static void get_by_read_per_byte(int nti,
 	  /*update value with previous value*/
 	  read_result[i]=memory_result[i];
 	}
-	else if ((offsets[i]==-2) && (i>=1) && (vi[i]==vi[i-1])){
-	  /* this is a duplicate parameter 
-	     offset==-2 not found
-	     i needs to be larger than 0 for the index check vi[i]==vi[i-1] not to fail
+	else if (offsets[i]==-2){
+	  /* parameter is not found
+	     This will happen only when read_state_bytes is set to return nans
 	  */
-	  read_result[i]=read_result[i-1];
-	  offsets[i]=offsets[i-1];
+	  read_result[i]=FILLVALUE;
 	}
       }
       for(i=0; i<nv; i++){
-	if ((offsets[i]>=-1) && (i!=nti)){
+	if ((offsets[i]>=min_offset_value) && (i!=nti)){
 	  j=i-(int)(i>nti);
 	  /* add read_result to result */
 	  add_to_array(read_result[nti],
@@ -233,12 +241,21 @@ static int read_state_bytes(int *vi,
 	}
 	*chunksize+=FileInfo.byteSizes[variable_index];
       }
-      if (field==SAME) {
+      else if (field==SAME) {
 	idx=contains(variable_index,vi,nvt);
 	if (idx!=-1){
 	  /* this variable is asked for but has an old value.
 	     Therefore it is not being read. Offset marked -1*/
 	  offsets[idx]=-1;
+	  variable_counter+=1;
+	}
+      }
+      else if (field==NOTSET) {
+	idx=contains(variable_index,vi,nvt);
+	if (idx!=-1){
+	  /* this variable is asked for but has no value set.
+	     Therefore it is not being read. Offset marked -2*/
+	  offsets[idx]=-2;
 	  variable_counter+=1;
 	}
       }
