@@ -486,7 +486,6 @@ class DBD(object):
         Returns:
             list of tuples of time and value vectors
         '''
-        print(return_nans)
         return self.__get(parameter_list,decimalLatLon,discardBadLatLon, return_nans)
         
     def get_xy(self,parameter_x,parameter_y,decimalLatLon=True):
