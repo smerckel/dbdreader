@@ -876,6 +876,10 @@ class MultiDBD(object):
                  include_paired=False,banned_missions=[],missions=[],
                  max_files=None):
         self.__ignore_cache=[]
+        if cacheDir==None:
+            self.cacheDir=CACHEDIR
+        else:
+            self.cacheDir=cacheDir
         self.banned_missions=banned_missions
         self.missions=missions
         self.mission_list=[]
