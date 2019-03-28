@@ -81,7 +81,10 @@ def toDec(x,y=None):
 # required (and only tested) encoding version.
 ENCODING_VER=5
 
-HOME=os.environ['HOME']
+
+#HOME = os.environ['HOME'] # this works on Linux only it seems
+HOME = os.path.expanduser("~") # <- multiplatform proof
+
 CACHEDIR=os.path.join(HOME,'.dbdreader')
 
 if not os.path.exists(CACHEDIR):
@@ -459,7 +462,8 @@ class DBD(object):
         '''
         return self.__get([parameter],decimalLatLon,discardBadLatLon)
 
-    def get_list(self,parameter_list,decimalLatLon=True,discardBadLatLon=True):
+    def get_list(self,parameter_list,decimalLatLon=True,discardBadLatLon=True,
+                 return_nans=False):
         ''' Returns time and value tuples for a list of requested parameters
         
 
@@ -477,10 +481,12 @@ class DBD(object):
 
             discardBadlatLon: bool. If True, unrealistic lat/lon values are 
                               discared
+            return_nans: bool. If True all timestamps are returned with nans for 
+                              the values that have not been updated.
         Returns:
             list of tuples of time and value vectors
         '''
-        return self.__get(parameter_list,decimalLatLon,discardBadLatLon)
+        return self.__get(parameter_list,decimalLatLon,discardBadLatLon, return_nans)
         
     def get_xy(self,parameter_x,parameter_y,decimalLatLon=True):
         ''' Returns values of parameter_x and paramter_y
@@ -561,7 +567,7 @@ class DBD(object):
             return 'sci_m_present_time'
 
 
-    def __get(self,parameters,decimalLatLon=True,discardBadLatLon=False):
+    def __get(self,parameters,decimalLatLon=True,discardBadLatLon=False, return_nans=False):
         ''' returns time and parameter data for requested parameter '''
         if not self.cacheFound:
             cache_file=self.headerInfo['sensor_list_crc']
@@ -587,7 +593,8 @@ class DBD(object):
                          self.byteSizes,
                          self.filename,
                          ti,
-                         vi)
+                         vi,
+                         int(return_nans))
         nParameters=len(ValidParameters)
         # it seems that wrc version skips the initial line.
         s=[(numpy.array(t[1:]),numpy.array(v[1:])) for
@@ -605,6 +612,12 @@ class DBD(object):
                 if T:
                     idx=numpy.where(s[i][1]<696960)
                     s[i]=(s[i][0][idx],s[i][1][idx])
+        if return_nans:
+            for i, _s in enumerate(s):
+                idx = numpy.where(numpy.isclose(_s[1],1e9))[0]
+                if len(idx):
+                    _s[1][idx]=numpy.nan
+                    
         if number_of_parameters>1:
             t=[None for i in range(number_of_parameters)]
             for i,j in enumerate(idx_sorted):
@@ -863,10 +876,6 @@ class MultiDBD(object):
                  include_paired=False,banned_missions=[],missions=[],
                  max_files=None):
         self.__ignore_cache=[]
-        if cacheDir==None:
-            self.cacheDir=CACHEDIR
-        else:
-            self.cacheDir=cacheDir
         self.banned_missions=banned_missions
         self.missions=missions
         self.mission_list=[]
@@ -927,6 +936,7 @@ class MultiDBD(object):
             return self.__worker("get","sci",parameter,decimalLatLon)
         else:
             return self.__worker("get","eng",parameter,decimalLatLon)
+        
 
     def get_xy(self,parameter_x,parameter_y,decimalLatLon=True):
         '''Returns values of parameter_x and paramter_y
@@ -1007,7 +1017,7 @@ class MultiDBD(object):
             yi=[numpy.interp(x[0],_y[0],_y[1]) for _y in y]
             return numpy.vstack((x,yi))
     
-    def get_list(self,parameter_list,decimalLatLon=True):
+    def get_list(self,parameter_list,decimalLatLon=True, return_nans=False):
         '''Returns time and value tuples for a list of requested parameters
 
 
@@ -1024,13 +1034,38 @@ class MultiDBD(object):
 
             discardBadlatLon: bool. If True, unrealistic lat/lon values are discared
 
+            return_nans: bool. If True all timestamps are returned with nans for 
+                              the values that have not been updated.
+
         Returns:
             list of tuples of time and value vectors
         '''
-        fts={True:'sci',False:'eng'}
-        pSci=[i in self.parameterNames['sci'] for i in parameter_list]
-        r=[self.__worker("get",fts[v],n,decimalLatLon) for n,v in 
-               zip(parameter_list,pSci)]
+        eng_variables = []
+        sci_variables = []
+        positions = []
+        for p in parameter_list:
+            if p in self.parameterNames['sci']:
+                positions.append(("sci", len(sci_variables)))
+                sci_variables.append(p)
+            else:
+                positions.append(("eng", len(eng_variables)))
+                eng_variables.append(p)
+        kwds=dict(decimalLatLon=decimalLatLon, return_nans=return_nans)
+        if len(sci_variables)==1: # for a single parameter we get back (t,v) instead of [(t,v)]
+            r_sci = [self.__worker("get_list", "sci", sci_variables, **kwds)]
+        else:
+            r_sci = self.__worker("get_list", "sci", sci_variables, **kwds)
+        if len(eng_variables)==1:
+            r_eng = [self.__worker("get_list", "eng", eng_variables, **kwds)]
+        else:
+            r_eng = self.__worker("get_list", "eng", eng_variables, **kwds)
+                                  
+        r = []
+        for target, idx in positions:
+            if target=='sci':
+                r.append(r_sci[idx])
+            else:
+                r.append(r_eng[idx])
         return r
 
     def has_parameter(self,parameter):
@@ -1216,7 +1251,7 @@ class MultiDBD(object):
         self.dbds={'eng':[],'sci':[]}
         filenames=list(self.filenames)
         for fn in self.filenames:
-            dbd=DBD(fn, self.cacheDir)
+            dbd=DBD(fn)
             mission_name=dbd.get_mission_name()
             dbd.close()
             if mission_name in self.banned_missions:
@@ -1260,7 +1295,7 @@ class MultiDBD(object):
         return tmp
 
                          
-    def __worker(self,method,ft,*p):
+    def __worker(self,method,ft,*p,**kwds):
         # if i in __ignore_cache, the file is flagged as outside the time limits
         #tmp=[eval("i.%s(*p)"%(method)) for i in self.dbds[ft] 
         #     if i not in self.__ignore_cache]
@@ -1270,7 +1305,7 @@ class MultiDBD(object):
             if i in self.__ignore_cache:
                 continue
             try:
-                r=eval("i.%s(*p)"%(method)) 
+                r=eval("i.%s(*p, **kwds)"%(method)) 
             except DbdError as e:
                 # ignore only the no_data_to_interpolate_to error
                 # as the file is probably (close to) empty
@@ -1291,3 +1326,4 @@ class MultiDBD(object):
             raise(DbdError(DBD_ERROR_NO_VALID_PARAMETERS,
                            "\n".join(error_mesgs)))
         return numpy.concatenate(tmp,axis=1)
+
