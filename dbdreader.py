@@ -1255,7 +1255,7 @@ class MultiDBD(object):
         self.dbds={'eng':[],'sci':[]}
         filenames=list(self.filenames)
         for fn in self.filenames:
-            dbd=DBD(fn)
+            dbd=DBD(fn, self.cacheDir)
             mission_name=dbd.get_mission_name()
             dbd.close()
             if mission_name in self.banned_missions:
