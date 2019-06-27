@@ -1,3 +1,4 @@
+import locale
 import warnings
 import os
 import struct
@@ -8,6 +9,9 @@ import re
 import datetime
 from calendar import timegm
 import _dbdreader
+
+# make sure we interpret timestamps in the english language
+locale.setlocale(locale.LC_ALL, 'en_US')
 
 def strptimeToEpoch(datestr, fmt):
     ''' Converts datestr into seconds
