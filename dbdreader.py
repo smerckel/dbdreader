@@ -1,3 +1,4 @@
+import locale
 import warnings
 import os
 import struct
@@ -8,6 +9,9 @@ import re
 import datetime
 from calendar import timegm
 import _dbdreader
+
+# make sure we interpret timestamps in the english language
+locale.setlocale(locale.LC_ALL, 'en_US')
 
 def strptimeToEpoch(datestr, fmt):
     ''' Converts datestr into seconds
@@ -97,6 +101,7 @@ DBD_ERROR_NO_TIME_VARIABLE=3
 DBD_ERROR_NO_FILE_CRITERIUM_SPECIFIED=4
 DBD_ERROR_NO_FILES_FOUND=5
 DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO=6
+DBD_ERROR_CACHEDIR_NOT_FOUND=7
 
 class DbdError(Exception):
     def __init__(self,value=9,mesg=None):
@@ -116,6 +121,8 @@ class DbdError(Exception):
             mesg='No files were found.'
         elif self.value==DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO:
             mesg='No data to interpolate to.'
+        elif self.value==DBD_ERROR_CACHEDIR_NOT_FOUND:
+            mesg='Cache file directory does not exist.'
         else:
             mesg='Undefined error.'
         if self.mesg:
@@ -302,7 +309,7 @@ class DBDPatternSelect(object):
         return bins
 
         
-    def get_filenames(self, pattern, filenames):
+    def get_filenames(self, pattern, filenames, cacheDir=None):
         if not pattern and not filenames:
             raise ValueError("Expected some pattern to search files for or file list.")
         if pattern:
@@ -310,15 +317,15 @@ class DBDPatternSelect(object):
         elif filenames:
             all_filenames=DBDList(filenames)
         all_filenames.sort()
-        self.__update_cache(all_filenames)
+        self.__update_cache(all_filenames, cacheDir)
         return all_filenames
     
-    def __update_cache(self, fns):
+    def __update_cache(self, fns, cacheDir):
         cached_filenames = DBDList(self.cache.values())
         cached_filenames.sort()
         for fn in fns:
             if fn not in cached_filenames:
-                dbd=DBD(fn)
+                dbd=DBD(fn, cacheDir)
                 t_open=dbd.get_fileopen_time()
                 dbd.close()
                 self.cache[t_open]=fn
@@ -342,7 +349,7 @@ class DBDHeader(object):
     ''' Class to read the headers of DBD files. This file is typically used
         by DBD and MultiDBD and not directly.
     '''
-    def __init__(self,cacheDir):
+    def __init__(self):
         self.keywords={'dbd_label':'string',
                        'total_num_sensors':'int',
                        'sensor_list_crc':'string',
@@ -356,7 +363,6 @@ class DBDHeader(object):
                        'full_filename':'string',
                        'the8x3_filename':'string'}
         self.info={}
-        self.cacheDir=cacheDir
         
     def read_header(self,fp):
         ''' read the header of the file, given by fp '''
@@ -422,7 +428,7 @@ class DBD(object):
             self.cacheDir=CACHEDIR
         else:
             self.cacheDir=cacheDir
-        self.headerInfo,parameterInfo,self.cacheFound=self.__read_header()
+        self.headerInfo,parameterInfo,self.cacheFound=self.__read_header(self.cacheDir)
         # number of bytes each states section consists of:
         self.n_state_bytes=self.headerInfo['state_bytes_per_cycle']
         # size of variables used
@@ -690,12 +696,14 @@ class DBD(object):
         else:
             return False
 
-    def __read_header(self):
-        dbdheader=DBDHeader(self.cacheDir)
+    def __read_header(self, cacheDir):
+        if not os.path.exists(cacheDir):
+            raise DbdError(DBD_ERROR_CACHEDIR_NOT_FOUND, " (%s)"%(cacheDir))
+        dbdheader=DBDHeader()
         factored=dbdheader.read_header(self.fp)
         # determine cache file name
         tmp=dbdheader.info['sensor_list_crc'].lower()
-        cacheFilename=os.path.join(self.cacheDir,tmp+".cac")
+        cacheFilename=os.path.join(cacheDir,tmp+".cac")
         cacheFound=True # unless proven otherwise...
         parameter=[]
         if factored==1:
@@ -876,10 +884,8 @@ class MultiDBD(object):
                  include_paired=False,banned_missions=[],missions=[],
                  max_files=None):
         self.__ignore_cache=[]
-        if cacheDir==None:
-            self.cacheDir=CACHEDIR
-        else:
-            self.cacheDir=cacheDir
+        if cacheDir is None:
+            cacheDir=CACHEDIR
         self.banned_missions=banned_missions
         self.missions=missions
         self.mission_list=[]
@@ -900,15 +906,15 @@ class MultiDBD(object):
         else:
             self.filenames=fns
 
-        self.__update_dbd_inventory()
+        self.__update_dbd_inventory(cacheDir)
 
         if include_paired:
             #ensure_paired=True
             self.__add_paired_filenames()
-            self.__update_dbd_inventory()
+            self.__update_dbd_inventory(cacheDir)
 
         if ensure_paired:
-            self.pruned_files=self.__prune_unmatched()
+            self.pruned_files=self.__prune_unmatched(cacheDir)
         #
         self.parameterNames=dict((k,self.__getParameterList(v)) \
                                      for k,v in self.dbds.items())
@@ -1175,17 +1181,17 @@ class MultiDBD(object):
                 break
         return r
 
-    def __prune(self,filelist):
+    def __prune(self,filelist, cacheDir=None):
         ''' prune all files in filelist.'''
         for tbr in filelist:
             self.filenames.remove(tbr)
-        self.__update_dbd_inventory()
+        self.__update_dbd_inventory(cacheDir)
     
-    def __prune_unmatched(self):
+    def __prune_unmatched(self, cacheDir=None):
         ''' prune all files which don't have a science/engineering partner 
             returns list of removed files.'''
         to_be_removed=[fn for fn in self.filenames if not self.__get_matching_dbd(fn)]
-        self.__prune(to_be_removed)
+        self.__prune(to_be_removed, cacheDir)
         return tuple(to_be_removed)
 
 
@@ -1251,11 +1257,11 @@ class MultiDBD(object):
         else :
             return list(map(lambda x: self.__format_time(x,fmt), time_limits))
 
-    def __update_dbd_inventory(self):
+    def __update_dbd_inventory(self, cacheDir):
         self.dbds={'eng':[],'sci':[]}
         filenames=list(self.filenames)
         for fn in self.filenames:
-            dbd=DBD(fn, self.cacheDir)
+            dbd=DBD(fn, cacheDir)
             mission_name=dbd.get_mission_name()
             dbd.close()
             if mission_name in self.banned_missions:

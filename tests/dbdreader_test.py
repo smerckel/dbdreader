@@ -1,12 +1,7 @@
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
 import dbdreader
 import glob
 import numpy as np
+import os
 import unittest
 
 class Dbdreader_DBD_test(unittest.TestCase):
@@ -53,6 +48,29 @@ class Dbdreader_DBD_test(unittest.TestCase):
         dbd.close()
         self.assertEqual(t,"micro.mi")
 
+    def test_non_standard_cache_dir(self):
+        dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd", cacheDir='../data/cac')
+        dbd.close()
+        depth = dbd.get("m_depth")
+        self.assertEqual(len(depth), 2)
+
+
+    def test_non_standard_cache_dir_generate_cachefile(self):
+        # this should create a cache file. Remove it if already present.
+        try:
+            os.unlink('../data/cac/(813b137d.cac')
+        except FileNotFoundError:
+            pass
+        dbd=dbdreader.DBD("../data/ammonite-2008-028-01-000.mbd", cacheDir='../data/cac')
+        dbd.close()
+        depth = dbd.get("m_depth")
+        self.assertEqual(len(depth), 2)
+
+        
+    def test_non_standard_cache_dir_fail(self):
+        kwds = dict(cacheDir='../data/not_there')
+        self.assertRaises(dbdreader.DbdError, dbdreader.DBD, "../data/amadeus-2014-204-05-000.sbd", **kwds)
+        
     def get(self,fn,x):
         try:
             dbd=dbdreader.DBD(fn)
@@ -120,12 +138,12 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         self.get_method("xy",
                         self.pattern,
                         'm_lat','m_lon')
-
-    def test_get_list(self):
-        self.get_method("list",
-                        self.pattern,
-                        "dmy",['m_lat','m_lon'])
-
+        
+    # def test_get_list(self):
+    #     self.get_method("list",
+    #                     self.pattern,
+    #                     None,['m_lat','m_lon'])
+        
     def test_time_limits(self):
         dbd=dbdreader.MultiDBD(pattern=self.pattern)
         v0=dbd.get("m_depth")
@@ -140,6 +158,17 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         self.assertEqual(t2[0],'24 Jul 2014 18:00')
         self.assertLess(len(v1[0]),len(v0[0]))
 
+    def test_non_standard_cache_dir(self):
+        dbd=dbdreader.MultiDBD(pattern = self.pattern, cacheDir='../data/cac')
+        dbd.close()
+        depth = dbd.get("m_depth")
+        self.assertEqual(len(depth), 2)
+
+    def test_non_standard_cache_dir_fail(self):
+        kwds = dict(pattern=self.pattern, cacheDir='../data/not_there')
+        self.assertRaises(dbdreader.DbdError, dbdreader.MultiDBD, **kwds)
+
+        
     def get_method(self,method,fn,x,y):
         dbd=dbdreader.MultiDBD(pattern=fn)
         try:
