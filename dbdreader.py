@@ -11,7 +11,10 @@ from calendar import timegm
 import _dbdreader
 
 # make sure we interpret timestamps in the english language
-locale.setlocale(locale.LC_ALL, 'en_US')
+try:
+    locale.setlocale(locale.LC_ALL, 'en_US')
+except:
+    pass # building on read-the-docs fails because of this.
 
 def strptimeToEpoch(datestr, fmt):
     ''' Converts datestr into seconds
