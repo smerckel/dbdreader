@@ -1,3 +1,5 @@
+|PyPI version| |Docs badge| |Build Status|  |Mailing Lists| |License|
+
 DBDREADER
 =========
 
