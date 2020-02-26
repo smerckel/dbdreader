@@ -76,3 +76,13 @@ make the code able to run on python2.7 using the *future* package.
 * pasteurize dbdreader.
 
 For details see http://python-future.org/pasteurize.html.
+
+
+.. |PyPI version| image:: https://badgen.net/pypi/v/dbdreader
+   :target: https://pypi.org/project/dbdreader
+.. |Docs badge| image:: https://readthedocs.org/projects/glidertools/badge/?version=latest
+   :target: https://dbdreader.readthedocs.io/en/latest/
+.. |License| image:: https://img.shields.io/badge/License-GPLv3-blue.svg
+   :target: https://www.gnu.org/licenses/gpl-3.0
+
+	 
