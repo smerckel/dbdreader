@@ -21,8 +21,8 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 autodoc_mock_imports = ["_dbdreader"]
 
-with open("../../VERSION", "r") as fh:
-    __version__=  fh.read()
+with open("../../dbdreader/__init__.py", "r") as fh:
+    __version__ = fh.readline().split("=")[1].replace('"', '')
 
 # -- General configuration -----------------------------------------------------
 
