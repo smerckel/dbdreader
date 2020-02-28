@@ -19,9 +19,9 @@ import sys, os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../..'))
 
-from dbdreader import __version__
-autodoc_mock_imports = ["_dbdreader","dbdreader._dbdreader"]
+autodoc_mock_imports = ["_dbdreader"]
 
+from dbdreader import __version__
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
