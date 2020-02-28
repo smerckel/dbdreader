@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 autodoc_mock_imports = ["_dbdreader"]
 
-from dbdreader import __version__
+__version__ = "0.4.0"
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
