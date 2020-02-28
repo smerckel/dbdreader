@@ -21,7 +21,9 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 autodoc_mock_imports = ["_dbdreader"]
 
-__version__ = "0.4.0"
+with open("../../VERSION", "r") as fh:
+    __version__=  fh.read()
+
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
