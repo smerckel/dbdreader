@@ -20,7 +20,7 @@ import sys, os
 sys.path.insert(0, os.path.abspath('../..'))
 
 from dbdreader import __version__
-autodoc_mock_imports = ["_dbdreader"]
+autodoc_mock_imports = ["_dbdreader","dbdreader._dbdreader"]
 
 # -- General configuration -----------------------------------------------------
 
