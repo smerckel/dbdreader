@@ -9,6 +9,10 @@ import re
 import datetime
 from calendar import timegm
 import _dbdreader
+import logging
+
+logger = logging.getLogger(os.path.basename(__file__))
+logging.basicConfig(level=logging.INFO)
 
 # make sure we interpret timestamps in the english language
 try:
@@ -24,13 +28,18 @@ def strptimeToEpoch(datestr, fmt):
     interprets the date string in UTC.
 
 
-    Args:
-         datestr: datestr is an ascii string such as "2010 May 01"
+    Parameters
+    ----------
+    datestr: str
+        A string presenting the date, such as "2010 May 01"
 
-         fmt:     date format such as %Y %b %d
+    fmt: str
+        Format to interpret strings. Example: "%Y %b %d"
     
-    Returns:
-         time since epoch in seconds
+    Returns
+    -------
+    int
+        time since epoch in seconds
     '''
     ts = time.strptime(datestr , fmt)
     return timegm(ts)
@@ -42,15 +51,19 @@ def epochToDateTimeStr(seconds,dateformat="%Y%m%d",timeformat="%H:%M"):
     This function converts seconds since Epoch to a datestr and timestr
     with user configurable formats.
 
-    Args:
-         seconds: seconds since Epoch
+    Parameters
+    ----------
+    seconds: float or int
+        seconds since Epoch
+    dateformat: str
+        string defining how the date string should be formatted
+    timeformat: str
+        string defining how the time string should be formatted
 
-         dateformat: string defining how the date string should be formatted
-
-         timeformat: string defining how the time string should be formatted
-
-    Returns:
-         tuple of datestring and timestring.
+    Returns
+    -------
+    (str, str)
+         datestring and timestring
     '''
     d=datetime.datetime.utcfromtimestamp(seconds)
     datestr=d.strftime(dateformat)
@@ -70,12 +83,16 @@ def __convertToDecimal(x):
 def toDec(x,y=None):
     ''' NMEA style to decimal degree converter
 
-    Args:
-         x: latitiude or longitude in NMEA format
+    Parameters
+    ----------
+    x: float
+        latitiude or longitude in NMEA format
+    y: float, optional 
+       latitiude or longitude in NMEA format
 
-         y: optional latitiude or longitude in NMEA format
-
-    Returns:
+    Returns
+    -------
+    float or tuple of floats
          decimal latitude (longitude) or tuple of decimal latitude and longitude
     '''
     if not y==None:
@@ -173,9 +190,15 @@ class DBD:
 
 
 class DBDList(list):
-    ''' Object subclassed from list. The sort method defaults to sorting dbd 
-        files and friends in the right order.
+    ''' List that properly sorts dbd files.
+    
+    Object subclassed from list. The sort method defaults to sorting dbd 
+    files and friends in the right order.
 
+    Parameters
+    ----------
+    *p : variable length list of str
+        filenames
     '''
     def __init__(self,*p):
         list.__init__(self,*p)
@@ -190,13 +213,32 @@ class DBDList(list):
             return xx
                              
     def sort(self,cmp=None, key=None, reverse=False):
-        ''' sorts filenames ensuring dbd files are in chronological order'''
+        ''' sorts filenames ensuring dbd files are in chronological order in place
+        
+        Parameters
+        ----------
+        cmp :
+            ingored keyword (for compatibility reasons only)
+        key :
+            ignored keyword (for compatibility reasons only)
+        reverse : bool
+            If True, performs a reverse sort.
+        '''
         list.sort(self, key=self.__keyFilename, reverse=reverse)
 
 class DBDPatternSelect(object):
-    ''' A class for selecting dbd files based on a date condition.
-        The class opens files and reads the headers only.
+    ''' Selecting DBD files.
 
+    A class for selecting dbd files based on a date condition.
+    The class opens files and reads the headers only.
+
+    Parameters
+    ----------
+    date_format : str, optional
+         date format used to interpret date strings.
+    
+    Note
+    ----
         Times are based on the opening time of the file only.
 
     '''
@@ -211,46 +253,58 @@ class DBDPatternSelect(object):
 
         Sets the date format used to interpret the from_date and until_dates.
 
-        Args:
-            date_format: string
-                example "%H %d %m %Y"
+        Parameters
+        ----------
+        date_format: str
+            format to interpret date strings. Example "%H %d %m %Y"
         
-        Returns:
-             None
         '''
         self.date_format=date_format
 
     def get_date_format(self):
-        ''' Returns current date format string 
-
-        Args:
-    
-        Returns:
-            date_format string
+        ''' Returns date format string.
+        
+        Returns
+        -------
+        str:
+            date format string
         '''
         return self.date_format
 
 
     def select(self,pattern=None,filenames=[],from_date=None,until_date=None):
-        ''' select the filenames
+        '''Select file names from pattern or list.
 
         This method selects the filenames given a filename list or search 
         pattern and given time limits.
 
-        Args:
-            pattern: string
+        Parameters
+        ----------
+        pattern: str
+            search pattern (passed to glob) to find filenames
+        
+        filenames: list of str
+            filename list
+        
+        from_date: None or str, optional
+            date used as start date criterion. If None, all files are
+            included until the until_date.
 
-            filenames: list of filenames
-
-            from_date: None | string
-
-            until_date: None | string
-
+        until_date: None or str, optional
+            date used aas end date criterion. If None, all files after 
+            from_date are included.
+        
         Returns:
              list of filenames that match the criteria
 
         Raises:
              ValueError if nor pattern or filenames is given.
+
+        Note
+        ----
+        Either pattern or filenames should be supplied, and at least one of 
+        from_date and until_date.
+
         '''
 
         all_filenames = self.get_filenames(pattern, filenames)
@@ -270,8 +324,8 @@ class DBDPatternSelect(object):
                 t1=1e11
             return self.__select(all_filenames,t0,t1)
 
-    def bins(self, pattern=None, filenames=None, width=86400, t_start=None, t_end=None):
-        '''list filenames, binned in time
+    def bins(self, pattern=None, filenames=None, binsize=86400, t_start=None, t_end=None):
+        '''Return a list of filenames, in time bins
 
         The method makes a list of all filenames, matching either
         pattern or filenames and bins these in time windows of width. If
@@ -283,23 +337,31 @@ class DBDPatternSelect(object):
         contains the centred time of the bin, and a list of all
         filenames that fall within this bin.
 
-        Args:
-            pattern: string
-
-            filenames: list of filenames
+        Parameters
+        ----------
+        pattern: str
+            search pattern (as used in glob)
         
-            width: width of time bin in seconds
-
-            t_start: None | timestamp in seconds since 1/1/1970
-
-            t-end: None | timestamp in seconds since 1/1/1970
-
-        Returns:
-             list of filenames that match the criteria
-
-        Raises:
-             ValueError if nor pattern or filenames is given.
+        filenames: list of str
+            filename list
         
+        binsize: float
+            binsize of in seconds
+
+        t_start: None or float
+            Timestamp in seconds since 1/1/1970
+
+        t_end: None or float
+            Timestamp in seconds since 1/1/1970
+
+        Returns
+        -------
+        list of list of str
+            list of filenames, grouped per bin
+
+        Raises
+        ------
+        ValueError if nor pattern or filenames is given.
         '''
         fns = self.get_filenames(pattern, filenames)
         if t_start is None:
@@ -313,12 +375,28 @@ class DBDPatternSelect(object):
 
         
     def get_filenames(self, pattern, filenames, cacheDir=None):
+        ''' Get filenames (sorted) and update CAC cache directory.
+        
+        Parameters
+        ----------
+        pattern : str
+            search pattern (as used in glob)
+        filenames : list of str
+            list of filenames
+        
+        Returns
+        -------
+        list of str
+            sorted list of filenames.
+        '''
         if not pattern and not filenames:
             raise ValueError("Expected some pattern to search files for or file list.")
         if pattern:
             all_filenames=DBDList(glob.glob(pattern))
         elif filenames:
             all_filenames=DBDList(filenames)
+        else:
+            raise ValueError('Supply either pattern or filenames argument.')
         all_filenames.sort()
         self.__update_cache(all_filenames, cacheDir)
         return all_filenames
@@ -417,11 +495,14 @@ class DBDHeader(object):
 class DBD(object):
     ''' Class to read a single DBD type file 
 
-        Args:
-             filename: string
-
-             cachedDir: string pointing to the cacheDir | None (default)
+    Parameters
+    ----------
     
+    filename: str
+        dbd filename
+
+    cachedDir: str or None, optional
+        path to CAC file cache directory. If None, the default path is used.
     '''
     def __init__(self,filename,cacheDir=None):
 
@@ -453,25 +534,50 @@ class DBD(object):
         ''' Closes a DBD file '''
         return self.fp.close()
 
-    def get(self,parameter,decimalLatLon=True,discardBadLatLon=True):
-        '''returns time and parameter data for requested parameter 
+    def get(self,*parameters,decimalLatLon=True,discardBadLatLon=True, return_nans=False):
+        '''Returns time and parameter data for requested parameter 
         
         This method reads the requested parameter, and convert it
         optionally to decimal format if the parameter is latitude-like
         or longitude-like
 
-        Args:
-             parameter: string of name of parameter
+        Parameters
+        ----------
+        *parameters: variable length list of str
+            parameter name
 
-        Returns:
-             tuple with time and value vectors
+        decimalLatLon : bool, optional
+            If True (default), latitiude and longitude related parameters are converted to 
+            decimal format, as opposed to nmea format.
 
-        Raises: 
-             DbdError when the requested parameter cannot be read.
+        discardBadLatLon : bool, optional
+            If True (default), bogus latitiude and longitude values are ignored.
+        
+        return_nans : bool, optional
+            if True, nans are returned for timestamps the variable was not updated or changed.
+
+        Returns
+        -------
+        tuple of (ndarray, ndarray) for each parameter requested.
+            time vector (in seconds) and value vector
+
+        Raises
+        ------
+             DbdError when the requested parameter(s) cannot be read.
+
+        .. versionchanged:: 0.4.0 Multi parameters can be passed, giving a time,value tuple for each parameter.
+
         '''
-        return self.__get([parameter],decimalLatLon,discardBadLatLon)
+        timestamps, values =  self._get(*parameters, decimalLatLon=decimalLatLon,
+                                        discardBadLatLon=discardBadLatLon, return_nans=return_nans)
+        r = [(t,v) for t, v in zip(timestamps, values)]
+        
+        if len(parameters)==1:
+            return r[0]
+        else:
+            return r
 
-    def get_list(self,parameter_list,decimalLatLon=True,discardBadLatLon=True,
+    def get_list(self,*parameters,decimalLatLon=True,discardBadLatLon=True,
                  return_nans=False):
         ''' Returns time and value tuples for a list of requested parameters
         
@@ -482,83 +588,125 @@ class DBD(object):
         Note that each parameter comes with its own time base. No interpolation
         is done. Use get_sync() for that in stead.
 
-        Args:
-            parameter_list: list of strings of parameters
+        Parameters
+        ----------
+        *parameters: list of str
+            list of parameter names
 
-            decimalLatLon: bool. If True, NMEA lats and friends are converted
-                           to decimal values.
+        decimalLatLon : bool, optional
+            If True (default), latitiude and longitude related parameters are converted to 
+            decimal format, as opposed to nmea format.
 
-            discardBadlatLon: bool. If True, unrealistic lat/lon values are 
-                              discared
-            return_nans: bool. If True all timestamps are returned with nans for 
-                              the values that have not been updated.
-        Returns:
-            list of tuples of time and value vectors
-        '''
-        return self.__get(parameter_list,decimalLatLon,discardBadLatLon, return_nans)
+        discardBadLatLon : bool, optional
+            If True (default), bogus latitiude and longitude values are ignored.
         
-    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True):
+        return_nans : bool
+            If True, nan's are returned for those timestamps where no new value is available.
+            Default value: False
+
+        Returns
+        -------
+        list of (ndarray, ndarray) 
+            list of tuples of time and value vectors for each parameter requested.
+
+        .. deprecated:: 0.4.0
+            
+        .. note::
+            This function will be removed in a future version. Use .get() instead.
+        '''
+        logger.info("get_list has been deprecated in version 0.4.0 and may be removed in the future. Use get instead.")
+        return self.get(*parameters,decimalLatLon=decimalLatLon ,discardBadLatLon=discardBadLatLon , return_nans=return_nans)
+        
+    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True):
         ''' Returns values of parameter_x and paramter_y
 
         For parameters parameter_x and parameter_y this method returns a tuple 
         with the values of both parameters. If necessary, the time base of 
         parameter_y is interpolated onto the one of parameter_x.
 
-        Args:
-            parameter_x: string. Name of 'x' parameter
+        Parameters
+        ----------
+        parameter_x: str
+            parameter name of x-parameter
 
-            parameter_y: string. Name of 'y' parameter
+        parameter_y: str
+            parameter name of y-parameter
 
-            decimalLatLon: bool. If True, NMEA lats and friends are converted
-                           to decimal values.
+        decimalLatLon : bool, optional
+            If True (default), latitiude and longitude related parameters are converted to 
+            decimal format, as opposed to nmea format.
 
-            discardBadlatLon: bool. If True, unrealistic lat/lon values are 
-                              discared
-        Returns:
+        discardBadLatLon : bool, optional
+            If True (default), bogus latitiude and longitude values are ignored.
+        
+        Returns
+        -------
+        (ndarray, ndarray)
             tuple of value vectors
-        '''    
-        return self.__get_xy(parameter_x,parameter_y,decimalLatLon)
+        '''
+        _, x, y = self._get_sync(parameter_x, parameter_y,
+                                 decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+        return x, y
 
 
-    def get_sync(self,parameter,sync_parameters,decimalLatLon=True,discardBadLatLon=True):
-        ''' returns a list of values from parameters, all interpolated to the 
+    def get_sync(self, *sync_parameters, decimalLatLon=True, discardBadLatLon=True):
+        '''Returns a list of values from parameters, all interpolated to the 
             time base of the first paremeter
 
         This method is used if a number of parameters should be interpolated 
         onto the same time base.
 
-        Args:
-            parameter: string. Key parameter, the time base of which is used to
-                       interpolate other parameters to.
+        Parameters
+        ----------
+        *sync_parameters: variable length list of str
+            parameter names. Minimal length is 2. The time base of the first parameter is
+            used to interpolate all other parameters onto.
 
-            sync_parameters: list of strings. These are the names of the 
-                       parameters that should be interpolated to the time base
-                       of parameter
-    
-            decimalLatLon: bool. If True, NMEA lats and friends are converted
-                           to decimal values.
+        decimalLatLon : bool, optional
+            If True (default), latitiude and longitude related parameters are converted to 
+            decimal format, as opposed to nmea format.
 
-            discardBadlatLon: bool. If True, unrealistic lat/lon values are 
-                              discared
+        discardBadLatLon : bool, optional
+            If True (default), bogus latitiude and longitude values are ignored.
         
-        Returns:
-            a list with time, values of parameter, and values of all 
-            sync_parameters.
+        Returns
+        -------
+        (ndarray, ndarray, ...)
+            Time vector (of first parameter), values of first parmaeter, and 
+            interpolated values of subsequent parameters.
 
         Example:
             
-            get_sync('m_water_pressure',['m_water_cond','m_water_temp'])
+            get_sync('m_water_pressure','m_water_cond','m_water_temp')
+
+        Notes
+        -----
+        .. versionchanged:: 0.4.0
+            Calling signature has changed from the sync parameters 
+            passed on as a list, to passed on as parameters.
         '''
-        return self.__get_sync(parameter,sync_parameters,decimalLatLon,discardBadLatLon)
+
+        if len(sync_parameters)<2:
+            raise ValueError('Expect at least two parameters.')
+        if len(sync_parameters)==2 and (isinstance(sync_parameters[1], list) or isinstance(sync_parameters[1], tuple)):
+            # obselete calling signature.
+            logger.info("Calling signature of get_sync() has changed in version 0.4.0.")
+            sync_parameters = [sync_parameters[0]] + sync_parameters[1]
+        return self._get_sync(*sync_parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
 
     def has_parameter(self,parameter):
-        ''' Check wheter this file knows parameter
+        ''' Check wheter this file contains parameter
         
-        Args:
-            parameter: string
-
-        Returns:
-            True if parameter is in the list, or False if not '''
+        Parameters
+        ----------
+        parameter: str
+            parameter to check
+        
+        Returns
+        -------
+        bool
+            True if parameter is in the list, or False if not 
+        '''
         return (parameter in self.parameterNames)
     
     # Private methods:
@@ -576,25 +724,26 @@ class DBD(object):
             return 'sci_m_present_time'
 
 
-    def __get(self,parameters,decimalLatLon=True,discardBadLatLon=False, return_nans=False):
+    def _get(self,*parameters,decimalLatLon=True,discardBadLatLon=False, return_nans=False):
         ''' returns time and parameter data for requested parameter '''
         if not self.cacheFound:
             cache_file=self.headerInfo['sensor_list_crc']
             raise DbdError(DBD_ERROR_CACHE_NOT_FOUND,\
                                ' Cache file %s for %s was not found in the cache directory (%s).'%(cache_file,self.filename,self.cacheDir))
         number_of_parameters=len(parameters)
-        ValidParameters=self.__get_valid_parameters(parameters)
-        if len(ValidParameters)==0:
+        valid_parameters = self.__get_valid_parameters(parameters)
+        if len(valid_parameters)!=len(parameters):
+            invalid_parameters = [p for p in parameters if p not in valid_parameters]
             raise DbdError(DBD_ERROR_NO_VALID_PARAMETERS,
-                           "\nRequested list: %s"%(parameters.__str__()))
+                           "\nMissing parameter(s): %s"%(", ".join(invalid_parameters)))
         if not self.timeVariable in self.parameterNames:
             raise DbdError(DBD_ERROR_NO_TIME_VARIABLE)
         # OK, we have some parameters to return:
         ti=self.parameterNames.index(self.timeVariable)
-        tmp=[self.parameterNames.index(parameter)
-             for parameter in ValidParameters]
-        idx_sorted=numpy.argsort(tmp)
-        vi=tuple([tmp[i] for i in idx_sorted])
+        idx = [self.parameterNames.index(p) for p in parameters]
+        idx_sorted=numpy.argsort(idx)
+        idx.sort()
+        vi = tuple(idx)
         self.n_sensors=self.headerInfo['sensors_per_cycle']
         r=_dbdreader.get(self.n_state_bytes,
                          self.n_sensors,
@@ -604,54 +753,25 @@ class DBD(object):
                          ti,
                          vi,
                          int(return_nans))
-        nParameters=len(ValidParameters)
-        # it seems that wrc version skips the initial line.
-        s=[(numpy.array(t[1:]),numpy.array(v[1:])) for
-           t,v in zip(r[:nParameters],r[nParameters:])]
+        # map the contents of vi on timestamps and values, preserving the original order:
+        timestamps = [numpy.array(r[i]) for i in idx_sorted]
+        values = [numpy.array(r[number_of_parameters+i]) for i in idx_sorted]
         # convert to decimal lat lon if applicable:
-        sortedParameters=[ValidParameters[i] for i in idx_sorted]
-        if decimalLatLon:
-            LatLonMask=map(self.__is_latlon_parameter,sortedParameters)
-            for i,T in enumerate(LatLonMask):
-                if T:
-                    s[i]=(s[i][0],toDec(s[i][1]))
-        if discardBadLatLon:
-            LatLonMask=map(self.__is_latlon_parameter,sortedParameters)
-            for i,T in enumerate(LatLonMask):
-                if T:
-                    idx=numpy.where(s[i][1]<696960)
-                    s[i]=(s[i][0][idx],s[i][1][idx])
-        if return_nans:
-            for i, _s in enumerate(s):
-                idx = numpy.where(numpy.isclose(_s[1],1e9))[0]
-                if len(idx):
-                    _s[1][idx]=numpy.nan
-                    
-        if number_of_parameters>1:
-            t=[None for i in range(number_of_parameters)]
-            for i,j in enumerate(idx_sorted):
-                paramName=ValidParameters[j]
-                column=parameters.index(paramName)
-                t[column]=s[i]
-                parameters[column]=None # ensures that if there are
-                                        # more parameters requested,
-                                        # the next column is found
-            return t
-        else:
-            return s[0]
+        for i, p in enumerate(parameters):
+            if self.__is_latlon_parameter(p):
+                if decimalLatLon:
+                    values[i] = toDec(values[i])
+                if discardBadLatLon:
+                    condition = values[i]<696960
+                    timestamps[i], values[i] = numpy.compress(condition, (timestamps[i], values[i]), axis=1)
 
-    def __get_xy(self,parameterx,parametery,decimalLatLon=True,
-                 discardBadLatLon=True):
-        ''' returns data for x and y parameters. The y parameter is interpolated
-            to the time stamps of parameter x
-        '''    
-        t,x,y=self.__get_sync(parameterx,[parametery],decimalLatLon,discardBadLatLon);
-        if len(t)==0:
-            return (x,x)
-        else:
-            return (x,y)
+            if return_nans:
+                idx = numpy.where(numpy.isclose(values[i],1e9))[0]
+                values[i][idx] = numpy.nan
+        return timestamps, values
 
-    def __get_sync(self,x,y,decimalLatLon=True,discardBadLatLon=True):
+
+    def _get_sync(self,*params, decimalLatLon=True,discardBadLatLon=True):
         '''
             x: dbdparameter name
 
@@ -666,29 +786,22 @@ class DBD(object):
 
             example:
             
-            get_sync('m_water_pressure',['m_water_cond','m_water_temp'])
+            get_sync('m_water_pressure','m_water_cond','m_water_temp')
         '''
-        params=[x]+list(y)
-        r=self.__get(params,decimalLatLon,discardBadLatLon)
-        # check whether all returned something.
-        all_parameters_returned=True
-        for i,p in zip(r,params):
-            if i==None:
-                raise DbdError(DBD_ERROR_NO_VALID_PARAMETERS,
-                               " (%s)"%(p))
-        t=r[0][0]
-        if len(t)==0:
+        timestamps, values = self._get(*params,decimalLatLon=decimalLatLon,discardBadLatLon=discardBadLatLon)
+        t = timestamps[0]
+        if t.shape[0] == 0:
             raise DbdError(DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO)
 
-        s=[t,r[0][1]]
-        for i in r[1:]:
-            if len(i[0])==0:
-                # no data for this parameter. Subs with nans
-                s.append(t.copy()*numpy.nan)
+        r = []
+        for i, (_t, _v) in enumerate(zip(timestamps, values)):
+            if i==0:
+                r.append(_t)
+                r.append(_v)
             else:
-                s.append(numpy.interp(t,i[0],i[1]))
-        return s
-
+                r.append(numpy.interp(t, _t, _v, left=numpy.nan, right=numpy.nan))
+        return r
+    
     def __get_valid_parameters(self,parameters):
         validParameters=[i for i in parameters if i in self.parameterNames]
         return validParameters
@@ -864,28 +977,58 @@ class MultiDBD(object):
     This class is intended for reading multiple dbd files and treating
     them as one.
     
-    Args:
-        pattern: string. String which may contain wild cards to 
-        select filenames
+    Parameters
+    ----------
+    filenames : list of str or None
+        list of filenames to open
+    pattern : str or None
+        search pattern as passed to glob
+    
+    cacheDir: str or None
+        path to directory with CAC cache files (None: the default directory is used)
 
-        filenames: list of strings with filenames.
+    complimented_files_only : bool
+        if True, only those files are retained for which both engineering and science
+        data files are available.
 
-        cacheDir: string pointing to dir with cache files | none (Default)
+    compliment_files : bool
+        If True automatically include matching [de]bd files
 
-        ensure_paired: bool only tuples of dbd/edb files will be retained
+    banned_missions: list of str
+        List of mission names that should be disregarded.
 
-        include_paired: bool automatically include match dbd files
+    missions: list of str
+        List of missions names that should be considered only.
 
-        banned_missions: list. list of mission names that should be disregarded.
-        missions: list list of missions names that should be considered only.
-        maxfiles: int. maximum number of files to be read:
+    maxfiles: int
+       maximum number of files to be read, where
         >0: the first n files are read
         <0: the last n files are read.
 
+    ensure_paired : bool
+        (DEPRECATED) if True, only those files are retained for which both engineering and science
+        data files are available.
+
+    include_paired : bool
+        (DEPRECATED) If True automatically include matching [de]bd files
+
+
+    Notes
+    -----
+    .. versionchanged:: 0.4.0
+        ensure_paired and included_paired keywords have been replaced by complimented_files_only 
+        and compliment_files, respectively.
     '''
-    def __init__(self,filenames=None,pattern=None,cacheDir=None,ensure_paired=False,
-                 include_paired=False,banned_missions=[],missions=[],
-                 max_files=None):
+    def __init__(self,filenames=None,pattern=None,cacheDir=None,complimented_files_only=False,
+                 compliment_files=False,banned_missions=[],missions=[],
+                 max_files=None, **kwds):
+        if kwds.get('ensure_paired', None):
+            complimented_files_only = kwds['ensure_paired']
+            logger.info("ensure_paired keyword is obselete as of version 0.4.0")
+        if kwds.get('include_paired', None):
+            compliment_files = kwds['include_paired']
+            logger.info("include_paired keyword is obselete as of version 0.4.0")
+            
         self.__ignore_cache=[]
         if cacheDir is None:
             cacheDir=CACHEDIR
@@ -911,12 +1054,11 @@ class MultiDBD(object):
 
         self.__update_dbd_inventory(cacheDir)
 
-        if include_paired:
-            #ensure_paired=True
+        if compliment_files:
             self.__add_paired_filenames()
             self.__update_dbd_inventory(cacheDir)
 
-        if ensure_paired:
+        if complimented_files_only:
             self.pruned_files=self.__prune_unmatched(cacheDir)
         #
         self.parameterNames=dict((k,self.__getParameterList(v)) \
@@ -928,111 +1070,149 @@ class MultiDBD(object):
         self.set_time_limits()
     
 ##### public methods
-    def get(self,parameter,decimalLatLon=True):
-        '''Returns time and parameter data for requested parameter 
+    def get(self, *parameters, decimalLatLon=True, discardBadLatLon=True, return_nans=False):
+        ''' Returns time and value tuple(s) for requested parameter(s)
         
-        This method reads the requested parameter, and convert it
-        optionally to decimal format if the parameter is latitude-like
-        or longitude-like
+        This method returns time and values tuples for a list of parameters.
+        
+        Note that each parameter comes with its own time base. No interpolation
+        is done. Use get_sync() for that in stead.
 
-        Args:
-             parameter: string of name of parameter
+        Parameters
+        ----------
+        parameter_list: list of str
+            list of parameter names
 
-        Returns:
-             tuple with time and value vectors
+        decimalLatLon : bool, optional
+            If True (default), latitiude and longitude related parameters are converted to 
+            decimal format, as opposed to nmea format.
 
-        Raises: 
-             DbdError when the requested parameter cannot be read.
+        discardBadLatLon : bool, optional
+            If True (default), bogus latitiude and longitude values are ignored.
+        
+        return_nans : bool
+            If True, nan's are returned for those timestamps where no new value is available.
+            Default value: False
+
+        Returns
+        -------
+        (ndarray, ndarray) or list of (ndarray, ndarray)
+            list of tuples of time and value vectors for each parameter requested.
         '''
-
-        if parameter in self.parameterNames['sci']:
-            return self.__worker("get","sci",parameter,decimalLatLon)
+        eng_variables = []
+        sci_variables = []
+        positions = []
+        for p in parameters:
+            if p in self.parameterNames['sci']:
+                positions.append(("sci", len(sci_variables)))
+                sci_variables.append(p)
+            else:
+                positions.append(("eng", len(eng_variables)))
+                eng_variables.append(p)
+        kwds_list=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=return_nans)
+        kwds=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+        if len(sci_variables)>=1: 
+            r_sci = self.__worker("get", "sci", *sci_variables, **kwds)
+        if len(eng_variables)>=1:
+            r_eng = self.__worker("get", "eng", *eng_variables, **kwds)
+        r = []
+        for target, idx in positions:
+            if target=='sci':
+                r.append(r_sci[idx])
+            else:
+                r.append(r_eng[idx])
+        if len(parameters)==1:
+            return r[0]
         else:
-            return self.__worker("get","eng",parameter,decimalLatLon)
-        
+            return r
 
-    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True):
-        '''Returns values of parameter_x and paramter_y
+    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True):
+        ''' Returns values of parameter_x and paramter_y
 
         For parameters parameter_x and parameter_y this method returns a tuple 
         with the values of both parameters. If necessary, the time base of 
         parameter_y is interpolated onto the one of parameter_x.
 
-        Args:
-            parameter_x: string. Name of 'x' parameter
+        Parameters
+        ----------
+        parameter_x: str
+            parameter name of x-parameter
 
-            parameter_y: string. Name of 'y' parameter
+        parameter_y: str
+            parameter name of y-parameter
 
-            decimalLatLon: bool. If True, NMEA lats and friends are converted
-                           to decimal values.
+        decimalLatLon : bool, optional
+            If True (default), latitiude and longitude related parameters are converted to 
+            decimal format, as opposed to nmea format.
 
-            discardBadlatLon: bool. If True, unrealistic lat/lon values are 
-                              discared
-
-        Returns:
+        discardBadLatLon : bool, optional
+            If True (default), bogus latitiude and longitude values are ignored.
+        
+        Returns
+        -------
+        (ndarray, ndarray)
             tuple of value vectors
         '''    
-        fts={True:'sci',False:'eng'}
-        pxSci=parameter_x in self.parameterNames['sci']
-        pySci=parameter_y in self.parameterNames['sci']
-        if not (pxSci ^ pySci):
-            # both px and py parameters or of the same type
-            return self.__worker("get_xy",fts[pxSci],parameter_x,parameter_y,decimalLatLon)
-        else:
-            # both parameters are from differnent file types.
-            x=self.__worker("get",fts[pxSci],parameter_x,decimalLatLon)
-            y=self.__worker("get",fts[pySci],parameter_y,decimalLatLon)
-            yi=numpy.interp(x[0],y[0],y[1])
-            return x[1],yi
-
-    def get_sync(self,parameter,sync_parameters,decimalLatLon=True):
-        '''Returns a list of values from parameters, all interpolated to the 
+        _, x, y = self.get_sync(parameter_x, parameter_y, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+        return x, y
+    
+    def get_sync(self,*parameters,decimalLatLon=True, discardBadLatLon=True):
+        ''' Returns a list of values from parameters, all interpolated to the 
             time base of the first paremeter
 
         This method is used if a number of parameters should be interpolated 
         onto the same time base.
 
-        Args:
-            parameter: string. Key parameter, the time base of which is used to
-                       interpolate other parameters to.
+        Parameters
+        ----------
+        *parameters: variable length list of str
+            parameter names. Minimal length is 2. The time base of the first parameter is
+            used to interpolate all other parameters onto.
 
-            sync_parameters: list of strings. These are the names of the 
-                       parameters that should be interpolated to the time base
-                       of parameter
-    
-            decimalLatLon: bool. If True, NMEA lats and friends are converted
-                           to decimal values.
+        decimalLatLon : bool, optional
+            If True (default), latitiude and longitude related parameters are converted to 
+            decimal format, as opposed to nmea format.
 
-            discardBadlatLon: bool. If True, unrealistic lat/lon values are 
-                              discared
+        discardBadLatLon : bool, optional
+            If True (default), bogus latitiude and longitude values are ignored.
         
-        Returns:
-            a list with time, values of parameter, and values of all 
-            sync_parameters.
+        Returns
+        -------
+        (ndarray, ndarray, ...)
+            Time vector (of first parameter), values of first parmaeter, and 
+            interpolated values of subsequent parameters.
 
         Example:
             
-            get_sync('m_water_pressure',['m_water_cond','m_water_temp'])
-        '''
-        fts={True:'sci',False:'eng'}
-        pxSci=parameter in self.parameterNames['sci']
-        pySci=[i in self.parameterNames['sci'] for i in sync_parameters]
-        allSamePySci=len(set(pySci))==1
-        if allSamePySci and not (pxSci ^ pySci[0] ):
-            # both px and all py parameters are of the same type
-            return self.__worker("get_sync",fts[pxSci],\
-                                     parameter,sync_parameters,decimalLatLon)
-        else:
-            # the parameters in y are of mixed type, we have to sieve them out...
-            x=self.__worker("get",fts[pxSci],parameter,decimalLatLon)
-            y=[self.__worker("get",fts[v],n,decimalLatLon) for n,v in 
-               zip(sync_parameters,pySci)]
-            yi=[numpy.interp(x[0],_y[0],_y[1]) for _y in y]
-            return numpy.vstack((x,yi))
-    
-    def get_list(self,parameter_list,decimalLatLon=True, return_nans=False):
-        '''Returns time and value tuples for a list of requested parameters
+            get_sync('m_water_pressure','m_water_cond','m_water_temp')
 
+        Notes
+        -----
+        .. versionchanged:: 0.4.0
+            Calling signature has changed from the sync parameters 
+            passed on as a list, to passed on as parameters.
+        '''
+        if len(parameters)<2:
+            raise ValueError('Expect at least two parameters.')
+        if len(parameters)==2 and (isinstance(parameters[1], list) or isinstance(parameters[1], tuple)):
+            # obselete calling signature.
+            logger.info("Calling signature of get_sync() has changed in version 0.4.0.")
+            parameters = [parameters[0]] + parameters[1]
+
+        tv = self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=False)
+        t = tv[0][0]
+        r = []
+        for i, (_t, _v) in enumerate(tv):
+            if i==0:
+                r.append(_t)
+                r.append(_v)
+            else:
+                r.append(numpy.interp(t, _t, _v, left=numpy.nan, right=numpy.nan))
+        return r
+    
+    def get_list(self,*parameters,decimalLatLon=True, discardBadLatLon=True, return_nans=False):
+        ''' Returns time and value tuples for a list of requested parameters
+        
 
         This method returns time and values tuples for a list of parameters. It
         is basically a short-hand for a looped get() method.
@@ -1040,86 +1220,137 @@ class MultiDBD(object):
         Note that each parameter comes with its own time base. No interpolation
         is done. Use get_sync() for that in stead.
 
-        Args:
-            parameter_list: list of strings of parameters
+        Parameters
+        ----------
+        parameter_list: list of str
+            list of parameter names
 
-            decimalLatLon: bool. If True, NMEA lats and friends are converted to decimal values.
+        decimalLatLon : bool, optional
+            If True (default), latitiude and longitude related parameters are converted to 
+            decimal format, as opposed to nmea format.
 
-            discardBadlatLon: bool. If True, unrealistic lat/lon values are discared
+        discardBadLatLon : bool, optional
+            If True (default), bogus latitiude and longitude values are ignored.
+        
+        return_nans : bool
+            If True, nan's are returned for those timestamps where no new value is available.
+            Default value: False
 
-            return_nans: bool. If True all timestamps are returned with nans for 
-                              the values that have not been updated.
+        Returns
+        -------
+        list of (ndarray, ndarray) 
+            list of tuples of time and value vectors for each parameter requested.
 
-        Returns:
-            list of tuples of time and value vectors
+        .. deprecated:: 0.4.0
+
+        .. note::
+            get_list() is deprecated, and will be removed in a future version. Use .get() instead.
         '''
-        eng_variables = []
-        sci_variables = []
-        positions = []
-        for p in parameter_list:
-            if p in self.parameterNames['sci']:
-                positions.append(("sci", len(sci_variables)))
-                sci_variables.append(p)
-            else:
-                positions.append(("eng", len(eng_variables)))
-                eng_variables.append(p)
-        kwds=dict(decimalLatLon=decimalLatLon, return_nans=return_nans)
-        if len(sci_variables)==1: # for a single parameter we get back (t,v) instead of [(t,v)]
-            r_sci = [self.__worker("get_list", "sci", sci_variables, **kwds)]
-        else:
-            r_sci = self.__worker("get_list", "sci", sci_variables, **kwds)
-        if len(eng_variables)==1:
-            r_eng = [self.__worker("get_list", "eng", eng_variables, **kwds)]
-        else:
-            r_eng = self.__worker("get_list", "eng", eng_variables, **kwds)
-                                  
-        r = []
-        for target, idx in positions:
-            if target=='sci':
-                r.append(r_sci[idx])
-            else:
-                r.append(r_eng[idx])
-        return r
+        logger.info("get_list has been deprecated in version 0.4.0 and may be removed in the future. Use get instead.")
+        return self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=return_nans)
+
+
+    def get_CTD_sync(self, *parameters, decimalLatLon=True, discardBadLatLon=True):
+        '''Returns a list of values from CTD and optionally other parameters, 
+        all interpolated to the time base of the CTD timestamp.
+
+        Parameters
+        ----------
+        *parameters: variable length list of str
+            names of parameters to be read additionally
+
+        decimalLatLon : bool, optional
+            If True (default), latitiude and longitude related parameters are converted to 
+            decimal format, as opposed to nmea format.
+
+        discardBadLatLon : bool, optional
+            If True (default), bogus latitiude and longitude values are ignored.
+        
+        Returns
+        -------
+        (ndarray, ndarray, ...)
+            Time vector (of first parameter), C, T and P values, and 
+            interpolated values of subsequent parameters.
+
+
+        Notes
+        -----
+        .. versionadded:: 0.4.0
+
+        '''
+        tmp = self.get_sync("sci_ctd41cp_timestamp", "sci_water_cond", "sci_water_temp",
+                            "sci_water_pressure", *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+        _, tctd, C, T, P, *v = numpy.compress(tmp[2]>0, tmp, axis=1)
+        return [tctd, C, T, P] + v
 
     def has_parameter(self,parameter):
-        '''Returns True if this instance has found parameter '''
+        '''Has this file parameter?
+        Returns
+        -------
+        bool
+            True if this instance has found parameter 
+        '''
         return (parameter in self.parameterNames['sci'] or parameter in self.parameterNames['eng'])
 
     @classmethod
     def isScienceDataFile(cls,fn):
-        ''' return True if file fn is a science file'''
+        ''' Is file a science file?
+        
+        Parameters
+        ----------
+        fn : str
+            filename
+        
+        Returns
+        -------
+        bool
+            True if file fn is a science file
+        '''
         return fn.endswith("ebd") | fn.endswith("tbd") | fn.endswith("nbd")
 
     def get_time_range(self,fmt="%d %b %Y %H:%M"):
         '''Get start and end date of the time range selection set
 
-        Args:
-            fmt: string. Determines how the time string is formatter
+        Parameters
+        ----------
+        fmt: str
+            String that determines how the time string is formatted
 
         Returns
-            tuple with formatted time strings
+        -------
+        (str, str)
+            Tuple with formatted time strings
         '''
         return self.__get_time_range(self.time_limits,fmt)
 
     def get_global_time_range(self,fmt="%d %b %Y %H:%M"):
         ''' Returns start and end dates of data set (all files) 
 
-        Args:
-            fmt: string. Determines how the time string is formatter
+        Parameters
+        ----------
+        fmt: str
+            String that determines how the time string is formatted.
 
         Returns
+        -------
+        (str, str)
             tuple with formatted time strings
         '''
         return self.__get_time_range(self.time_limits_dataset,fmt)
 
     def set_time_limits(self,minTimeUTC=None,maxTimeUTC=None):
-        ''' set time limits for data to be returned by get() and friends.
+        '''Set time limits for data to be returned by get() and friends.
 
-        Args:
-             minTimeUTC: lower time limit
+        Parameters
+        ----------
+        minTimeUTC: str
+            start time in UTC
 
-             maxTimeUTC: upper time limit
+        maxTimeUTC: str
+            end time in UTC
 
+        Notes
+        -----
         {minTimeUTC, maxTimeUTC} are expected in one of these formats:
 
         "%d %b %Y"  3 Mar 2014
@@ -1127,9 +1358,6 @@ class MultiDBD(object):
         or
 
         "%d %b %Y %H:%M" 4 Apr 2014 12:21
-
-        Returns:
-             None
         '''
         if minTimeUTC:
             self.time_limits[0]=self.__convert_seconds(minTimeUTC)
@@ -1138,12 +1366,12 @@ class MultiDBD(object):
         self.__refresh_cache()
 
     def close(self):
-        ''' close all open files '''
+        ''' Close all open files '''
         for i in self.dbds['eng']+self.dbds['sci']:
             i.close()
 
 
-#### private methods
+    #### private methods
 
     def __get_matching_fn(self,fn,format="base"):
         fnbase = os.path.basename(fn)
@@ -1312,13 +1540,14 @@ class MultiDBD(object):
         # if i in __ignore_cache, the file is flagged as outside the time limits
         #tmp=[eval("i.%s(*p)"%(method)) for i in self.dbds[ft] 
         #     if i not in self.__ignore_cache]
-        tmp=[]
+        data = dict([(k,[]) for k in p])
         error_mesgs = []
         for i in self.dbds[ft]:
             if i in self.__ignore_cache:
                 continue
+            m = dict(get=i._get, get_sync=i.get_sync, get_xy=i.get_xy)
             try:
-                r=eval("i.%s(*p, **kwds)"%(method)) 
+                t, v = m[method](*p, **kwds)
             except DbdError as e:
                 # ignore only the no_data_to_interpolate_to error
                 # as the file is probably (close to) empty
@@ -1332,11 +1561,11 @@ class MultiDBD(object):
                     # in all other cases reraise the error..
                     raise e
             else:
-                tmp.append(r)
-
-        if tmp==[]:
+                for _p, _t, _v in zip(p, t, v):
+                    data[_p].append((_t, _v))
+        if not all(data.values()):
             # nothing has been added, so all files should have returned nothing:
             raise(DbdError(DBD_ERROR_NO_VALID_PARAMETERS,
                            "\n".join(error_mesgs)))
-        return numpy.concatenate(tmp,axis=1)
+        return [numpy.hstack(data[_p]) for _p in p]
 

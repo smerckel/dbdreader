@@ -1,10 +1,3 @@
-from __future__ import print_function
-from __future__ import division
-from __future__ import unicode_literals
-from __future__ import absolute_import
-from builtins import int
-from future import standard_library
-standard_library.install_aliases()
 import numpy as np
 import dbdreader
 
@@ -48,7 +41,7 @@ dbd=dbdreader.MultiDBD(pattern="../data/amadeus*.[st]bd")
 print("we the following science parameters:")
 for i,p in enumerate(dbd.parameterNames['sci']):
     print("%2d: %s"%(i,p))
-print("\n and engineering paramters:")
+print("\nand engineering parameters:")
 for i,p in enumerate(dbd.parameterNames['eng']):
     print("%2d: %s"%(i,p))
 
@@ -63,7 +56,7 @@ print("\nmax depth found is %f m"%(max_depth))
 lat,lon=dbd.get_xy("m_lat","m_lon")
 
 # interpolate roll speed on depth time
-tm,depth,roll,speed=dbd.get_sync("m_depth",["m_roll","m_speed"])
+tm,depth,roll,speed=dbd.get_sync("m_depth","m_roll","m_speed")
 
 print("\nmax speed %f m/s"%(speed.compress(np.isfinite(speed)).max()))
 

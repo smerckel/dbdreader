@@ -1,4 +1,4 @@
-dbdreader helper classes and functions
+Dbdreader helper classes and functions
 **************************************
 
 API
@@ -17,7 +17,7 @@ Examples
 
 
 DBDList
-~~~~~~~
+-------
 
 DBDList derives from list, but implements the sort() method such that
 dbd files are sorted correctly.
@@ -56,8 +56,10 @@ which is obviously not what we want. DBDList fixes this.
    # fns_sortable is now sorted correctly. Guaranteed.
 
 
+.. _sec_dbdpatternselect:
+
 DBDPatternSelect
-~~~~~~~~~~~~~~~~
+----------------
 
 The DBDPatternSelect class allows you to select filenames the contain
 data for a specific time window in an easy way.

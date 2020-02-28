@@ -26,7 +26,7 @@ install dbdreader``.
 
 Documentation
 -------------
-Comprehensive documentation is provided at http://dockserver0.hzg.de/software/dbdreader/index.html
+Comprehensive documentation is provided at https://dbdreader.readthedocs.io/en/latest/
 
 Quick-start
 -----------
@@ -56,14 +56,14 @@ To read a single file::
 
   >>> dbd = DBD("00010010.dbd")
   >>> t, pitch = dbd.get("m_pitch")
-  >>> t, hdg, ptch, roll = dbd.get_sync("m_heading", "m_pitch m_roll".split())
+  >>> t, hdg, ptch, roll = dbd.get_sync("m_heading", "m_pitch", "m_roll)
 
 Or, doing the same, but using both dbd and ebd files::
   
   >>> dbd = DBD(pattern="00010010.[de]bd")
   >>> t, pitch = dbd.get("m_pitch")
-  >>> t, hdg, ptch, roll = dbd.get_sync("m_heading", "m_pitch m_roll".split())
-  >>> t, p_ctd, p_nav = dbd.get("sci_water_pressure", ["m_water_pressure"])
+  >>> t, hdg, ptch, roll = dbd.get_sync("m_heading", "m_pitch", "m_roll")
+  >>> t, p_ctd, p_nav = dbd.get_sync("sci_water_pressure", "m_water_pressure")
 
   
 
@@ -80,7 +80,7 @@ For details see http://python-future.org/pasteurize.html.
 
 .. |PyPI version| image:: https://badgen.net/pypi/v/dbdreader
    :target: https://pypi.org/project/dbdreader
-.. |Docs badge| image:: https://readthedocs.org/projects/glidertools/badge/?version=latest
+.. |Docs badge| image:: https://readthedocs.org/projects/dbdreader/badge/?version=latest
    :target: https://dbdreader.readthedocs.io/en/latest/
 .. |License| image:: https://img.shields.io/badge/License-GPLv3-blue.svg
    :target: https://www.gnu.org/licenses/gpl-3.0
