@@ -122,6 +122,7 @@ DBD_ERROR_NO_FILE_CRITERIUM_SPECIFIED=4
 DBD_ERROR_NO_FILES_FOUND=5
 DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO=6
 DBD_ERROR_CACHEDIR_NOT_FOUND=7
+DBD_ERROR_ALL_FILES_BANNED=8
 
 class DbdError(Exception):
     def __init__(self,value=9,mesg=None):
@@ -143,6 +144,8 @@ class DbdError(Exception):
             mesg='No data to interpolate to.'
         elif self.value==DBD_ERROR_CACHEDIR_NOT_FOUND:
             mesg='Cache file directory does not exist.'
+        elif self.value==DBD_ERROR_ALL_FILES_BANNED:
+            mesg='All data files were banned.'
         else:
             mesg='Undefined error.'
         if self.mesg:
@@ -1508,7 +1511,7 @@ class MultiDBD(object):
             else:
                 self.dbds['eng'].append(dbd)
         if len(self.dbds['sci'])+len(self.dbds['eng'])==0:
-            raise ValueError("All selected data files were banned.")
+            raise DbdError(DBD_ERROR_ALL_FILES_BANNED, " (Read %d files.)"%(len(self.filenames)))
         self.parameterNames=dict((k,self.__getParameterList(v)) \
                                      for k,v in self.dbds.items())
         self.parameterUnits=self.__getParameterUnits()
