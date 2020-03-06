@@ -987,11 +987,11 @@ class MultiDBD(object):
     cacheDir: str or None
         path to directory with CAC cache files (None: the default directory is used)
 
-    complimented_files_only : bool
+    complemented_files_only : bool
         if True, only those files are retained for which both engineering and science
         data files are available.
 
-    compliment_files : bool
+    complement_files : bool
         If True automatically include matching [de]bd files
 
     banned_missions: list of str
@@ -1016,17 +1016,17 @@ class MultiDBD(object):
     Notes
     -----
     .. versionchanged:: 0.4.0
-        ensure_paired and included_paired keywords have been replaced by complimented_files_only 
-        and compliment_files, respectively.
+        ensure_paired and included_paired keywords have been replaced by complemented_files_only 
+        and complement_files, respectively.
     '''
-    def __init__(self,filenames=None,pattern=None,cacheDir=None,complimented_files_only=False,
-                 compliment_files=False,banned_missions=[],missions=[],
+    def __init__(self,filenames=None,pattern=None,cacheDir=None,complemented_files_only=False,
+                 complement_files=False,banned_missions=[],missions=[],
                  max_files=None, **kwds):
         if kwds.get('ensure_paired', None):
-            complimented_files_only = kwds['ensure_paired']
+            complemented_files_only = kwds['ensure_paired']
             logger.info("ensure_paired keyword is obselete as of version 0.4.0")
         if kwds.get('include_paired', None):
-            compliment_files = kwds['include_paired']
+            complement_files = kwds['include_paired']
             logger.info("include_paired keyword is obselete as of version 0.4.0")
             
         self.__ignore_cache=[]
@@ -1054,11 +1054,11 @@ class MultiDBD(object):
 
         self.__update_dbd_inventory(cacheDir)
 
-        if compliment_files:
+        if complement_files:
             self.__add_paired_filenames()
             self.__update_dbd_inventory(cacheDir)
 
-        if complimented_files_only:
+        if complemented_files_only:
             self.pruned_files=self.__prune_unmatched(cacheDir)
         #
         self.parameterNames=dict((k,self.__getParameterList(v)) \
