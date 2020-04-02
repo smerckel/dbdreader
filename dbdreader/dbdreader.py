@@ -744,9 +744,8 @@ class DBD(object):
         # OK, we have some parameters to return:
         ti=self.parameterNames.index(self.timeVariable)
         idx = [self.parameterNames.index(p) for p in parameters]
-        idx_sorted=numpy.argsort(idx)
-        idx.sort()
-        vi = tuple(idx)
+        idx_sorted=numpy.sort(idx)
+        vi = tuple(idx_sorted)
         self.n_sensors=self.headerInfo['sensors_per_cycle']
         r=_dbdreader.get(self.n_state_bytes,
                          self.n_sensors,
@@ -757,8 +756,9 @@ class DBD(object):
                          vi,
                          int(return_nans))
         # map the contents of vi on timestamps and values, preserving the original order:
-        timestamps = [numpy.array(r[i]) for i in idx_sorted]
-        values = [numpy.array(r[number_of_parameters+i]) for i in idx_sorted]
+        idx_reorderd = [vi.index(i) for i in idx]
+        timestamps = [numpy.array(r[i]) for i in idx_reorderd]
+        values = [numpy.array(r[number_of_parameters+i]) for i in idx_reorderd]
         # convert to decimal lat lon if applicable:
         for i, p in enumerate(parameters):
             if self.__is_latlon_parameter(p):
@@ -1283,6 +1283,8 @@ class MultiDBD(object):
         '''
         tmp = self.get_sync("sci_ctd41cp_timestamp", "sci_water_cond", "sci_water_temp",
                             "sci_water_pressure", *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+        for i, v in enumerate(parameters):
+            print(i, v, tmp[i+5])
         _, tctd, C, T, P, *v = numpy.compress(tmp[2]>0, tmp, axis=1)
         return [tctd, C, T, P] + v
 

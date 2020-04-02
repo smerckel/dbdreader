@@ -9,12 +9,17 @@ import dbdreader
 #depth=dbd.get("m_depth")
 
 dbd=dbdreader.DBD("/home/lucas/gliderdata/helgoland201407/hd/sebastian-2014-227-00-161.dbd")
+ballast, pitch, alt, roll= dbd.get("m_ballast_pumped", "m_pitch","m_altitude", "m_roll" )
+Q
+
+
 depth = dbd.get("m_depth")
 
 depth, roll = dbd.get("m_depth", "m_roll")
 
 lt, ln = dbd.get_xy("m_gps_lat", "m_gps_lon")
-
+tm, ballast, pitch, alt, roll= dbd.get_sync("m_ballast_pumped", "m_pitch","m_altitude", "m_roll" )
+Q
 t, d, r, lat =dbd.get_sync("m_depth", ["m_roll", "m_lat"])
 t1, d1, r1, lat1 =dbd.get_sync("m_depth", "m_roll", "m_lat")
 

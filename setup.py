@@ -2,7 +2,7 @@ import setuptools
 
 with open("dbdreader/__init__.py", "r") as fh:
     with open("VERSION", "w") as fw:
-        fw.write(fh.readline().split("=")[1].replace('"', ''))
+        fw.write(fh.readline().strip().split("=")[1].replace('"', ''))
 
 with open("README.rst", "r") as fh:
     long_description = fh.read()
