@@ -515,7 +515,7 @@ class DBD(object):
             self.cacheDir=CACHEDIR
         else:
             self.cacheDir=cacheDir
-        self.headerInfo,parameterInfo,self.cacheFound=self.__read_header(self.cacheDir)
+        self.headerInfo,parameterInfo,self.cacheFound, self.cacheID = self.__read_header(self.cacheDir)
         # number of bytes each states section consists of:
         self.n_state_bytes=self.headerInfo['state_bytes_per_cycle']
         # size of variables used
@@ -821,8 +821,8 @@ class DBD(object):
         dbdheader=DBDHeader()
         factored=dbdheader.read_header(self.fp)
         # determine cache file name
-        tmp=dbdheader.info['sensor_list_crc'].lower()
-        cacheFilename=os.path.join(cacheDir,tmp+".cac")
+        cacheID = dbdheader.info['sensor_list_crc'].lower()
+        cacheFilename=os.path.join(cacheDir,cacheID+".cac")
         cacheFound=True # unless proven otherwise...
         parameter=[]
         if factored==1:
@@ -845,7 +845,7 @@ class DBD(object):
                 parameter=dbdheader.read_cache(self.fp)
         self.fp_binary_start=self.fp.tell() # marks the start of the
                                             # binary part of the file
-        return (dbdheader.info,parameter,cacheFound)
+        return (dbdheader.info,parameter,cacheFound, cacheID)
 
     def __get_by_read_per_byte(self,parameter):
         ''' method that reads the file byte by byte and processes
@@ -1055,15 +1055,13 @@ class MultiDBD(object):
         else:
             self.filenames=fns
 
-        self.__update_dbd_inventory(cacheDir)
-
         if complement_files:
             self.__add_paired_filenames()
-            self.__update_dbd_inventory(cacheDir)
 
         if complemented_files_only:
             self.pruned_files=self.__prune_unmatched(cacheDir)
-        #
+
+        self.__update_dbd_inventory(cacheDir)
         self.parameterNames=dict((k,self.__getParameterList(v)) \
                                      for k,v in self.dbds.items())
         self.parameterUnits=self.__getParameterUnits()
@@ -1378,26 +1376,22 @@ class MultiDBD(object):
 
     #### private methods
 
-    def __get_matching_fn(self,fn,format="base"):
-        fnbase = os.path.basename(fn)
-        extension = fnbase.split(os.path.extsep)[-1]
-        
-        if fn in [i.filename for i in self.dbds['eng']]:
-            searchSpace = 'sci'
-            matchingExtension = '%c%s'%(ord(extension[0])+1,extension[1:])
+    def __get_matching_fn(self, fn):
+        sci_extensions = ".ebd .tbd .nmd".split()
+        _, extension = os.path.splitext(fn)
+        matchingExtension = list(extension) # make the string mutable.
+        if extension not in sci_extensions:
+            matchingExtension[1] = chr(ord(extension[1])+1)
         else:
-            searchSpace = 'eng'
-            matchingExtension = '%c%s'%(ord(extension[0])-1,extension[1:])
-        if format=="base":
-            matchingFn = fnbase.replace(extension,matchingExtension)
-        else:
-            matchingFn = fn.replace(extension,matchingExtension)
-        return matchingFn, searchSpace
+            matchingExtension[1] = chr(ord(extension[1])-1)
+        matchingExtension = "".join(matchingExtension)    
+        matchingFn = fn.replace(extension,matchingExtension)
+        return matchingFn
 
     def __add_paired_filenames(self):
         to_add=[]
         for fn in self.filenames:
-            mfn,searchSpace=self.__get_matching_fn(fn,format="full_path")
+            mfn = self.__get_matching_fn(fn)
             if os.path.exists(mfn):
                 to_add.append(mfn)
         self.filenames+=to_add
@@ -1409,19 +1403,16 @@ class MultiDBD(object):
         if fn not in self.filenames:
             return None
         # ok, the file is in the cache, which implies it is in self.dbds too.
-        matchingFn,searchSpace=self.__get_matching_fn(fn,format="base")
-        r = None
-        for i in self.dbds[searchSpace]:
-            if os.path.basename(i.filename) == matchingFn:
-                r = i
-                break
-        return r
+        matchingFn=self.__get_matching_fn(fn)
+        if matchingFn in self.filenames:
+            return matchingFn
+        else:
+            return None
 
     def __prune(self,filelist, cacheDir=None):
         ''' prune all files in filelist.'''
         for tbr in filelist:
             self.filenames.remove(tbr)
-        self.__update_dbd_inventory(cacheDir)
     
     def __prune_unmatched(self, cacheDir=None):
         ''' prune all files which don't have a science/engineering partner 
@@ -1514,9 +1505,6 @@ class MultiDBD(object):
                 self.dbds['eng'].append(dbd)
         if len(self.dbds['sci'])+len(self.dbds['eng'])==0:
             raise DbdError(DBD_ERROR_ALL_FILES_BANNED, " (Read %d files.)"%(len(self.filenames)))
-        self.parameterNames=dict((k,self.__getParameterList(v)) \
-                                     for k,v in self.dbds.items())
-        self.parameterUnits=self.__getParameterUnits()
         self.filenames=filenames
     
     def __getParameterUnits(self):
@@ -1532,13 +1520,18 @@ class MultiDBD(object):
     def __getParameterList(self,dbds):
         if len(dbds)==0: # no parameters in here.
             return []
-        tmp=[]
-        for dbd in dbds:
-            for pn in dbd.parameterNames:
-                if pn not in tmp:
-                    tmp.append(pn)
-        tmp.sort()
-        return tmp
+        cacheIDs = []
+        for i, dbd in enumerate(dbds):
+            if i==0:
+                parameter_names = dbd.parameterNames.copy()
+                cacheIDs.append(dbd.cacheID)
+            elif not dbd.cacheID in cacheIDs:
+                for pn in dbd.parameterNames:
+                    if pn not in parameter_names:
+                        parameter_names.append(pn)
+                    cacheIDs.append(dbd.cacheID)
+        parameter_names.sort()
+        return parameter_names
 
                          
     def __worker(self,method,ft,*p,**kwds):
