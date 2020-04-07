@@ -692,7 +692,7 @@ class DBD(object):
         if len(sync_parameters)<2:
             raise ValueError('Expect at least two parameters.')
         if len(sync_parameters)==2 and (isinstance(sync_parameters[1], list) or isinstance(sync_parameters[1], tuple)):
-            # obselete calling signature.
+            # obsolete calling signature.
             logger.info("Calling signature of get_sync() has changed in version 0.4.0.")
             sync_parameters = [sync_parameters[0]] + sync_parameters[1]
         return self._get_sync(*sync_parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
@@ -1027,10 +1027,10 @@ class MultiDBD(object):
                  max_files=None, **kwds):
         if kwds.get('ensure_paired', None):
             complemented_files_only = kwds['ensure_paired']
-            logger.info("ensure_paired keyword is obselete as of version 0.4.0")
+            logger.info("ensure_paired keyword is obsolete as of version 0.4.0")
         if kwds.get('include_paired', None):
             complement_files = kwds['include_paired']
-            logger.info("include_paired keyword is obselete as of version 0.4.0")
+            logger.info("include_paired keyword is obsolete as of version 0.4.0")
             
         self.__ignore_cache=[]
         if cacheDir is None:
@@ -1196,7 +1196,7 @@ class MultiDBD(object):
         if len(parameters)<2:
             raise ValueError('Expect at least two parameters.')
         if len(parameters)==2 and (isinstance(parameters[1], list) or isinstance(parameters[1], tuple)):
-            # obselete calling signature.
+            # obsolete calling signature.
             logger.info("Calling signature of get_sync() has changed in version 0.4.0.")
             parameters = [parameters[0]] + parameters[1]
 
@@ -1281,8 +1281,6 @@ class MultiDBD(object):
         '''
         tmp = self.get_sync("sci_ctd41cp_timestamp", "sci_water_cond", "sci_water_temp",
                             "sci_water_pressure", *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
-        for i, v in enumerate(parameters):
-            print(i, v, tmp[i+5])
         _, tctd, C, T, P, *v = numpy.compress(tmp[2]>0, tmp, axis=1)
         return [tctd, C, T, P] + v
 
