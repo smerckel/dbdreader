@@ -414,12 +414,13 @@ class DBDPatternSelect(object):
                 dbd.close()
                 self.cache[t_open]=fn
                 
-    def __select(self,fns,t0,t1):
+    def __select(self,all_fns,t0,t1):
         open_times = numpy.array(list(self.cache.keys()))
         open_times = numpy.sort(open_times)
         selected_times = open_times.compress(numpy.logical_and(open_times>=t0,
-                                                          open_times<=t1))
-        fns = DBDList([self.cache[t] for t in selected_times])
+                                                               open_times<=t1))
+        fns = set([self.cache[t] for t in selected_times]).intersection(all_fns)
+        fns = DBDList(fns)
         fns.sort()
         return fns
 
@@ -1279,9 +1280,22 @@ class MultiDBD(object):
         .. versionadded:: 0.4.0
 
         '''
-        tmp = self.get_sync("sci_ctd41cp_timestamp", "sci_water_cond", "sci_water_temp",
-                            "sci_water_pressure", *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
-        _, tctd, C, T, P, *v = numpy.compress(tmp[2]>0, tmp, axis=1)
+        CTDparameters = ["sci_ctd41cp_timestamp", "sci_water_cond",
+                         "sci_water_temp", "sci_water_pressure"]
+        offset = len(CTDparameters) + 1 # because of m_present_time is
+                                        # also returned.
+        tmp = self.get_sync(*CTDparameters, *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+
+        condition = tmp[2]>0
+        if len(parameters):
+            # check for any leading or trailing nans in v, caused by
+            # interpolation:
+            #
+            # collapse v on one vector, and make a condition where the collapsed
+            # vector is nan
+            a = numpy.prod(tmp[offset:], axis=0)
+            condition &= numpy.isfinite(a)
+        _, tctd, C, T, P, *v = numpy.compress(condition, tmp, axis=1)
         return [tctd, C, T, P] + v
 
     def has_parameter(self,parameter):
