@@ -371,7 +371,7 @@ class DBDPatternSelect(object):
             t_start = numpy.min(list(self.cache.keys()))
         if t_end is None:
             t_end = numpy.max(list(self.cache.keys()))
-        bin_edges = numpy.arange(t_start, t_end+width, width)
+        bin_edges = numpy.arange(t_start, t_end+binsize, binsize)
         bins = [((left+right)/2, self.__select(fns, left, right))
                 for left, right in zip(bin_edges[0:-1], bin_edges[1:])]
         return bins
@@ -526,6 +526,13 @@ class DBD(object):
         self.parameterUnits=dict((i[1],i[2]) for i in parameterInfo)
         self.timeVariable=self.__set_timeVariable()
 
+    # def getpy(self, parameter):
+    #     ti = self.parameterNames.index(self.timeVariable)
+    #     vi = self.parameterNames.index(parameter)
+    #     self.ti = ti
+    #     self.vi =vi
+    #     return self.__get_by_read_per_byte(parameter)
+    
     def get_mission_name(self):
         ''' Returns the mission name such as micro.mi '''
         return self.headerInfo['mission_name'].lower()
@@ -762,16 +769,15 @@ class DBD(object):
         values = [numpy.array(r[number_of_parameters+i]) for i in idx_reorderd]
         # convert to decimal lat lon if applicable:
         for i, p in enumerate(parameters):
-            if self.__is_latlon_parameter(p):
-                if decimalLatLon:
-                    values[i] = toDec(values[i])
-                if discardBadLatLon:
-                    condition = values[i]<696960
-                    timestamps[i], values[i] = numpy.compress(condition, (timestamps[i], values[i]), axis=1)
-
             if return_nans:
                 idx = numpy.where(numpy.isclose(values[i],1e9))[0]
                 values[i][idx] = numpy.nan
+            if self.__is_latlon_parameter(p):
+                if decimalLatLon:
+                    values[i] = toDec(values[i])
+                if discardBadLatLon and not return_nans: #discards and return nans is not compatible.
+                    condition = values[i]<696960
+                    timestamps[i], values[i] = numpy.compress(condition, (timestamps[i], values[i]), axis=1)
         return timestamps, values
 
 
@@ -933,13 +939,13 @@ class DBD(object):
         bits_per_field=2
         mask=3
         bitshift=bits_per_byte-bits_per_field
-        fields_per_byte=bits_per_byte/bits_per_field
+        fields_per_byte=bits_per_byte//bits_per_field
         offset=0
         n=0
         vi=0
         offsets=[0 for i in range(len(reqd_variables))]
         state_bytes=self.fp.read(self.n_state_bytes)
-        for sb in bytearray(state_bytes):
+        for sb in state_bytes:
             for fld in range(fields_per_byte):
                 field=(sb>>bitshift) & mask
                 sb<<=2
@@ -967,11 +973,10 @@ class DBD(object):
             to a floating point.'''
         # the byte sequence read should be reversed and then unpacked.
         # this may be a costly operation...
-        bsr="".join([i for i in bs[::-1]])
         if len(bs)==4:
-            return struct.unpack("f",bsr)[0]
+            return struct.unpack("f",bs[::-1])[0]
         else:
-            return struct.unpack("d",bsr)[0]
+            return struct.unpack("d",bs[::-1])[0]
 
 
 class MultiDBD(object):
@@ -1111,8 +1116,8 @@ class MultiDBD(object):
             else:
                 positions.append(("eng", len(eng_variables)))
                 eng_variables.append(p)
-        kwds_list=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=return_nans)
-        kwds=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+        kwds=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=return_nans)
+
         if len(sci_variables)>=1: 
             r_sci = self.__worker("get", "sci", *sci_variables, **kwds)
         if len(eng_variables)>=1:
@@ -1286,6 +1291,8 @@ class MultiDBD(object):
                                         # also returned.
         tmp = self.get_sync(*CTDparameters, *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
 
+        # remove all time<=1 timestamps, as there can be nans here too.
+        tmp = numpy.compress(tmp[0]>1, tmp, axis=1)
         condition = tmp[2]>0
         if len(parameters):
             # check for any leading or trailing nans in v, caused by
@@ -1295,6 +1302,8 @@ class MultiDBD(object):
             # vector is nan
             a = numpy.prod(tmp[offset:], axis=0)
             condition &= numpy.isfinite(a)
+        # ensure monotonicity in time
+        condition &= numpy.gradient(tmp[1]) !=0 
         _, tctd, C, T, P, *v = numpy.compress(condition, tmp, axis=1)
         return [tctd, C, T, P] + v
 
@@ -1556,6 +1565,8 @@ class MultiDBD(object):
             if i in self.__ignore_cache:
                 continue
             m = dict(get=i._get, get_sync=i.get_sync, get_xy=i.get_xy)
+            if method in "get_sync get_xy".split(): # these methods don't support the return nans option.
+                kwds.pop("return_nans")
             try:
                 t, v = m[method](*p, **kwds)
             except DbdError as e:
