@@ -7,9 +7,9 @@ Change log
 ----------
 Version 0.4.5
 
-# dbdreader now ignores the first line of data in each binary file
-# dbdreader checks whether the value of the parameters read are
-finite, ignoring them if they are not.
+* dbdreader now ignores the first line of data in each binary file
+  
+* dbdreader checks whether the value of the parameters read are finite, ignoring them if they are not.
 
 
 Synopsis
