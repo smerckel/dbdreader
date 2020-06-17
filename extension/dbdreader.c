@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "dbdreader.h"
 
@@ -121,6 +122,7 @@ static void get_by_read_per_byte(int nti,
   int *read_vi;
 
   int min_offset_value;
+  byte writing_first_line = 1;
 
   if (return_nans==1)
     min_offset_value=-2; // include the notfound/samevalue/update
@@ -176,15 +178,21 @@ static void get_by_read_per_byte(int nti,
 	  read_result[i]=FILLVALUE;
 	}
       }
-      for(i=0; i<nv; i++){
-	if ((offsets[i]>=min_offset_value) && (i!=nti)){
-	  j=i-(int)(i>nti);
-	  /* add read_result to result */
-	  add_to_array(read_result[nti],
-		       read_result[i],
-		       result[j],ndata[j]);
-	  ndata[j]+=1;
+      
+      if (!writing_first_line){
+	for(i=0; i<nv; i++){
+	  if ((offsets[i]>=min_offset_value) && (i!=nti) && isfinite(read_result[i])){
+	    j=i-(int)(i>nti);
+	    /* add read_result to result */
+	    add_to_array(read_result[nti],
+			 read_result[i],
+			 result[j],ndata[j]);
+	    ndata[j]+=1;
+	  }
 	}
+      }
+      else {
+	writing_first_line=0;
       }
     }
     /* jump to the next state block */
