@@ -1303,7 +1303,8 @@ class MultiDBD(object):
             a = numpy.prod(tmp[offset:], axis=0)
             condition &= numpy.isfinite(a)
         # ensure monotonicity in time
-        condition &= numpy.gradient(tmp[1]) !=0 
+        dt = numpy.hstack( ([1], numpy.diff(tmp[1])) )
+        condition &= dt>0
         _, tctd, C, T, P, *v = numpy.compress(condition, tmp, axis=1)
         return [tctd, C, T, P] + v
 

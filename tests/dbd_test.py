@@ -8,7 +8,13 @@ import dbdreader
 #dbd=dbdreader.MultiDBD(pattern=pattern, cacheDir='../data/notherecac')
 #depth=dbd.get("m_depth")
 
-dbd=dbdreader.DBD("/home/lucas/gliderdata/helgoland201407/hd/sebastian-2014-227-00-161.dbd")
+dbd=dbdreader.MultiDBD(pattern="/home/lucas/gliderdata/helgoland201407/hd/sebastian-2014-227-00-16?.?bd")
+x = dbd.get_CTD_sync()
+
+S = 29407.397545337677
+print(x[1].sum()-S)
+Q
+
 ballast, pitch, alt, roll= dbd.get("m_ballast_pumped", "m_pitch","m_altitude", "m_roll" )
 Q
 
