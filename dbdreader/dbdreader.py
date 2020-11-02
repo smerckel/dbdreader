@@ -545,7 +545,7 @@ class DBD(object):
         ''' Closes a DBD file '''
         return self.fp.close()
 
-    def get(self,*parameters,decimalLatLon=True,discardBadLatLon=True, return_nans=False):
+    def get(self,*parameters,decimalLatLon=True,discardBadLatLon=True, return_nans=False, bounds=(-360, 360)):
         '''Returns time and parameter data for requested parameter 
         
         This method reads the requested parameter, and convert it
@@ -563,6 +563,9 @@ class DBD(object):
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
+
+        bounds : tuple, optional
+            (-360, 360) (default) lower and upper boundaries for valid latitude and longitude values.
         
         return_nans : bool, optional
             if True, nans are returned for timestamps the variable was not updated or changed.
@@ -580,7 +583,8 @@ class DBD(object):
 
         '''
         timestamps, values =  self._get(*parameters, decimalLatLon=decimalLatLon,
-                                        discardBadLatLon=discardBadLatLon, return_nans=return_nans)
+                                        discardBadLatLon=discardBadLatLon, return_nans=return_nans,
+                                        bounds=bounds)
         r = [(t,v) for t, v in zip(timestamps, values)]
         
         if len(parameters)==1:
@@ -589,7 +593,7 @@ class DBD(object):
             return r
 
     def get_list(self,*parameters,decimalLatLon=True,discardBadLatLon=True,
-                 return_nans=False):
+                 return_nans=False, bounds=(-360, 360)):
         ''' Returns time and value tuples for a list of requested parameters
         
 
@@ -610,6 +614,9 @@ class DBD(object):
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
+
+        bounds : tuple, optional
+            (-360, 360) (default) lower and upper boundaries for valid latitude and longitude values.
         
         return_nans : bool
             If True, nan's are returned for those timestamps where no new value is available.
@@ -626,9 +633,10 @@ class DBD(object):
             This function will be removed in a future version. Use .get() instead.
         '''
         logger.info("get_list has been deprecated in version 0.4.0 and may be removed in the future. Use get instead.")
-        return self.get(*parameters,decimalLatLon=decimalLatLon ,discardBadLatLon=discardBadLatLon , return_nans=return_nans)
+        return self.get(*parameters,decimalLatLon=decimalLatLon ,discardBadLatLon=discardBadLatLon,
+                        return_nans=return_nans, bounds=bounds)
         
-    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True):
+    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True, bounds=(-360, 360)):
         ''' Returns values of parameter_x and paramter_y
 
         For parameters parameter_x and parameter_y this method returns a tuple 
@@ -649,6 +657,9 @@ class DBD(object):
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
+
+        bounds : tuple, optional
+            (-360, 360) (default) lower and upper boundaries for valid latitude and longitude values.
         
         Returns
         -------
@@ -656,11 +667,11 @@ class DBD(object):
             tuple of value vectors
         '''
         _, x, y = self._get_sync(parameter_x, parameter_y,
-                                 decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+                                 decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, bounds=bounds)
         return x, y
 
 
-    def get_sync(self, *sync_parameters, decimalLatLon=True, discardBadLatLon=True):
+    def get_sync(self, *sync_parameters, decimalLatLon=True, discardBadLatLon=True, bounds=(-360, 360)):
         '''Returns a list of values from parameters, all interpolated to the 
             time base of the first paremeter
 
@@ -679,6 +690,9 @@ class DBD(object):
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
+
+        bounds : tuple, optional
+            (-360, 360) (default) lower and upper boundaries for valid latitude and longitude values.
         
         Returns
         -------
@@ -703,7 +717,8 @@ class DBD(object):
             # obsolete calling signature.
             logger.info("Calling signature of get_sync() has changed in version 0.4.0.")
             sync_parameters = [sync_parameters[0]] + sync_parameters[1]
-        return self._get_sync(*sync_parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+        return self._get_sync(*sync_parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
+                              bounds=bounds)
 
     def has_parameter(self,parameter):
         ''' Check wheter this file contains parameter
@@ -735,7 +750,7 @@ class DBD(object):
             return 'sci_m_present_time'
 
 
-    def _get(self,*parameters,decimalLatLon=True,discardBadLatLon=False, return_nans=False):
+    def _get(self,*parameters,decimalLatLon=True,discardBadLatLon=False,return_nans=False,bounds=(-360, 360)):
         ''' returns time and parameter data for requested parameter '''
         if not self.cacheFound:
             cache_file=self.headerInfo['sensor_list_crc']
@@ -776,12 +791,12 @@ class DBD(object):
                 if decimalLatLon:
                     values[i] = toDec(values[i])
                 if discardBadLatLon and not return_nans: #discards and return nans is not compatible.
-                    condition = values[i]<696960
+                    condition = numpy.logical_and(values[i] >= bounds[0], values[i] <= bounds[1])
                     timestamps[i], values[i] = numpy.compress(condition, (timestamps[i], values[i]), axis=1)
         return timestamps, values
 
 
-    def _get_sync(self,*params, decimalLatLon=True,discardBadLatLon=True):
+    def _get_sync(self,*params, decimalLatLon=True,discardBadLatLon=True, bounds=(-360, 360)):
         '''
             x: dbdparameter name
 
@@ -798,7 +813,8 @@ class DBD(object):
             
             get_sync('m_water_pressure','m_water_cond','m_water_temp')
         '''
-        timestamps, values = self._get(*params,decimalLatLon=decimalLatLon,discardBadLatLon=discardBadLatLon)
+        timestamps, values = self._get(*params,decimalLatLon=decimalLatLon,discardBadLatLon=discardBadLatLon,
+                                       bounds=bounds)
         t = timestamps[0]
         if t.shape[0] == 0:
             raise DbdError(DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO)
@@ -1077,7 +1093,7 @@ class MultiDBD(object):
         self.set_time_limits()
     
 ##### public methods
-    def get(self, *parameters, decimalLatLon=True, discardBadLatLon=True, return_nans=False):
+    def get(self, *parameters, decimalLatLon=True, discardBadLatLon=True, return_nans=False, bounds=(-360, 360)):
         ''' Returns time and value tuple(s) for requested parameter(s)
         
         This method returns time and values tuples for a list of parameters.
@@ -1096,6 +1112,9 @@ class MultiDBD(object):
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
+
+        bounds : tuple, optional
+            (-360, 360) (default) lower and upper boundaries for valid latitude and longitude values.
         
         return_nans : bool
             If True, nan's are returned for those timestamps where no new value is available.
@@ -1116,7 +1135,8 @@ class MultiDBD(object):
             else:
                 positions.append(("eng", len(eng_variables)))
                 eng_variables.append(p)
-        kwds=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=return_nans)
+        kwds=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=return_nans,
+                  bounds=bounds)
 
         if len(sci_variables)>=1: 
             r_sci = self.__worker("get", "sci", *sci_variables, **kwds)
@@ -1133,7 +1153,7 @@ class MultiDBD(object):
         else:
             return r
 
-    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True):
+    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True, bounds=(-360, 360)):
         ''' Returns values of parameter_x and paramter_y
 
         For parameters parameter_x and parameter_y this method returns a tuple 
@@ -1154,16 +1174,20 @@ class MultiDBD(object):
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
+
+        bounds : tuple, optional
+            (-360, 360) (default) lower and upper boundaries for valid latitude and longitude values.
         
         Returns
         -------
         (ndarray, ndarray)
             tuple of value vectors
         '''    
-        _, x, y = self.get_sync(parameter_x, parameter_y, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+        _, x, y = self.get_sync(parameter_x, parameter_y, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
+                                bounds=bounds)
         return x, y
     
-    def get_sync(self,*parameters,decimalLatLon=True, discardBadLatLon=True):
+    def get_sync(self,*parameters,decimalLatLon=True, discardBadLatLon=True, bounds=(-360, 360)):
         ''' Returns a list of values from parameters, all interpolated to the 
             time base of the first paremeter
 
@@ -1182,6 +1206,9 @@ class MultiDBD(object):
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
+
+        bounds : tuple, optional
+            (-360, 360) (default) lower and upper boundaries for valid latitude and longitude values.
         
         Returns
         -------
@@ -1206,7 +1233,8 @@ class MultiDBD(object):
             logger.info("Calling signature of get_sync() has changed in version 0.4.0.")
             parameters = [parameters[0]] + parameters[1]
 
-        tv = self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=False)
+        tv = self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=False,
+                      bounds=bounds)
         t = tv[0][0]
         r = []
         for i, (_t, _v) in enumerate(tv):
@@ -1217,7 +1245,7 @@ class MultiDBD(object):
                 r.append(numpy.interp(t, _t, _v, left=numpy.nan, right=numpy.nan))
         return r
     
-    def get_list(self,*parameters,decimalLatLon=True, discardBadLatLon=True, return_nans=False):
+    def get_list(self,*parameters,decimalLatLon=True, discardBadLatLon=True, return_nans=False, bounds=(-360, 360)):
         ''' Returns time and value tuples for a list of requested parameters
         
 
@@ -1238,6 +1266,9 @@ class MultiDBD(object):
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
+
+        bounds : tuple, optional
+            (-360, 360) (default) lower and upper boundaries for valid latitude and longitude values.
         
         return_nans : bool
             If True, nan's are returned for those timestamps where no new value is available.
@@ -1254,10 +1285,11 @@ class MultiDBD(object):
             get_list() is deprecated, and will be removed in a future version. Use .get() instead.
         '''
         logger.info("get_list has been deprecated in version 0.4.0 and may be removed in the future. Use get instead.")
-        return self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=return_nans)
+        return self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
+                        return_nans=return_nans, bounds=bounds)
 
 
-    def get_CTD_sync(self, *parameters, decimalLatLon=True, discardBadLatLon=True):
+    def get_CTD_sync(self, *parameters, decimalLatLon=True, discardBadLatLon=True, bounds=(-360, 360)):
         '''Returns a list of values from CTD and optionally other parameters, 
         all interpolated to the time base of the CTD timestamp.
 
@@ -1272,6 +1304,9 @@ class MultiDBD(object):
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
+
+        bounds : tuple, optional
+            (-360, 360) (default) lower and upper boundaries for valid latitude and longitude values.
         
         Returns
         -------
@@ -1289,7 +1324,8 @@ class MultiDBD(object):
                          "sci_water_temp", "sci_water_pressure"]
         offset = len(CTDparameters) + 1 # because of m_present_time is
                                         # also returned.
-        tmp = self.get_sync(*CTDparameters, *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+        tmp = self.get_sync(*CTDparameters, *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
+                            bounds=bounds)
 
         # remove all time<=1 timestamps, as there can be nans here too.
         tmp = numpy.compress(tmp[0]>1, tmp, axis=1)
