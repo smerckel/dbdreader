@@ -14,6 +14,35 @@ import logging
 logger = logging.getLogger(os.path.basename(__file__))
 logging.basicConfig(level=logging.INFO)
 
+LATLON_PARAMS = ["m_lat",
+                 "m_lon",
+                 "c_wpt_lat",
+                 "c_wpt_lon",
+                 "x_last_wpt_lat",
+                 "x_last_wpt_lon",
+                 "m_gps_lat",
+                 "m_gps_lon",
+                 "u_lat_goto_l99",
+                 "u_lon_goto_l99",
+                 "m_last_gps_lat_1",
+                 "m_last_gps_lon_1",
+                 "m_last_gps_lat_2",
+                 "m_last_gps_lon_2",
+                 "m_last_gps_lat_3",
+                 "m_last_gps_lon_3",
+                 "m_last_gps_lat_4",
+                 "m_last_gps_lon_4",
+                 "m_gps_ignored_lat",
+                 "m_gps_ignored_lon",
+                 "m_gps_invalid_lat",
+                 "m_gps_invalid_lon",
+                 "m_gps_toofar_lat",
+                 "m_gps_toofar_lon",
+                 "xs_lat",
+                 "xs_lon",
+                 "s_ini_lat",
+                 "s_ini_lon"]
+
 # make sure we interpret timestamps in the english language
 try:
     locale.setlocale(locale.LC_ALL, 'en_US')
@@ -508,6 +537,7 @@ class DBD(object):
     cachedDir: str or None, optional
         path to CAC file cache directory. If None, the default path is used.
     '''
+
     def __init__(self,filename,cacheDir=None):
 
         self.filename=filename
@@ -773,11 +803,16 @@ class DBD(object):
                 idx = numpy.where(numpy.isclose(values[i],1e9))[0]
                 values[i][idx] = numpy.nan
             if self.__is_latlon_parameter(p):
+                if discardBadLatLon and not return_nans: #discards and return nans is not compatible.
+                    # p is either a latitude or longitude parameter. Check now which one it is.
+                    if "lat" in p: 
+                        value_limit = 9000 # nmea style
+                    else:
+                        value_limit = 18000 # nmea style
+                    condition = numpy.logical_and(values[i]>=-value_limit, values[i]<=value_limit)
+                    timestamps[i], values[i] = numpy.compress(condition, (timestamps[i], values[i]), axis=1)
                 if decimalLatLon:
                     values[i] = toDec(values[i])
-                if discardBadLatLon and not return_nans: #discards and return nans is not compatible.
-                    condition = values[i]<696960
-                    timestamps[i], values[i] = numpy.compress(condition, (timestamps[i], values[i]), axis=1)
         return timestamps, values
 
 
@@ -817,10 +852,7 @@ class DBD(object):
         return validParameters
 
     def __is_latlon_parameter(self,x):
-        if 'lat' in x or 'lon' in x:
-            return True
-        else:
-            return False
+        return x in LATLON_PARAMS
 
     def __read_header(self, cacheDir):
         if not os.path.exists(cacheDir):
