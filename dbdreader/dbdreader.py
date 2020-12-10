@@ -11,6 +11,9 @@ from calendar import timegm
 import _dbdreader
 import logging
 
+# make sure we interpret timestamps in the english language
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+
 logger = logging.getLogger(os.path.basename(__file__))
 logging.basicConfig(level=logging.INFO)
 
@@ -43,11 +46,7 @@ LATLON_PARAMS = ["m_lat",
                  "s_ini_lat",
                  "s_ini_lon"]
 
-# make sure we interpret timestamps in the english language
-#try:
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-#except:
-#    pass # building on read-the-docs fails because of this.
+
 
 def strptimeToEpoch(datestr, fmt):
     ''' Converts datestr into seconds
