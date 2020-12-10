@@ -44,10 +44,10 @@ LATLON_PARAMS = ["m_lat",
                  "s_ini_lon"]
 
 # make sure we interpret timestamps in the english language
-try:
-    locale.setlocale(locale.LC_ALL, 'en_US')
-except:
-    pass # building on read-the-docs fails because of this.
+#try:
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+#except:
+#    pass # building on read-the-docs fails because of this.
 
 def strptimeToEpoch(datestr, fmt):
     ''' Converts datestr into seconds
