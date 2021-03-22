@@ -2,8 +2,10 @@ import numpy as np
 import dbdreader
 
 # open a given file
-
-dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd")
+# Note that the default location for cache files ($HOME/.dbdreader) is
+# overriden.
+dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd",
+                  cacheDir='../data/cac')
 
 # print what parameters are available:
 

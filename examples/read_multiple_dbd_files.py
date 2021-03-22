@@ -34,8 +34,10 @@ import dbdreader
 
 
 # open some files, using a pattern
-
-dbd=dbdreader.MultiDBD(pattern="../data/amadeus*.[st]bd")
+# Note that the default location for cache files ($HOME/.dbdreader) is
+# overriden.
+dbd=dbdreader.MultiDBD(pattern="../data/amadeus*.[st]bd",
+                       cacheDir='../data/cac')
 
 # print what parameters are available:
 print("we the following science parameters:")
