@@ -11,8 +11,7 @@ Version 0.4.7
 
 Version 0.4.6
 
-* Added  get_CTD_sync, a convenience method to retrieve CTD data, and other parameters mapped on the 
-CTD time stamps. Also ensures time stamps are monotonically increasing.
+* Added  get_CTD_sync, a convenience method to retrieve CTD data, and other parameters mapped on the CTD time stamps. Also ensures time stamps are monotonically increasing.
 
 * Adds bounds to what values of latitude and longitude are considered valid.
 
