@@ -5,6 +5,17 @@ DBDREADER
 
 Change log
 ----------
+Version 0.4.7
+
+* Bug fix for reading dbd files on Windows.
+
+Version 0.4.6
+
+* Added  get_CTD_sync, a convenience method to retrieve CTD data, and other parameters mapped on the 
+CTD time stamps. Also ensures time stamps are monotonically increasing.
+
+* Adds bounds to what values of latitude and longitude are considered valid.
+
 Version 0.4.5
 
 * dbdreader now ignores the first line of data in each binary file
