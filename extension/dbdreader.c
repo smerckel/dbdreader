@@ -38,7 +38,7 @@ FILE *open_dbd_file(char *filename)
 {
   FILE *fd;
 
-  fd=fopen(filename,"r");
+  fd=fopen(filename,"rb");
 
   return(fd);
 }
