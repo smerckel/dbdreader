@@ -9,6 +9,8 @@ Version 0.4.7
 
 * Bug fix for reading dbd files on Windows.
 
+* a wheel provided for CPython 3.9 on Windows 64 bit.  
+
 Version 0.4.6
 
 * Added  get_CTD_sync, a convenience method to retrieve CTD data, and other parameters mapped on the CTD time stamps. Also ensures time stamps are monotonically increasing.
@@ -43,6 +45,21 @@ install python3-devel``.
 Alternatively, dbdreader can also be installed from PyPi, using ``pip3
 install dbdreader``.
 
+
+Installation on Windows
+-----------------------
+If you want to install dbdreader from source, you will need a C
+compiler as well to compile the C-extension. Besides the Python
+environment you will need to install the Microsoft Visual Studio
+Compiler. The community edition will do. When installing MVSC, make sure
+you tick the box *python development* during the setup. Once installed
+dbdreader can be installed, and the C-extension should be compiled
+automatically.
+
+Installiation using pip, for example as in ``py -m pip install
+dbdreader`` also requires the C compiler, except if you are using
+Python version 3.9, for which a wheel is provided.
+
 Documentation
 -------------
 Comprehensive documentation is provided at https://dbdreader.readthedocs.io/en/latest/
@@ -56,7 +73,7 @@ machinery to read a single dbd file. The most commonly used methods
 are:
 
 * get(parametername)
-* get_sync(parametername, list_of_other_parameternames)
+* get_sync(parametername, *other_parameternames)
 
 The first method returs a tuple with time and values for requested
 parameter. The second method, returns a tuple with time and values of
