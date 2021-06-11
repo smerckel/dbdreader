@@ -395,6 +395,9 @@ class DBDPatternSelect(object):
         ValueError if nor pattern or filenames is given.
         '''
         fns = self.get_filenames(pattern, filenames)
+        if not fns:
+            raise DbdError(DBD_ERROR_NO_FILES_FOUND,
+                           f"No files matched search pattern {pattern}.")
         if t_start is None:
             t_start = numpy.min(list(self.cache.keys()))
         if t_end is None:

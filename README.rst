@@ -57,8 +57,12 @@ dbdreader can be installed, and the C-extension should be compiled
 automatically.
 
 Installiation using pip, for example as in ``py -m pip install
-dbdreader`` also requires the C compiler, except if you are using
-Python version 3.9, for which a wheel is provided.
+dbdreader`` also requires the C compiler. For Python version 3.9,
+however, a wheel is provided, which can be installed adding the option
+``--only-binary :all:`` to the pip command: ::
+
+  $ pip install --only-binary :all: dbdreader
+
 
 Documentation
 -------------
