@@ -146,7 +146,7 @@ static double bswap_d(double val) {
 static unsigned char read_known_cycle(FILE *fd)
 {
   int pos = ftell(fd);
-  fseek(fd, pos + 2, SEEK_SET);
+  fseek(fd, pos + 2, 0);
 
   // the first 2 bytes are:
   // s                  Cycle Tag (this is an ASCII s char).
@@ -164,7 +164,7 @@ static unsigned char read_known_cycle(FILE *fd)
   //     123456789.12345    Eight byte double.
   // but by this point we already know the byte order, so just read the chars
   pos = ftell(fd);
-  fseek(fd, pos + 13, SEEK_SET);
+  fseek(fd, pos + 13, 0);
 
   // if we can successfully read the value, the glider byte order == host order
   if (two_byte_int == 4660) {
