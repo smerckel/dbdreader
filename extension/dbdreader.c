@@ -4,6 +4,17 @@
 
 #include "dbdreader.h"
 
+/*
+  bswap_ = functions for swapping the byte-order of shorts, floats and doubles
+*/
+
+static short bswap_s(short val);
+
+static float bswap_f(float val);
+
+static double bswap_d(double val);
+
+static unsigned char read_known_cycle(FILE *fd);
 
 static int read_state_bytes(int *vi,
 			    int nvt,
@@ -20,7 +31,7 @@ static void get_by_read_per_byte(int ti,
 				 int *ndata);
 
 static double read_sensor_value(FILE *fd,
-				int bs);
+				int bs, unsigned char flip);
 
 static void add_to_array(double t,
 			 double x,
@@ -99,6 +110,69 @@ double ***get_variable(int ti,
 
 /*   PRIVATE FUNCTIONS  */
 
+static short bswap_s(short val) {
+    int size = sizeof(short);
+    short retVal;
+    char *pVal = (char*) &val;
+    char *pRetVal = (char*)&retVal;
+    for(int i=0; i<size; i++) {
+        pRetVal[size-1-i] = pVal[i];
+    }
+    return retVal;
+}
+
+static float bswap_f(float val) {
+    int size = sizeof(float);
+    float retVal;
+    char *pVal = (char*) &val;
+    char *pRetVal = (char*)&retVal;
+    for(int i=0; i<size; i++) {
+        pRetVal[size-1-i] = pVal[i];
+    }
+    return retVal;
+}
+
+static double bswap_d(double val) {
+    int size = sizeof(double);
+    double retVal;
+    char *pVal = (char*) &val;
+    char *pRetVal = (char*)&retVal;
+    for(int i=0; i<size; i++) {
+        pRetVal[size-1-i] = pVal[i];
+    }
+    return retVal;
+}
+
+static unsigned char read_known_cycle(FILE *fd)
+{
+  int pos = ftell(fd);
+  fseek(fd, pos + 2, SEEK_SET);
+
+  // the first 2 bytes are:
+  // s                  Cycle Tag (this is an ASCII s char).
+  // a                  One byte integer.
+
+  // followed by, the value we want to check for:
+  // 0x1234             Two byte integer.
+  // which is 4660
+  unsigned short two_byte_int;
+  fread((void*)(&two_byte_int), sizeof(two_byte_int), 1, fd);
+  //printf("two_byte_int : %d\n", two_byte_int);
+
+  // the next 12 bytes are:
+  //     123.456            Four byte float.
+  //     123456789.12345    Eight byte double.
+  // but by this point we already know the byte order, so just read the chars
+  pos = ftell(fd);
+  fseek(fd, pos + 13, SEEK_SET);
+
+  // if we can successfully read the value, the glider byte order == host order
+  if (two_byte_int == 4660) {
+    return 0;
+  }
+  // otherwise, we need to flip shorts, floats and doubles when reading
+  return 1;
+}
 
 static void get_by_read_per_byte(int nti,
 				 int *vi,
@@ -151,8 +225,11 @@ static void get_by_read_per_byte(int nti,
   
   /* start where binary data begin: */
   fseek(FileInfo.fd,
-  	FileInfo.bin_offset+17,0);
-  
+  	FileInfo.bin_offset,0);
+
+  /* extract byte order from known cycle */
+  unsigned char flip = read_known_cycle(FileInfo.fd);
+
   while (1){
     r=read_state_bytes(vi,nv,FileInfo,offsets,&chunksize);
     fp_current=ftell(FileInfo.fd);
@@ -164,7 +241,7 @@ static void get_by_read_per_byte(int nti,
 	  fseek(FileInfo.fd,
 		fp_current+offsets[i],0);
 	  read_result[i]=read_sensor_value(FileInfo.fd,
-					   byteSizes[i]);
+					   byteSizes[i], flip);
 	  memory_result[i]=read_result[i];
 	}
 	else if (offsets[i]==-1){
@@ -291,36 +368,38 @@ static int contains(int q,
 }
 
 static double read_sensor_value(FILE *fd,
-				int bs)
+				int bs, unsigned char flip)
 {
   signed char   sc;
-  unsigned char   uc;
-  to_float_t F;
-  to_double_t D;
+  signed short  ss;
+  float  sf;
+  double sd;
   double value;
-  int i;
   switch (bs){
   case sizeof(char):
-    sc=(signed char) getc(fd);
+    fread((void*)(&sc), sizeof(sc), 1, fd);
     value = (double) sc;
     break;
-  case sizeof(float):
-    F.n=0;
-    for (i=0;i<bs;i++){
-      F.n<<=8;
-      uc=getc(fd);
-      F.n |= uc;
+  case sizeof(short):
+    fread((void*)(&ss), sizeof(ss), 1, fd);
+    if (flip == 1) {
+      ss = bswap_s(ss);
     }
-    value=F.x;
+    value = (double) ss;
+    break;
+  case sizeof(float):
+    fread((void*)(&sf), sizeof(sf), 1, fd);
+    if (flip == 1) {
+       sf = bswap_f(sf);
+    }
+    value = (double) sf;
     break;
   case sizeof(double):
-    D.n=0;
-    for (i=0;i<bs;i++){
-      D.n<<=8;
-      uc=getc(fd);
-      D.n |= uc; 
+    fread((void*)(&sd), sizeof(sd), 1, fd);
+    if (flip == 1) {
+      sd = bswap_d(sd);
     }
-    value=D.x;
+    value = sd;
     break;
   default:
     printf("Should not be here!!!!\n");
