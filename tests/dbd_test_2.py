@@ -11,7 +11,7 @@ os.chdir(
 )
 
 
-print('Big endian file (Slogum G2, Persistor - Motorola MC68CK332)')
+print('Big endian file (Slocum G2, Persistor - Motorola MC68CK332)')
 dbds = glob.glob('../data/amadeus*bd')
 dbd = dbdreader.MultiDBD(filenames=dbds, cacheDir='../data/cac')
 timestamps, data = dbd.get('m_battery')
@@ -34,3 +34,27 @@ print('timestamp max =', numpy.max(timestamps2))
 print('data min =', numpy.min(data2))
 print('data avg =', numpy.mean(data2))
 print('data max =', numpy.max(data2))
+print()
+
+
+cac_dir = '/tmp/cac2'
+glider_dirs = glob.glob('/tmp/gliders2/unit*')
+for glider_dir in glider_dirs:
+    glider = os.path.basename(glider_dir)
+    dbds = glob.glob(
+        os.path.join(glider_dir, 'from-glider', 'unit*bd')
+    )
+    if len(dbds) == 0:
+        continue
+    print(glider)
+    dbd = dbdreader.MultiDBD(
+        filenames=dbds, cacheDir=cac_dir
+    )
+    timestamps, data = dbd.get('m_battery')
+    print('timestamp min =', numpy.min(timestamps))
+    print('timestamp avg =', numpy.mean(timestamps))
+    print('timestamp max =', numpy.max(timestamps))
+    print('data min =', numpy.min(data))
+    print('data avg =', numpy.mean(data))
+    print('data max =', numpy.max(data))
+    print()
