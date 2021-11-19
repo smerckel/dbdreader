@@ -145,12 +145,12 @@ static double bswap_d(double val) {
 
 static unsigned char read_known_cycle(FILE *fd)
 {
-  int pos = ftell(fd);
-  fseek(fd, pos + 2, 0);
-
   // the first 2 bytes are:
   // s                  Cycle Tag (this is an ASCII s char).
   // a                  One byte integer.
+  // but just skip over them
+  int pos = ftell(fd);
+  fseek(fd, pos + 2, 0);
 
   // followed by, the value we want to check for:
   // 0x1234             Two byte integer.
@@ -162,7 +162,7 @@ static unsigned char read_known_cycle(FILE *fd)
   // the next 12 bytes are:
   //     123.456            Four byte float.
   //     123456789.12345    Eight byte double.
-  // but by this point we already know the byte order, so just read the chars
+  // but by this point we already know the byte order, so just skip the bytes
   pos = ftell(fd);
   fseek(fd, pos + 13, 0);
 
