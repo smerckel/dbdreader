@@ -6,3 +6,7 @@ venv/
 .idea/
 # Sandbox module
 sandbox.py
+# Locally built and installed module
+build/
+dbdreader.egg-info/
+dist/
