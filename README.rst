@@ -5,6 +5,12 @@ DBDREADER
 
 Change log
 ----------
+Version 0.4.8
+
+* Support for reading  *[demnst]bd files from G3S gliders (issue #6). (Thanks to Owain Jones)
+* Bug fix for correctly throwing an exception when cache file is
+  missing(issue #5)
+
 Version 0.4.7
 
 * Bug fix for reading dbd files on Windows.
