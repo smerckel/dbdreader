@@ -8,6 +8,8 @@ import glob
 import re
 import datetime
 from calendar import timegm
+from collections import defaultdict
+from itertools import chain
 import _dbdreader
 import logging
 
@@ -442,7 +444,6 @@ class DBDPatternSelect(object):
             if fn not in cached_filenames:
                 dbd=DBD(fn, cacheDir)
                 t_open=dbd.get_fileopen_time()
-                dbd.close()
                 self.cache[t_open]=fn
                 
     def __select(self,all_fns,t0,t1):
@@ -540,7 +541,7 @@ class DBD(object):
         path to CAC file cache directory. If None, the default path is used.
     '''
 
-    def __init__(self,filename,cacheDir=None):
+    def __init__(self,filename,cacheDir=None, raise_exception_if_cac_not_found=True):
 
         self.filename=filename
         self.fp=open(filename,'br')
@@ -557,6 +558,9 @@ class DBD(object):
         self.parameterNames=[i[1] for i in parameterInfo]
         self.parameterUnits=dict((i[1],i[2]) for i in parameterInfo)
         self.timeVariable=self.__set_timeVariable()
+        self.close()
+        if not self.cacheFound and raise_exception_if_cac_not_found:
+            raise DbdError(DBD_ERROR_CACHE_NOT_FOUND, f" ({self.cacheID}.cac)")
 
     # def getpy(self, parameter):
     #     ti = self.parameterNames.index(self.timeVariable)
@@ -1543,22 +1547,38 @@ class MultiDBD(object):
     def __update_dbd_inventory(self, cacheDir):
         self.dbds={'eng':[],'sci':[]}
         filenames=list(self.filenames)
+        missing_cacheIDs = []
         for fn in self.filenames:
-            dbd=DBD(fn, cacheDir)
+            dbd=DBD(fn, cacheDir, raise_exception_if_cac_not_found=False)
+            if not dbd.cacheFound:
+                missing_cacheIDs.append(dbd.cacheID) # add missing cacheId for and check later if we need it
             mission_name=dbd.get_mission_name()
-            dbd.close()
             if mission_name in self.banned_missions:
                 filenames.remove(fn)
                 continue
             if self.missions and mission_name not in self.missions:
                 filenames.remove(fn)
                 continue
+            # so we decided to keep the file. Continue only when the cache file was found.
             if mission_name not in self.mission_list:
                 self.mission_list.append(mission_name)
             if self.isScienceDataFile(fn):
                 self.dbds['sci'].append(dbd)
             else:
                 self.dbds['eng'].append(dbd)
+        # Now check if any of the remaining files depends on a missing cache file.
+        problems = defaultdict(list)
+        for dbd in chain(*self.dbds.values()):
+            if dbd.cacheID in missing_cacheIDs:
+                problems[dbd.cacheID].append(dbd.filename)
+        if problems:
+            mesg = "\n" # craft some useful error message
+            for k, v in problems.items():
+                mesg+=f"{k} : {v[0]}"
+                if len(v)>1:
+                    mesg += f" + {len(v)-1} more files."
+                mesg+="\n"
+            raise DbdError(DBD_ERROR_CACHE_NOT_FOUND, mesg)
         if len(self.dbds['sci'])+len(self.dbds['eng'])==0:
             raise DbdError(DBD_ERROR_ALL_FILES_BANNED, " (Read %d files.)"%(len(self.filenames)))
         self.filenames=filenames

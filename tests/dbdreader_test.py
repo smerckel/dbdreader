@@ -35,7 +35,6 @@ class Dbdreader_DBD_test(unittest.TestCase):
     def test_get_sync_obselete(self):
         print("get_sync_obselete")
         dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd")
-        dbd.close()
         x = dbd.get_sync("m_depth", ['m_lat','m_lon'])
 
     def test_get_xy(self):
@@ -47,7 +46,6 @@ class Dbdreader_DBD_test(unittest.TestCase):
     def test_get_list(self):
         print("get_list")
         dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd")
-        dbd.close()
         x, y = dbd.get_list("m_lat", "m_lon")
 
 
@@ -55,20 +53,17 @@ class Dbdreader_DBD_test(unittest.TestCase):
         print("file_open_time")
         dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd")
         t=dbd.get_fileopen_time()
-        dbd.close()
         self.assertEqual(t,1406221414)
 
     def test_get_mission_name(self):
         print("get_mission_name")
         dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd")
         t=dbd.get_mission_name()
-        dbd.close()
         self.assertEqual(t,"micro.mi")
 
     def test_non_standard_cache_dir(self):
         print("non_standard_cache_dir")
         dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd", cacheDir='../data/cac')
-        dbd.close()
         depth = dbd.get("m_depth")
         self.assertEqual(len(depth), 2)
 
@@ -81,10 +76,23 @@ class Dbdreader_DBD_test(unittest.TestCase):
         except FileNotFoundError:
             pass
         dbd=dbdreader.DBD("../data/ammonite-2008-028-01-000.mbd", cacheDir='../data/cac')
-        dbd.close()
         depth = dbd.get("m_depth")
         self.assertEqual(len(depth), 2)
 
+    def test_G3S_data_file(self):
+        print("Reading a G3S data file for which the byte order needs to be swapped.")
+        dbd = dbdreader.DBD("../data/unit_887-2021-321-3-0.sbd",
+                            cacheDir='../data/cac')
+        tm, depth = dbd.get("m_depth")
+        self.assertAlmostEqual(depth.max(),34.5, delta=0.1)
+        
+    def test_missing_cache_file(self):
+        print("Throw an error when cache file is missing...")
+        with self.assertRaises(dbdreader.DbdError) as e:
+            dbd = dbdreader.DBD("../data/unit_887-2021-321-3-0.sbd")
+            #tm, depth = dbd.get("m_depth")
+
+        
         
     def donottest_non_standard_cache_dir_fail(self):
         print("non_standard_cache_dir_fail")
@@ -97,11 +105,6 @@ class Dbdreader_DBD_test(unittest.TestCase):
             v=dbd.get(x)
         except Exception as e:
             raise e
-        finally:
-            try:
-                dbd.close()
-            except:
-                pass
         return v
 
     def get_method(self,method,fn,x,*y):
@@ -115,11 +118,6 @@ class Dbdreader_DBD_test(unittest.TestCase):
                 v=dbd.get_list(*y)
         except Exception as e:
             raise e
-        finally:
-            try:
-                dbd.close()
-            except:
-                pass
         return v
 
 
@@ -150,7 +148,6 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
     def test_get_sync(self):
         print("get_sync")
         dbd=dbdreader.MultiDBD(pattern=self.pattern)
-        dbd.close()
         t, d, lat, lon = dbd.get_sync("m_depth",'m_lat','m_lon')
 
 
@@ -180,7 +177,6 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         dbd.set_time_limits(minTimeUTC='24 Jul 2014 18:00')
         v1=dbd.get("m_depth")
         t2=dbd.get_time_range()
-        dbd.close()
         self.assertEqual(t,['24 Jul 2014 17:02', '24 Jul 2014 18:20'])
         self.assertEqual(t,t1)
         self.assertEqual(t2[0],'24 Jul 2014 18:00')
@@ -189,7 +185,6 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
     def test_non_standard_cache_dir(self):
         print("non_standard_cache_dir")
         dbd=dbdreader.MultiDBD(pattern = self.pattern, cacheDir='../data/cac')
-        dbd.close()
         depth = dbd.get("m_depth")
         self.assertEqual(len(depth), 2)
 
@@ -201,8 +196,14 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         print("get_ctd_sync")
         pattern="../data/amadeus-2014-*.[de]bd"
         dbd=dbdreader.MultiDBD(pattern = pattern, cacheDir='../data/cac')
-        dbd.close()
         tctd, C, T, P, depth = dbd.get_CTD_sync("m_depth")
+        
+    def test_missing_cache_files(self):
+        print("Throw an error when cache file is missing...")
+        # read in a sbd and tbd file. Only the sbd's cac file is in cac_missing.
+        with self.assertRaises(dbdreader.DbdError) as e:
+            dbd = dbdreader.MultiDBD(pattern="../data/unit_887-2021-321-3-0.?bd",
+                                     cacheDir='../data/cac_missing')
         
         
     def get_method(self,method,fn,x,y):
@@ -218,11 +219,6 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
                 v=dbd.get_list(y)
         except Exception as e:
             raise e
-        finally:
-            try:
-                dbd.close()
-            except:
-                pass
         return v
         
 class DBDPatternSelect_test(unittest.TestCase):
@@ -238,6 +234,5 @@ class DBDPatternSelect_test(unittest.TestCase):
         self.assertEqual(fns[0],"../data/amadeus-2014-204-05-001.sbd")
         fns=PS.select(pattern="../data/ama*.sbd",until_date="24 7 2014 18:00")
         self.assertEqual(len(fns),1)
-                            
                             
 unittest.main()

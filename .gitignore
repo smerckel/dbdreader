@@ -10,3 +10,5 @@ sandbox.py
 build/
 dbdreader.egg-info/
 dist/
+# auto generated files:
+MANIFEST
