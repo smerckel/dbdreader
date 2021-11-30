@@ -7,9 +7,9 @@ Change log
 ----------
 Version 0.4.8
 
-* Support for reading  *[demnst]bd files from G3S gliders (issue #6). (Thanks to Owain Jones)
-* Bug fix for correctly throwing an exception when cache file is
-  missing(issue #5)
+* Support for reading {demnst}bd files from G3S gliders (issue #6). (Thanks to Owain Jones)
+
+* Bug fix for correctly throwing an exception when cache file is missing(issue #5)
 
 Version 0.4.7
 
@@ -83,7 +83,7 @@ machinery to read a single dbd file. The most commonly used methods
 are:
 
 * get(parametername)
-* get_sync(parametername, *other_parameternames)
+* get_sync(parametername, \*other_parameternames)
 
 The first method returs a tuple with time and values for requested
 parameter. The second method, returns a tuple with time and values of
