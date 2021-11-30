@@ -12,3 +12,5 @@ dbdreader.egg-info/
 dist/
 # auto generated files:
 MANIFEST
+# emacs backup files
+*~
