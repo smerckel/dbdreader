@@ -1,2 +1,1 @@
 numpy>=1.10.0
-sphinxcontrib-napoleon==0.7
