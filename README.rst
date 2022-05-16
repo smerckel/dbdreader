@@ -6,6 +6,7 @@ DBDREADER
 Change log
 ----------
 Version 0.4.9
+
 * Bug fix for handling inf values correctly (issue #8). Thanks to jr3cermak for spotting this bug.
 * Bug fix for incorrect behaviour when reading the time parameter explicitly for example xxx.get("m_present_time").
 
