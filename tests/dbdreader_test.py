@@ -7,12 +7,12 @@ import os
 import unittest
 
 class Dbdreader_DBD_test(unittest.TestCase):
-    
+
     def test_open(self):
         print("Open")
         v=self.get("../data/amadeus-2014-204-05-000.sbd","m_depth")
         self.assertTrue(len(v)==2 and len(v[0])>0)
-    
+
     def test_get_non_existing_variable(self):
         print("get_non_existing_variable")
         self.assertRaises(dbdreader.DbdError,
@@ -85,20 +85,20 @@ class Dbdreader_DBD_test(unittest.TestCase):
                             cacheDir='../data/cac')
         tm, depth = dbd.get("m_depth")
         self.assertAlmostEqual(depth.max(),34.5, delta=0.1)
-        
+
     def test_missing_cache_file(self):
         print("Throw an error when cache file is missing...")
         with self.assertRaises(dbdreader.DbdError) as e:
             dbd = dbdreader.DBD("../data/unit_887-2021-321-3-0.sbd")
             #tm, depth = dbd.get("m_depth")
 
-        
-        
+
+
     def donottest_non_standard_cache_dir_fail(self):
         print("non_standard_cache_dir_fail")
         kwds = dict(cacheDir='../data/not_there')
         self.assertRaises(dbdreader.DbdError, dbdreader.DBD, "../data/amadeus-2014-204-05-000.sbd", **kwds)
-        
+
     def get(self,fn,x):
         try:
             dbd=dbdreader.DBD(fn)
@@ -130,8 +130,9 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
     def test_open(self):
         print("Open")
         v=self.get_method("get",self.pattern,"m_depth",[])
+        print(v)
         self.assertTrue(len(v)==2 and len(v[0])>0)
-    
+
     def test_get_non_existing_variable(self):
         print("get_non_existing_variable")
         self.assertRaises(dbdreader.DbdError,
@@ -162,12 +163,12 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         self.get_method("xy",
                         self.pattern,
                         'm_lat','m_lon')
-        
+
     # def test_get_list(self):
     #     self.get_method("list",
     #                     self.pattern,
     #                     None,['m_lat','m_lon'])
-        
+
     def test_time_limits(self):
         print("time_limits")
         dbd=dbdreader.MultiDBD(pattern=self.pattern)
@@ -197,15 +198,15 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         pattern="../data/amadeus-2014-*.[de]bd"
         dbd=dbdreader.MultiDBD(pattern = pattern, cacheDir='../data/cac')
         tctd, C, T, P, depth = dbd.get_CTD_sync("m_depth")
-        
+
     def test_missing_cache_files(self):
         print("Throw an error when cache file is missing...")
         # read in a sbd and tbd file. Only the sbd's cac file is in cac_missing.
         with self.assertRaises(dbdreader.DbdError) as e:
             dbd = dbdreader.MultiDBD(pattern="../data/unit_887-2021-321-3-0.?bd",
                                      cacheDir='../data/cac_missing')
-        
-        
+
+
     def get_method(self,method,fn,x,y):
         dbd=dbdreader.MultiDBD(pattern=fn)
         try:
@@ -220,7 +221,7 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         except Exception as e:
             raise e
         return v
-        
+
 class DBDPatternSelect_test(unittest.TestCase):
 
     def test_select_from_pattern(self):
@@ -234,5 +235,5 @@ class DBDPatternSelect_test(unittest.TestCase):
         self.assertEqual(fns[0],"../data/amadeus-2014-204-05-001.sbd")
         fns=PS.select(pattern="../data/ama*.sbd",until_date="24 7 2014 18:00")
         self.assertEqual(len(fns),1)
-                            
-unittest.main()
+
+#unittest.main()
