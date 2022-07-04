@@ -17,6 +17,7 @@ Contents:
    ctd
    selecting_timerange
    dbdreader
+   modules
 
 Contact
 ~~~~~~~

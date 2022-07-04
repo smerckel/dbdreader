@@ -2,7 +2,7 @@ Selecting data for a specific time range
 ****************************************
 
 Not always it is desired to read and process all files that are
-available. The class :class:`dbdreader.PatternSelect` provides a way to retrieve
+available. The class :class:`dbdreader.DBDPatternSelect` provides a way to retrieve
 only those file names that are limited to a certain time frame, see :ref:`sec_dbdpatternselect`.
 
 Alternatively, we can also use the :class:`dbdreader.MultiDBD` API to

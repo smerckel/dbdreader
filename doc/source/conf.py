@@ -17,14 +17,14 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('../..'))
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../..'))
+
 
 autodoc_mock_imports = ["_dbdreader"]
 
-#with open("../../dbdreader/__init__.py", "r") as fh:
-#    __version__ = fh.readline().split("=")[1].replace('"', '')
-__version__ = "0.4.9"
+with open("../../dbdreader/__init__.py", "r") as fh:
+    __version__ = fh.readline().split("=")[1].replace('"', '')
+
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -32,7 +32,7 @@ __version__ = "0.4.9"
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', #'sphinx.ext.napoleon',
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon',
               'sphinx_rtd_theme', 'sphinx.ext.ifconfig']
 
 # Add any paths that contain templates here, relative to this directory.
