@@ -53,7 +53,7 @@ LATLON_PARAMS = ["m_lat",
 def strptimeToEpoch(datestr, fmt):
     ''' Converts datestr into seconds
 
-    Function to convert a date string into seconds since Epoch.
+    Function to convert a date string into seconds since Epoch. 
     This function is not affected by the time zone used by the OS and
     interprets the date string in UTC.
 
@@ -65,7 +65,7 @@ def strptimeToEpoch(datestr, fmt):
 
     fmt: str
         Format to interpret strings. Example: "%Y %b %d"
-
+    
     Returns
     -------
     int
@@ -77,7 +77,7 @@ def strptimeToEpoch(datestr, fmt):
 
 def epochToDateTimeStr(seconds,dateformat="%Y%m%d",timeformat="%H:%M"):
     ''' Converts seconds since Epoch to date string
-
+    
     This function converts seconds since Epoch to a datestr and timestr
     with user configurable formats.
 
@@ -117,7 +117,7 @@ def toDec(x,y=None):
     ----------
     x: float
         latitiude or longitude in NMEA format
-    y: float, optional
+    y: float, optional 
        latitiude or longitude in NMEA format
 
     Returns
@@ -182,7 +182,7 @@ class DbdError(Exception):
             mesg+=self.mesg
         return mesg
 
-
+    
 '''
 
 how the sbd files work (and presumably the other files as well)
@@ -213,7 +213,7 @@ class DBD:
         init (opens a file)
         close(closes a file)
         get(param)  (returns time and data for given variable)
-
+        
     private methods:
         read_header
         read_sensor_list
@@ -224,8 +224,8 @@ class DBD:
 
 class DBDList(list):
     ''' List that properly sorts dbd files.
-
-    Object subclassed from list. The sort method defaults to sorting dbd
+    
+    Object subclassed from list. The sort method defaults to sorting dbd 
     files and friends in the right order.
 
     Parameters
@@ -238,18 +238,16 @@ class DBDList(list):
 
     def __keyFilename(self,x):
         xx=re.sub("\.[demnst]bd","",os.path.basename(x))
-        print(xx)
         if "-" in xx:
             xxx=xx.split("-")
-            print(xxx)
             n=sum([int(i)*10**j for i,j in zip(xxx[1:],[8,5,3,0])])
             return xxx[0]+"%d"%(n)
         else:
             return xx
-
+                             
     def sort(self,cmp=None, key=None, reverse=False):
         ''' sorts filenames ensuring dbd files are in chronological order in place
-
+        
         Parameters
         ----------
         cmp :
@@ -271,18 +269,18 @@ class DBDPatternSelect(object):
     ----------
     date_format : str, optional
          date format used to interpret date strings.
-
+    
     Note
     ----
         Times are based on the opening time of the file only.
 
     '''
     cache = {}
-
+    
     def __init__(self, date_format="%d %m %Y"):
         self.set_date_format(date_format)
 
-
+        
     def set_date_format(self,date_format):
         ''' Set date format
 
@@ -292,13 +290,13 @@ class DBDPatternSelect(object):
         ----------
         date_format: str
             format to interpret date strings. Example "%H %d %m %Y"
-
+        
         '''
         self.date_format=date_format
 
     def get_date_format(self):
         ''' Returns date format string.
-
+        
         Returns
         -------
         str:
@@ -310,25 +308,25 @@ class DBDPatternSelect(object):
     def select(self,pattern=None,filenames=[],from_date=None,until_date=None):
         '''Select file names from pattern or list.
 
-        This method selects the filenames given a filename list or search
+        This method selects the filenames given a filename list or search 
         pattern and given time limits.
 
         Parameters
         ----------
         pattern: str
             search pattern (passed to glob) to find filenames
-
+        
         filenames: list of str
             filename list
-
+        
         from_date: None or str, optional
             date used as start date criterion. If None, all files are
             included until the until_date.
 
         until_date: None or str, optional
-            date used aas end date criterion. If None, all files after
+            date used aas end date criterion. If None, all files after 
             from_date are included.
-
+        
         Returns:
              list of filenames that match the criteria
 
@@ -337,13 +335,13 @@ class DBDPatternSelect(object):
 
         Note
         ----
-        Either pattern or filenames should be supplied, and at least one of
+        Either pattern or filenames should be supplied, and at least one of 
         from_date and until_date.
 
         '''
 
         all_filenames = self.get_filenames(pattern, filenames)
-
+        
         if not from_date and not until_date:
             # just get all files.
             t0=t1=None
@@ -376,10 +374,10 @@ class DBDPatternSelect(object):
         ----------
         pattern: str
             search pattern (as used in glob)
-
+        
         filenames: list of str
             filename list
-
+        
         binsize: float
             binsize of in seconds
 
@@ -411,17 +409,17 @@ class DBDPatternSelect(object):
                 for left, right in zip(bin_edges[0:-1], bin_edges[1:])]
         return bins
 
-
+        
     def get_filenames(self, pattern, filenames, cacheDir=None):
         ''' Get filenames (sorted) and update CAC cache directory.
-
+        
         Parameters
         ----------
         pattern : str
             search pattern (as used in glob)
         filenames : list of str
             list of filenames
-
+        
         Returns
         -------
         list of str
@@ -438,7 +436,7 @@ class DBDPatternSelect(object):
         all_filenames.sort()
         self.__update_cache(all_filenames, cacheDir)
         return all_filenames
-
+    
     def __update_cache(self, fns, cacheDir):
         cached_filenames = DBDList(self.cache.values())
         cached_filenames.sort()
@@ -447,7 +445,7 @@ class DBDPatternSelect(object):
                 dbd=DBD(fn, cacheDir)
                 t_open=dbd.get_fileopen_time()
                 self.cache[t_open]=fn
-
+                
     def __select(self,all_fns,t0,t1):
         open_times = numpy.array(list(self.cache.keys()))
         open_times = numpy.sort(open_times)
@@ -458,11 +456,11 @@ class DBDPatternSelect(object):
         fns.sort()
         return fns
 
-
-
-
-
-
+            
+                                                          
+            
+        
+        
 class DBDHeader(object):
 
     ''' Class to read the headers of DBD files. This file is typically used
@@ -482,7 +480,7 @@ class DBDHeader(object):
                        'full_filename':'string',
                        'the8x3_filename':'string'}
         self.info={}
-
+        
     def read_header(self,fp):
         ''' read the header of the file, given by fp '''
         fp.seek(0)
@@ -529,13 +527,13 @@ class DBDHeader(object):
                 self.info[param]=value
         return param
 
-
+        
 class DBD(object):
-    ''' Class to read a single DBD type file
+    ''' Class to read a single DBD type file 
 
     Parameters
     ----------
-
+    
     filename: str
         dbd filename
 
@@ -570,7 +568,7 @@ class DBD(object):
     #     self.ti = ti
     #     self.vi =vi
     #     return self.__get_by_read_per_byte(parameter)
-
+    
     def get_mission_name(self):
         ''' Returns the mission name such as micro.mi '''
         return self.headerInfo['mission_name'].lower()
@@ -584,8 +582,8 @@ class DBD(object):
         return self.fp.close()
 
     def get(self,*parameters,decimalLatLon=True,discardBadLatLon=True, return_nans=False):
-        '''Returns time and parameter data for requested parameter
-
+        '''Returns time and parameter data for requested parameter 
+        
         This method reads the requested parameter, and convert it
         optionally to decimal format if the parameter is latitude-like
         or longitude-like
@@ -596,12 +594,12 @@ class DBD(object):
             parameter name
 
         decimalLatLon : bool, optional
-            If True (default), latitiude and longitude related parameters are converted to
+            If True (default), latitiude and longitude related parameters are converted to 
             decimal format, as opposed to nmea format.
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
-
+        
         return_nans : bool, optional
             if True, nans are returned for timestamps the variable was not updated or changed.
 
@@ -620,7 +618,7 @@ class DBD(object):
         timestamps, values =  self._get(*parameters, decimalLatLon=decimalLatLon,
                                         discardBadLatLon=discardBadLatLon, return_nans=return_nans)
         r = [(t,v) for t, v in zip(timestamps, values)]
-
+        
         if len(parameters)==1:
             return r[0]
         else:
@@ -629,11 +627,11 @@ class DBD(object):
     def get_list(self,*parameters,decimalLatLon=True,discardBadLatLon=True,
                  return_nans=False):
         ''' Returns time and value tuples for a list of requested parameters
-
+        
 
         This method returns time and values tuples for a list of parameters. It
         is basically a short-hand for a looped get() method.
-
+        
         Note that each parameter comes with its own time base. No interpolation
         is done. Use get_sync() for that in stead.
 
@@ -643,34 +641,34 @@ class DBD(object):
             list of parameter names
 
         decimalLatLon : bool, optional
-            If True (default), latitiude and longitude related parameters are converted to
+            If True (default), latitiude and longitude related parameters are converted to 
             decimal format, as opposed to nmea format.
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
-
+        
         return_nans : bool
             If True, nan's are returned for those timestamps where no new value is available.
             Default value: False
 
         Returns
         -------
-        list of (ndarray, ndarray)
+        list of (ndarray, ndarray) 
             list of tuples of time and value vectors for each parameter requested.
 
         .. deprecated:: 0.4.0
-
+            
         .. note::
             This function will be removed in a future version. Use .get() instead.
         '''
         logger.info("get_list has been deprecated in version 0.4.0 and may be removed in the future. Use get instead.")
         return self.get(*parameters,decimalLatLon=decimalLatLon ,discardBadLatLon=discardBadLatLon , return_nans=return_nans)
-
+        
     def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True):
         ''' Returns values of parameter_x and paramter_y
 
-        For parameters parameter_x and parameter_y this method returns a tuple
-        with the values of both parameters. If necessary, the time base of
+        For parameters parameter_x and parameter_y this method returns a tuple 
+        with the values of both parameters. If necessary, the time base of 
         parameter_y is interpolated onto the one of parameter_x.
 
         Parameters
@@ -682,12 +680,12 @@ class DBD(object):
             parameter name of y-parameter
 
         decimalLatLon : bool, optional
-            If True (default), latitiude and longitude related parameters are converted to
+            If True (default), latitiude and longitude related parameters are converted to 
             decimal format, as opposed to nmea format.
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
-
+        
         Returns
         -------
         (ndarray, ndarray)
@@ -699,10 +697,10 @@ class DBD(object):
 
 
     def get_sync(self, *sync_parameters, decimalLatLon=True, discardBadLatLon=True):
-        '''Returns a list of values from parameters, all interpolated to the
+        '''Returns a list of values from parameters, all interpolated to the 
             time base of the first paremeter
 
-        This method is used if a number of parameters should be interpolated
+        This method is used if a number of parameters should be interpolated 
         onto the same time base.
 
         Parameters
@@ -712,26 +710,26 @@ class DBD(object):
             used to interpolate all other parameters onto.
 
         decimalLatLon : bool, optional
-            If True (default), latitiude and longitude related parameters are converted to
+            If True (default), latitiude and longitude related parameters are converted to 
             decimal format, as opposed to nmea format.
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
-
+        
         Returns
         -------
         (ndarray, ndarray, ...)
-            Time vector (of first parameter), values of first parmaeter, and
+            Time vector (of first parameter), values of first parmaeter, and 
             interpolated values of subsequent parameters.
 
         Example:
-
+            
             get_sync('m_water_pressure','m_water_cond','m_water_temp')
 
         Notes
         -----
         .. versionchanged:: 0.4.0
-            Calling signature has changed from the sync parameters
+            Calling signature has changed from the sync parameters 
             passed on as a list, to passed on as parameters.
         '''
 
@@ -745,19 +743,19 @@ class DBD(object):
 
     def has_parameter(self,parameter):
         ''' Check wheter this file contains parameter
-
+        
         Parameters
         ----------
         parameter: str
             parameter to check
-
+        
         Returns
         -------
         bool
-            True if parameter is in the list, or False if not
+            True if parameter is in the list, or False if not 
         '''
         return (parameter in self.parameterNames)
-
+    
     # Private methods:
 
     def __get_fileopen_time(self):
@@ -765,7 +763,7 @@ class DBD(object):
         fmt="%a %b %d %H:%M:%S %Y"
         seconds=strptimeToEpoch(datestr, fmt)
         return seconds
-
+    
     def __set_timeVariable(self):
         if 'm_present_time' in self.parameterNames:
             return 'm_present_time'
@@ -813,7 +811,7 @@ class DBD(object):
             if self.__is_latlon_parameter(p):
                 if discardBadLatLon and not return_nans: #discards and return nans is not compatible.
                     # p is either a latitude or longitude parameter. Check now which one it is.
-                    if "lat" in p:
+                    if "lat" in p: 
                         value_limit = 9000 # nmea style
                     else:
                         value_limit = 18000 # nmea style
@@ -838,7 +836,7 @@ class DBD(object):
             to decimal values prior to interpolation.
 
             example:
-
+            
             get_sync('m_water_pressure','m_water_cond','m_water_temp')
         '''
         timestamps, values = self._get(*params,decimalLatLon=decimalLatLon,discardBadLatLon=discardBadLatLon)
@@ -854,7 +852,7 @@ class DBD(object):
             else:
                 r.append(numpy.interp(t, _t, _v, left=numpy.nan, right=numpy.nan))
         return r
-
+    
     def __get_valid_parameters(self,parameters):
         validParameters=[i for i in parameters if i in self.parameterNames]
         return validParameters
@@ -960,7 +958,7 @@ class DBD(object):
                         R[idx].append(R[idx][-1])
             else:
                 self.fp.seek(fp+chunksize+1)
-
+            
             if fp+chunksize+1>=fp_end:
                 # jumped beyond the end.
                 break
@@ -1022,17 +1020,17 @@ class DBD(object):
 class MultiDBD(object):
     '''Opens multiple dbd files for reading
 
-
+    
     This class is intended for reading multiple dbd files and treating
     them as one.
-
+    
     Parameters
     ----------
     filenames : list of str or None
         list of filenames to open
     pattern : str or None
         search pattern as passed to glob
-
+    
     cacheDir: str or None
         path to directory with CAC cache files (None: the default directory is used)
 
@@ -1065,7 +1063,7 @@ class MultiDBD(object):
     Notes
     -----
     .. versionchanged:: 0.4.0
-        ensure_paired and included_paired keywords have been replaced by complemented_files_only
+        ensure_paired and included_paired keywords have been replaced by complemented_files_only 
         and complement_files, respectively.
     '''
     def __init__(self,filenames=None,pattern=None,cacheDir=None,complemented_files_only=False,
@@ -1077,7 +1075,7 @@ class MultiDBD(object):
         if kwds.get('include_paired', None):
             complement_files = kwds['include_paired']
             logger.info("include_paired keyword is obsolete as of version 0.4.0")
-
+            
         self.__ignore_cache=[]
         if cacheDir is None:
             cacheDir=CACHEDIR
@@ -1115,13 +1113,13 @@ class MultiDBD(object):
         self.time_limits_dataset=(None,None)
         self.time_limits=[None,None]
         self.set_time_limits()
-
+    
 ##### public methods
     def get(self, *parameters, decimalLatLon=True, discardBadLatLon=True, return_nans=False):
         ''' Returns time and value tuple(s) for requested parameter(s)
-
+        
         This method returns time and values tuples for a list of parameters.
-
+        
         Note that each parameter comes with its own time base. No interpolation
         is done. Use get_sync() for that in stead.
 
@@ -1131,12 +1129,12 @@ class MultiDBD(object):
             list of parameter names
 
         decimalLatLon : bool, optional
-            If True (default), latitiude and longitude related parameters are converted to
+            If True (default), latitiude and longitude related parameters are converted to 
             decimal format, as opposed to nmea format.
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
-
+        
         return_nans : bool
             If True, nan's are returned for those timestamps where no new value is available.
             Default value: False
@@ -1158,7 +1156,7 @@ class MultiDBD(object):
                 eng_variables.append(p)
         kwds=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=return_nans)
 
-        if len(sci_variables)>=1:
+        if len(sci_variables)>=1: 
             r_sci = self.__worker("get", "sci", *sci_variables, **kwds)
         if len(eng_variables)>=1:
             r_eng = self.__worker("get", "eng", *eng_variables, **kwds)
@@ -1176,8 +1174,8 @@ class MultiDBD(object):
     def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True):
         ''' Returns values of parameter_x and paramter_y
 
-        For parameters parameter_x and parameter_y this method returns a tuple
-        with the values of both parameters. If necessary, the time base of
+        For parameters parameter_x and parameter_y this method returns a tuple 
+        with the values of both parameters. If necessary, the time base of 
         parameter_y is interpolated onto the one of parameter_x.
 
         Parameters
@@ -1189,25 +1187,25 @@ class MultiDBD(object):
             parameter name of y-parameter
 
         decimalLatLon : bool, optional
-            If True (default), latitiude and longitude related parameters are converted to
+            If True (default), latitiude and longitude related parameters are converted to 
             decimal format, as opposed to nmea format.
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
-
+        
         Returns
         -------
         (ndarray, ndarray)
             tuple of value vectors
-        '''
+        '''    
         _, x, y = self.get_sync(parameter_x, parameter_y, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
         return x, y
-
+    
     def get_sync(self,*parameters,decimalLatLon=True, discardBadLatLon=True):
-        ''' Returns a list of values from parameters, all interpolated to the
+        ''' Returns a list of values from parameters, all interpolated to the 
             time base of the first paremeter
 
-        This method is used if a number of parameters should be interpolated
+        This method is used if a number of parameters should be interpolated 
         onto the same time base.
 
         Parameters
@@ -1217,26 +1215,26 @@ class MultiDBD(object):
             used to interpolate all other parameters onto.
 
         decimalLatLon : bool, optional
-            If True (default), latitiude and longitude related parameters are converted to
+            If True (default), latitiude and longitude related parameters are converted to 
             decimal format, as opposed to nmea format.
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
-
+        
         Returns
         -------
         (ndarray, ndarray, ...)
-            Time vector (of first parameter), values of first parmaeter, and
+            Time vector (of first parameter), values of first parmaeter, and 
             interpolated values of subsequent parameters.
 
         Example:
-
+            
             get_sync('m_water_pressure','m_water_cond','m_water_temp')
 
         Notes
         -----
         .. versionchanged:: 0.4.0
-            Calling signature has changed from the sync parameters
+            Calling signature has changed from the sync parameters 
             passed on as a list, to passed on as parameters.
         '''
         if len(parameters)<2:
@@ -1256,14 +1254,14 @@ class MultiDBD(object):
             else:
                 r.append(numpy.interp(t, _t, _v, left=numpy.nan, right=numpy.nan))
         return r
-
+    
     def get_list(self,*parameters,decimalLatLon=True, discardBadLatLon=True, return_nans=False):
         ''' Returns time and value tuples for a list of requested parameters
-
+        
 
         This method returns time and values tuples for a list of parameters. It
         is basically a short-hand for a looped get() method.
-
+        
         Note that each parameter comes with its own time base. No interpolation
         is done. Use get_sync() for that in stead.
 
@@ -1273,19 +1271,19 @@ class MultiDBD(object):
             list of parameter names
 
         decimalLatLon : bool, optional
-            If True (default), latitiude and longitude related parameters are converted to
+            If True (default), latitiude and longitude related parameters are converted to 
             decimal format, as opposed to nmea format.
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
-
+        
         return_nans : bool
             If True, nan's are returned for those timestamps where no new value is available.
             Default value: False
 
         Returns
         -------
-        list of (ndarray, ndarray)
+        list of (ndarray, ndarray) 
             list of tuples of time and value vectors for each parameter requested.
 
         .. deprecated:: 0.4.0
@@ -1298,7 +1296,7 @@ class MultiDBD(object):
 
 
     def get_CTD_sync(self, *parameters, decimalLatLon=True, discardBadLatLon=True):
-        '''Returns a list of values from CTD and optionally other parameters,
+        '''Returns a list of values from CTD and optionally other parameters, 
         all interpolated to the time base of the CTD timestamp.
 
         Parameters
@@ -1307,16 +1305,16 @@ class MultiDBD(object):
             names of parameters to be read additionally
 
         decimalLatLon : bool, optional
-            If True (default), latitiude and longitude related parameters are converted to
+            If True (default), latitiude and longitude related parameters are converted to 
             decimal format, as opposed to nmea format.
 
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
-
+        
         Returns
         -------
         (ndarray, ndarray, ...)
-            Time vector (of first parameter), C, T and P values, and
+            Time vector (of first parameter), C, T and P values, and 
             interpolated values of subsequent parameters.
 
 
@@ -1353,19 +1351,19 @@ class MultiDBD(object):
         Returns
         -------
         bool
-            True if this instance has found parameter
+            True if this instance has found parameter 
         '''
         return (parameter in self.parameterNames['sci'] or parameter in self.parameterNames['eng'])
 
     @classmethod
     def isScienceDataFile(cls,fn):
         ''' Is file a science file?
-
+        
         Parameters
         ----------
         fn : str
             filename
-
+        
         Returns
         -------
         bool
@@ -1389,7 +1387,7 @@ class MultiDBD(object):
         return self.__get_time_range(self.time_limits,fmt)
 
     def get_global_time_range(self,fmt="%d %b %Y %H:%M"):
-        ''' Returns start and end dates of data set (all files)
+        ''' Returns start and end dates of data set (all files) 
 
         Parameters
         ----------
@@ -1446,7 +1444,7 @@ class MultiDBD(object):
             matchingExtension[1] = chr(ord(extension[1])+1)
         else:
             matchingExtension[1] = chr(ord(extension[1])-1)
-        matchingExtension = "".join(matchingExtension)
+        matchingExtension = "".join(matchingExtension)    
         matchingFn = fn.replace(extension,matchingExtension)
         return matchingFn
 
@@ -1457,7 +1455,7 @@ class MultiDBD(object):
             if os.path.exists(mfn):
                 to_add.append(mfn)
         self.filenames+=to_add
-
+            
     def __get_matching_dbd(self,fn):
         '''returns matching dbd object corresponding to fn. If fn is not in the current list
            of accepted dbds, then None is returned.'''
@@ -1475,9 +1473,9 @@ class MultiDBD(object):
         ''' prune all files in filelist.'''
         for tbr in filelist:
             self.filenames.remove(tbr)
-
+    
     def __prune_unmatched(self, cacheDir=None):
-        ''' prune all files which don't have a science/engineering partner
+        ''' prune all files which don't have a science/engineering partner 
             returns list of removed files.'''
         to_be_removed=[fn for fn in self.filenames if not self.__get_matching_dbd(fn)]
         self.__prune(to_be_removed, cacheDir)
@@ -1508,7 +1506,7 @@ class MultiDBD(object):
         time_limits_dataset = [1e10, 0]
         # min and max times of selected data set (can be None)
         time_limits = self.time_limits
-
+        
         # if no time_limits set, use all data.
         if not time_limits[0]:
             time_limits[0]=0
@@ -1524,7 +1522,7 @@ class MultiDBD(object):
                 time_limits_dataset[1]=t
             #
             if t<time_limits[0] or t>time_limits[1]:
-                self.__ignore_cache.append(dbd)
+                self.__ignore_cache.append(dbd) 
             else:
                 self.__accept_cache.append(dbd)
                 # this is a file that matches the selection criterion.
@@ -1584,7 +1582,7 @@ class MultiDBD(object):
         if len(self.dbds['sci'])+len(self.dbds['eng'])==0:
             raise DbdError(DBD_ERROR_ALL_FILES_BANNED, " (Read %d files.)"%(len(self.filenames)))
         self.filenames=filenames
-
+    
     def __getParameterUnits(self):
         dbds=self.dbds['eng']
         units=[]
@@ -1611,10 +1609,10 @@ class MultiDBD(object):
         parameter_names.sort()
         return parameter_names
 
-
+                         
     def __worker(self,method,ft,*p,**kwds):
         # if i in __ignore_cache, the file is flagged as outside the time limits
-        #tmp=[eval("i.%s(*p)"%(method)) for i in self.dbds[ft]
+        #tmp=[eval("i.%s(*p)"%(method)) for i in self.dbds[ft] 
         #     if i not in self.__ignore_cache]
         data = dict([(k,[]) for k in p])
         error_mesgs = []
