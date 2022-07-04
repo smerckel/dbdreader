@@ -5,6 +5,11 @@ DBDREADER
 
 Change log
 ----------
+Version 0.4.9
+
+* Bug fix for handling inf values correctly (issue #8). Thanks to jr3cermak for spotting this bug.
+* Bug fix for incorrect behaviour when reading the time parameter explicitly for example xxx.get("m_present_time").
+
 Version 0.4.8
 
 * Support for reading {demnst}bd files from G3S gliders (issue #6). (Thanks to Owain Jones)
