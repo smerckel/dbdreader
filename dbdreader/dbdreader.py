@@ -548,6 +548,7 @@ class DBD(object):
     def __init__(self,filename,cacheDir=None, raise_exception_if_cac_not_found=True):
 
         self.filename=filename
+        logger.debug('Opening %s', filename)
         self.fp=open(filename,'br')
         if cacheDir==None:
             self.cacheDir=CACHEDIR
@@ -1373,6 +1374,7 @@ class MultiDBD(object):
         bool
             True if file fn is a science file
         '''
+        fn = fn.lower()
         return fn.endswith("ebd") | fn.endswith("tbd") | fn.endswith("nbd")
 
     def get_time_range(self,fmt="%d %b %Y %H:%M"):
@@ -1553,7 +1555,12 @@ class MultiDBD(object):
         filenames=list(self.filenames)
         missing_cacheIDs = []
         for fn in self.filenames:
-            dbd=DBD(fn, cacheDir, raise_exception_if_cac_not_found=False)
+            try:
+                dbd=DBD(fn, cacheDir, raise_exception_if_cac_not_found=False)
+            except:
+                logger.info('File %s could not be loaded', fn)
+                filenames.remove(fn)
+                continue
             if not dbd.cacheFound:
                 missing_cacheIDs.append(dbd.cacheID) # add missing cacheId for and check later if we need it
             mission_name=dbd.get_mission_name()
@@ -1567,6 +1574,7 @@ class MultiDBD(object):
             if mission_name not in self.mission_list:
                 self.mission_list.append(mission_name)
             if self.isScienceDataFile(fn):
+                print('Append sci')
                 self.dbds['sci'].append(dbd)
             else:
                 self.dbds['eng'].append(dbd)
