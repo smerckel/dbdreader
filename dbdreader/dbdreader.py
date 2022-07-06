@@ -15,7 +15,7 @@ import logging
 # make sure we interpret timestamps in the english language but don't
 # bother if it cannot be import as happens on building doc on readthe
 # docs
-try: 
+try:
     import locale
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 except:
@@ -1574,7 +1574,6 @@ class MultiDBD(object):
             if mission_name not in self.mission_list:
                 self.mission_list.append(mission_name)
             if self.isScienceDataFile(fn):
-                print('Append sci')
                 self.dbds['sci'].append(dbd)
             else:
                 self.dbds['eng'].append(dbd)
