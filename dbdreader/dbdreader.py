@@ -485,20 +485,20 @@ class DBDHeader(object):
                        'the8x3_filename':'string'}
         self.info={}
 
-    def read_header(self,fp):
+    def read_header(self, fp, filename=''):
         ''' read the header of the file, given by fp '''
         fp.seek(0)
         if not self.parse(fp.readline())=='dbd_label':
-            raise ValueError("Seems not to be a valid DBD file")
+            raise ValueError(f"{filename} seems not to be a valid DBD file")
         n_read=1
-        while 1:
+        while True:
             self.parse(fp.readline())
             n_read+=1
             if 'num_ascii_tags' in self.info  and \
                self.info['num_ascii_tags']==n_read:
                 break
         if self.info['encoding_ver']!=ENCODING_VER:
-            raise ValueErro('Incompatible encoding version detected.')
+            raise ValueError(f'{filename} incompatible encoding version detected.')
         return self.info['sensor_list_factored']
 
     def read_cache(self,fp, fpcopy=None):
@@ -869,7 +869,7 @@ class DBD(object):
         if not os.path.exists(cacheDir):
             raise DbdError(DBD_ERROR_CACHEDIR_NOT_FOUND, " (%s)"%(cacheDir))
         dbdheader=DBDHeader()
-        factored=dbdheader.read_header(self.fp)
+        factored=dbdheader.read_header(self.fp, filename=self.filename)
         # determine cache file name
         cacheID = dbdheader.info['sensor_list_crc'].lower()
         cacheFilename=os.path.join(cacheDir,cacheID+".cac")
@@ -1557,8 +1557,9 @@ class MultiDBD(object):
         for fn in self.filenames:
             try:
                 dbd=DBD(fn, cacheDir, raise_exception_if_cac_not_found=False)
-            except:
-                logger.info('File %s could not be loaded', fn)
+            except Exception as e:
+                logger.warning('File %s could not be loaded', fn)
+                logger.debug('Exception was %s', e)
                 filenames.remove(fn)
                 continue
             if not dbd.cacheFound:
