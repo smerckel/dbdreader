@@ -205,6 +205,15 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
             dbd = dbdreader.MultiDBD(pattern="../data/unit_887-2021-321-3-0.?bd",
                                      cacheDir='../data/cac_missing')
         
+    def test_opening_empty_file(self):
+        print("Ignore empty files and files with wrong encodings...")
+        dbd = dbdreader.MultiDBD(pattern = "../data/*-2014-204-05-000.dbd")
+
+    def test_opening_capitalised_files(self):
+        print("Allow opening of files with capitalised extensions.")
+        dbd = dbdreader.MultiDBD(pattern = "../data/amadeus-2014-203-00-000.[ST]BD")
+
+        
         
     def get_method(self,method,fn,x,y):
         dbd=dbdreader.MultiDBD(pattern=fn)
@@ -234,5 +243,6 @@ class DBDPatternSelect_test(unittest.TestCase):
         self.assertEqual(fns[0],"../data/amadeus-2014-204-05-001.sbd")
         fns=PS.select(pattern="../data/ama*.sbd",until_date="24 7 2014 18:00")
         self.assertEqual(len(fns),1)
+
                             
 unittest.main()
