@@ -149,14 +149,17 @@ if not os.path.exists(CACHEDIR):
     os.makedirs(CACHEDIR)
 
 
-DBD_ERROR_CACHE_NOT_FOUND=1
-DBD_ERROR_NO_VALID_PARAMETERS=2
-DBD_ERROR_NO_TIME_VARIABLE=3
-DBD_ERROR_NO_FILE_CRITERIUM_SPECIFIED=4
-DBD_ERROR_NO_FILES_FOUND=5
-DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO=6
-DBD_ERROR_CACHEDIR_NOT_FOUND=7
-DBD_ERROR_ALL_FILES_BANNED=8
+DBD_ERROR_CACHE_NOT_FOUND = 1
+DBD_ERROR_NO_VALID_PARAMETERS = 2
+DBD_ERROR_NO_TIME_VARIABLE = 3
+DBD_ERROR_NO_FILE_CRITERIUM_SPECIFIED = 4
+DBD_ERROR_NO_FILES_FOUND = 5
+DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO = 6
+DBD_ERROR_CACHEDIR_NOT_FOUND = 7
+DBD_ERROR_ALL_FILES_BANNED = 8
+DBD_ERROR_INVALID_DBD_FILE = 9
+DBD_ERROR_INVALID_ENCODING = 10
+
 
 class DbdError(Exception):
     def __init__(self,value=9,mesg=None):
@@ -180,10 +183,14 @@ class DbdError(Exception):
             mesg='Cache file directory does not exist.'
         elif self.value==DBD_ERROR_ALL_FILES_BANNED:
             mesg='All data files were banned.'
+        elif self.value==DBD_ERROR_INVALID_DBD_FILE:
+            mesg='Invalid DBD file.'
+        elif self.value==DBD_ERROR_INVALID_ENCODING:
+            mesg='Invalid encoding version encountered.'
         else:
-            mesg='Undefined error.'
+            mesg=f'Undefined error. ({self.value})'
         if self.mesg:
-            mesg+=self.mesg
+            mesg = " ".join((mesg, self.mesg))
         return mesg
 
 
@@ -241,7 +248,7 @@ class DBDList(list):
         list.__init__(self,*p)
 
     def __keyFilename(self,x):
-        xx=re.sub("\.[demnst]bd","",os.path.basename(x))
+        xx=re.sub("\.[demnstDEMNST][bB][dD]","",os.path.basename(x))
         if "-" in xx:
             xxx=xx.split("-")
             n=sum([int(i)*10**j for i,j in zip(xxx[1:],[8,5,3,0])])
@@ -485,11 +492,19 @@ class DBDHeader(object):
                        'the8x3_filename':'string'}
         self.info={}
 
+    @property
+    def factored(self):
+        try:
+            r = self.info['sensor_list_factored']
+        except KeyError:
+            r = None
+        return r
+    
     def read_header(self, fp, filename=''):
         ''' read the header of the file, given by fp '''
         fp.seek(0)
         if not self.parse(fp.readline())=='dbd_label':
-            raise ValueError(f"{filename} seems not to be a valid DBD file")
+            return DBD_ERROR_INVALID_DBD_FILE
         n_read=1
         while True:
             self.parse(fp.readline())
@@ -498,8 +513,8 @@ class DBDHeader(object):
                self.info['num_ascii_tags']==n_read:
                 break
         if self.info['encoding_ver']!=ENCODING_VER:
-            raise ValueError(f'{filename} incompatible encoding version detected.')
-        return self.info['sensor_list_factored']
+            return DBD_ERROR_INVALID_ENCODING
+        return 0
 
     def read_cache(self,fp, fpcopy=None):
         ''' read cache file '''
@@ -549,12 +564,12 @@ class DBD(object):
 
         self.filename=filename
         logger.debug('Opening %s', filename)
-        self.fp=open(filename,'br')
         if cacheDir==None:
             self.cacheDir=CACHEDIR
         else:
             self.cacheDir=cacheDir
-        self.headerInfo,parameterInfo,self.cacheFound, self.cacheID = self.__read_header(self.cacheDir)
+        with open(filename,'br') as self.fp:
+            self.headerInfo,parameterInfo,self.cacheFound, self.cacheID = self.__read_header(self.cacheDir)
         # number of bytes each states section consists of:
         self.n_state_bytes=self.headerInfo['state_bytes_per_cycle']
         # size of variables used
@@ -563,7 +578,6 @@ class DBD(object):
         self.parameterNames=[i[1] for i in parameterInfo]
         self.parameterUnits=dict((i[1],i[2]) for i in parameterInfo)
         self.timeVariable=self.__set_timeVariable()
-        self.close()
         if not self.cacheFound and raise_exception_if_cac_not_found:
             raise DbdError(DBD_ERROR_CACHE_NOT_FOUND, f" ({self.cacheID}.cac)")
 
@@ -868,14 +882,20 @@ class DBD(object):
     def __read_header(self, cacheDir):
         if not os.path.exists(cacheDir):
             raise DbdError(DBD_ERROR_CACHEDIR_NOT_FOUND, " (%s)"%(cacheDir))
-        dbdheader=DBDHeader()
-        factored=dbdheader.read_header(self.fp, filename=self.filename)
+        dbdheader = DBDHeader()
+        result = dbdheader.read_header(self.fp)
+        if result == DBD_ERROR_INVALID_DBD_FILE:
+            raise DbdError(DBD_ERROR_INVALID_DBD_FILE,
+                           f"{self.filename} seems not to be a valid DBD file.")
+        elif result == DBD_ERROR_INVALID_ENCODING:
+            raise DbdError(DBD_ERROR_INVALID_ENCODING,
+                           f'{self.filename} has an invalid encoding.')
         # determine cache file name
         cacheID = dbdheader.info['sensor_list_crc'].lower()
         cacheFilename=os.path.join(cacheDir,cacheID+".cac")
         cacheFound=True # unless proven otherwise...
         parameter=[]
-        if factored==1:
+        if dbdheader.factored==1:
             # read sensorlist from cache
             if os.path.exists(cacheFilename):
                 fpCache=open(cacheFilename,'br')
@@ -883,7 +903,7 @@ class DBD(object):
                 fpCache.close()
             else:
                 cacheFound=False
-        else:
+        else: # no need to check for factored==None; the value has been set for sure.
             # read sensorlist from same file and copy
             if not os.path.exists(cacheFilename):
                 # only write, when not existing.
@@ -1561,6 +1581,7 @@ class MultiDBD(object):
                 logger.warning('File %s could not be loaded', fn)
                 logger.debug('Exception was %s', e)
                 filenames.remove(fn)
+                dbd.close()
                 continue
             if not dbd.cacheFound:
                 missing_cacheIDs.append(dbd.cacheID) # add missing cacheId for and check later if we need it
