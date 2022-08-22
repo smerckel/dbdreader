@@ -92,9 +92,7 @@ class Dbdreader_DBD_test(unittest.TestCase):
             dbd = dbdreader.DBD("../data/unit_887-2021-321-3-0.sbd")
             #tm, depth = dbd.get("m_depth")
 
-        
-        
-    def donottest_non_standard_cache_dir_fail(self):
+    def test_donottest_non_standard_cache_dir_fail(self):
         print("non_standard_cache_dir_fail")
         kwds = dict(cacheDir='../data/not_there')
         self.assertRaises(dbdreader.DbdError, dbdreader.DBD, "../data/amadeus-2014-204-05-000.sbd", **kwds)
@@ -188,7 +186,7 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         depth = dbd.get("m_depth")
         self.assertEqual(len(depth), 2)
 
-    def donottest_non_standard_cache_dir_fail(self):
+    def test_donottest_non_standard_cache_dir_fail(self):
         kwds = dict(pattern=self.pattern, cacheDir='../data/not_there')
         self.assertRaises(dbdreader.DbdError, dbdreader.MultiDBD, **kwds)
 
@@ -205,6 +203,16 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
             dbd = dbdreader.MultiDBD(pattern="../data/unit_887-2021-321-3-0.?bd",
                                      cacheDir='../data/cac_missing')
         
+    def test_open_file_with_pattern_str_as_first_argument(self):
+        print("Open multidbd with just a string as first argument. Should be interpreted as a pattern")
+        dbd = dbdreader.MultiDBD("../data/amadeus-2014-*.*bd")
+
+    def test_open_file_with_pattern_str_as_first_argument_and_pattern(self):
+        print("Open multidbd with just a string as first argument and a pattern, which should fail.")
+        with self.assertRaises(dbdreader.DbdError) as e:
+            dbd = dbdreader.MultiDBD("../data/amadeus-2014-*.*bd", pattern="../data/amadeus-2014-204-05-000.?bd")
+
+
         
     def get_method(self,method,fn,x,y):
         dbd=dbdreader.MultiDBD(pattern=fn)

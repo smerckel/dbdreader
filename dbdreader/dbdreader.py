@@ -158,6 +158,7 @@ DBD_ERROR_NO_FILES_FOUND=5
 DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO=6
 DBD_ERROR_CACHEDIR_NOT_FOUND=7
 DBD_ERROR_ALL_FILES_BANNED=8
+DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED=9
 
 class DbdError(Exception):
     def __init__(self,value=9,mesg=None):
@@ -181,6 +182,8 @@ class DbdError(Exception):
             mesg='Cache file directory does not exist.'
         elif self.value==DBD_ERROR_ALL_FILES_BANNED:
             mesg='All data files were banned.'
+        elif self.value==DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED:
+            mesg='Invalid or conflicting file selection criterion/criteria specified.'
         else:
             mesg='Undefined error.'
         if self.mesg:
@@ -1090,6 +1093,14 @@ class MultiDBD(object):
         if not filenames and not pattern:
             raise DbdError(DBD_ERROR_NO_FILE_CRITERIUM_SPECIFIED)
         fns=DBDList()
+        # A common mistake is to just supply a string for filenames (first argument)
+        # Assume that it was meant as a pattern IF pattern is None.
+        if isinstance(filenames, str):
+            if pattern is None:
+                pattern = filenames # assume filenames should have been pattern and hope for the best.
+                filenames = None
+            else:
+                raise DbdError(DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED, "I got a string for <filenames> (no list), and a string for <pattern>.")
         if filenames:
             fns+=filenames
         if pattern:
