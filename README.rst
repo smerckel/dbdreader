@@ -5,6 +5,20 @@ DBDREADER
 
 Change log
 ----------
+Version 0.4.10
+
+* Includes pull request by jklymak, which allows dbdreader to deal
+  with empty files, and files capitalised file extensions, as well as
+  a check on the encoding version.
+
+* Includes a bug fix when raising an exception when handling a prior
+  exception in case of reading problematic files.
+
+* Assumes that if the first parameter given to MultiDBD is a string,
+  the user did not mean to provide a list of filename strings, but a
+  pattern. An error is raised if pattern is specified explicitly when
+  filenames is given as a string.
+
 Version 0.4.9
 
 * Bug fix for handling inf values correctly (issue #8). Thanks to jr3cermak for spotting this bug.
