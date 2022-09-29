@@ -258,7 +258,7 @@ static void get_by_read_per_byte(int nti,
       
       if (!writing_first_line){
 	for(i=0; i<nv; i++){
-	  if ((offsets[i]>=min_offset_value) && (i!=nti)){
+	  if ((offsets[i]>=min_offset_value) && (i!=nti) && isfinite(read_result[i])){
 	    j=i-(int)(i>nti);
 	    /* add read_result to result */
 	    add_to_array(read_result[nti],
@@ -323,15 +323,6 @@ static int read_state_bytes(int *vi,
 	     so record its position */
 	  offsets[idx]=*chunksize;
 	  variable_counter+=1;
-	  /* in case we ask for the time parameter explicitly, then we need to read this variable twice,
-             once as the time variable (first vector to return) and then as the variable itself (second vector
-             to return). Then the index is repeated in vi[]. The second entry gets an offset == - 2, so it will 
-	     not be read. To fix this, we can copy the offset if a duplicate value in vi is encountered.
-	  */
-	  if ( vi[variable_counter-1] == vi[variable_counter] ) {
-	    offsets[idx+1] = offsets[idx];
-	    variable_counter+=1;
-	  }
 	}
 	*chunksize+=FileInfo.byteSizes[variable_index];
       }
