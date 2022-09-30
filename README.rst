@@ -5,6 +5,17 @@ DBDREADER
 
 Change log
 ----------
+Version 0.4.11
+
+* Version 0.4.9 introduced a bug that in some rare circumstances caused
+  segmentation faults. This has been fixed.
+
+* Merged pull request by roje-bodc with improved error handling in
+  case of missing cache files. If a DbdError occurs due to a missing
+  cache file, detailed information can be obtained from the .data
+  property of the exception instance.
+
+
 Version 0.4.10
 
 * Includes pull request by jklymak, which allows dbdreader to deal
