@@ -221,6 +221,14 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         print("Allow opening of files with capitalised extensions.")
         dbd = dbdreader.MultiDBD(pattern = "../data/amadeus-2014-203-00-000.[ST]BD")
 
+    def test_problem_causing_segfault(self):
+        # this test caused a segfault as a result of a bug introduced in commit eeb64d8e8c20345dafcacebf074f098fa945fd46
+        # Run this test only when this script has access to the data files.
+        if os.path.exists("/home/lucas/gliderdata/helgoland201407/hd"):
+            print("Running (long test) that had caused in segfault in the past.")
+            dbd = dbdreader.MultiDBD("/home/lucas/gliderdata/helgoland201407/hd/amadeus-2014-*.[de]bd")
+            data = dbd.get_CTD_sync("sci_flntu_turb_units")
+        
         
     def get_method(self,method,fn,x,y):
         dbd=dbdreader.MultiDBD(pattern=fn)

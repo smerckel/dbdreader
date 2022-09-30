@@ -233,8 +233,8 @@ static void get_by_read_per_byte(int nti,
   while (1){
     r=read_state_bytes(vi,nv,FileInfo,offsets,&chunksize);
     fp_current=ftell(FileInfo.fd);
-    if (r>=2) {
-      /* we found (some of) the values we want to read (at least 2) */
+    if (r>=1) {
+      /* we found (some of) the values we want to read (at least 1) */
       for(i=0; i<nv; i++){
 	if (offsets[i]>=0){
 	  /* found an updated value */
@@ -347,8 +347,20 @@ static int read_state_bytes(int *vi,
       variable_index+=1;
     }
   }
-  /*return whether or not we found at least two variables,
-   one of them is time, and should be present anyway.*/
+  /* If a variable index appears twice in vi, as can happen when
+     m_present_time is asked for explicitly, then only the first gets
+     an offset assigned. This results in the other entry not to be
+     set. So, if time is asked, the time vector itself gets bogus
+     values. We can correct that by ensuring that the offset is copied
+     over. vi is in ascending order, so two identical entries should be neighbours.*/
+  if (nvt>1){
+    for(int i=1; i<nvt; ++i){
+      if (vi[i]==vi[i-1])
+	offsets[i]=offsets[i-1];
+    }
+  }
+
+  /*return the number of variables found. */
   return (variable_counter);
 }
 
