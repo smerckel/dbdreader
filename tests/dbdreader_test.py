@@ -106,6 +106,31 @@ class Dbdreader_DBD_test(unittest.TestCase):
             for k,v in data.missing_cache_files.items():
                 assert k == 'd6f44165' and v[0] == "../data/unit_887-2021-321-3-0.sbd"
 
+
+    def test_handling_inf(self):
+        dbd = dbdreader.DBD("../data/amadeus-2014-204-05-000.dbd",
+                            cacheDir="../data/cac")
+
+        t, v = dbd.get("m_time_til_wpt", return_nans =True)
+        t = t[:24]
+        v = v[:24]
+        # Now read the output by dbd2asc
+        with open("../data/dbd2asc_output.txt") as fp:
+            lines = fp.readlines()
+        lines.pop(0) # remark
+        tp = np.zeros_like(t)
+        vp = np.zeros_like(t)
+        for i, line in enumerate(lines):
+            _x, _y = line.strip().split()
+            tp[i] = _x
+            vp[i] = _y
+        #for a,b,c,d in zip(t, tp, v, vp):
+        #    print(f"{a:16f} {b:16f}    {c:16f} {d:16f}")
+        condition1 = np.isclose(t, tp)
+        condition3 = np.isfinite(vp)
+        condition2 = np.isclose(v, vp).compress(condition3)
+        assert np.all(condition1) and np.all(condition2)
+        
     def get(self,fn,x):
         try:
             dbd=dbdreader.DBD(fn)
@@ -233,8 +258,8 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
     def test_problem_causing_segfault(self):
         # this test caused a segfault as a result of a bug introduced in commit eeb64d8e8c20345dafcacebf074f098fa945fd46
         # Run this test only when this script has access to the data files.
-        if False and os.path.exists("/home/lucas/gliderdata/helgoland201407/hd"):
-            print("Running (long test) that had caused in segfault in the past.")
+        if True and os.path.exists("/home/lucas/gliderdata/helgoland201407/hd"):
+            print("Running (long test) that caused in segfault in the past.")
             dbd = dbdreader.MultiDBD("/home/lucas/gliderdata/helgoland201407/hd/amadeus-2014-*.[de]bd")
             data = dbd.get_CTD_sync("sci_flntu_turb_units")
         

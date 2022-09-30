@@ -258,7 +258,7 @@ static void get_by_read_per_byte(int nti,
       
       if (!writing_first_line){
 	for(i=0; i<nv; i++){
-	  if ((offsets[i]>=min_offset_value) && (i!=nti) && isfinite(read_result[i])){
+	  if ((offsets[i]>=min_offset_value) && (i!=nti)){// && isfinite(read_result[i])){
 	    j=i-(int)(i>nti);
 	    /* add read_result to result */
 	    add_to_array(read_result[nti],
