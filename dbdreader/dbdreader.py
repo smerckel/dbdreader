@@ -164,9 +164,10 @@ DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED = 11
 
 
 class DbdError(Exception):
-    def __init__(self,value=9,mesg=None):
+    def __init__(self,value=9,mesg=None,data=None):
         self.value=value
         self.mesg=mesg
+        self.data=data
 
     def __str__(self):
         if self.value==DBD_ERROR_NO_VALID_PARAMETERS:
@@ -583,7 +584,9 @@ class DBD(object):
         self.parameterUnits=dict((i[1],i[2]) for i in parameterInfo)
         self.timeVariable=self.__set_timeVariable()
         if not self.cacheFound and raise_exception_if_cac_not_found:
-            raise DbdError(DBD_ERROR_CACHE_NOT_FOUND, f" ({self.cacheID}.cac)")
+            raise DbdError(DBD_ERROR_CACHE_NOT_FOUND, 
+                           ' Cache file %s for %s was not found in the cache directory (%s).'%(self.cacheID, self.filename, self.cacheDir), 
+                           data=(self.cacheID, self.filename, self.cacheDir))
 
     # def getpy(self, parameter):
     #     ti = self.parameterNames.index(self.timeVariable)
@@ -799,7 +802,8 @@ class DBD(object):
         if not self.cacheFound:
             cache_file=self.headerInfo['sensor_list_crc']
             raise DbdError(DBD_ERROR_CACHE_NOT_FOUND,\
-                               ' Cache file %s for %s was not found in the cache directory (%s).'%(cache_file,self.filename,self.cacheDir))
+                               ' Cache file %s for %s was not found in the cache directory (%s).'%(cache_file,self.filename,self.cacheDir),
+                               data=(cache_file, self.filename, self.cacheDir))
         number_of_parameters=len(parameters)
         valid_parameters = self.__get_valid_parameters(parameters)
         if len(valid_parameters)!=len(parameters):
@@ -1624,7 +1628,7 @@ class MultiDBD(object):
                 if len(v)>1:
                     mesg += f" + {len(v)-1} more files."
                 mesg+="\n"
-            raise DbdError(DBD_ERROR_CACHE_NOT_FOUND, mesg)
+            raise DbdError(DBD_ERROR_CACHE_NOT_FOUND, mesg, data=problems)
         if len(self.dbds['sci'])+len(self.dbds['eng'])==0:
             raise DbdError(DBD_ERROR_ALL_FILES_BANNED, " (Read %d files.)"%(len(self.filenames)))
         self.filenames=filenames
