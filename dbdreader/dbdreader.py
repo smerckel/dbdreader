@@ -8,7 +8,6 @@ import re
 import datetime
 from calendar import timegm
 from collections import defaultdict, namedtuple
-from itertools import chain
 import _dbdreader
 import logging
 
@@ -568,7 +567,7 @@ class DBD(object):
         path to CAC file cache directory. If None, the default path is used.
     '''
 
-    def __init__(self,filename,cacheDir=None, raise_exception_if_cac_not_found=True):
+    def __init__(self,filename,cacheDir=None):
 
         self.filename=filename
         logger.debug('Opening %s', filename)
@@ -586,7 +585,7 @@ class DBD(object):
         self.parameterNames=[i[1] for i in parameterInfo]
         self.parameterUnits=dict((i[1],i[2]) for i in parameterInfo)
         self.timeVariable=self.__set_timeVariable()
-        if not self.cacheFound and raise_exception_if_cac_not_found:
+        if not self.cacheFound:
             mesg = f"\nCache file {self.cacheID} for {self.filename} was not found in the cache directory ({self.cacheDir})."
             data = DbdError.MissingCacheFileData({self.cacheID:[self.filename]}, self.cacheDir)
             raise DbdError(DBD_ERROR_CACHE_NOT_FOUND, mesg=mesg, data=data)
@@ -795,11 +794,6 @@ class DBD(object):
 
     def _get(self,*parameters,decimalLatLon=True,discardBadLatLon=False, return_nans=False):
         ''' returns time and parameter data for requested parameter '''
-        if not self.cacheFound:
-            cache_file=self.headerInfo['sensor_list_crc']
-            raise DbdError(DBD_ERROR_CACHE_NOT_FOUND,\
-                               ' Cache file %s for %s was not found in the cache directory (%s).'%(cache_file,self.filename,self.cacheDir),
-                               data=(cache_file, self.filename, self.cacheDir))
         number_of_parameters=len(parameters)
         valid_parameters = self.__get_valid_parameters(parameters)
         if len(valid_parameters)!=len(parameters):
@@ -1585,19 +1579,35 @@ class MultiDBD(object):
     def __update_dbd_inventory(self, cacheDir):
         self.dbds={'eng':[],'sci':[]}
         filenames=list(self.filenames)
-        missing_cacheIDs = []
+        missing_cacheIDs = defaultdict(list)
         for fn in self.filenames:
             try:
-                dbd=DBD(fn, cacheDir, raise_exception_if_cac_not_found=False)
-            except Exception as e:
-                logger.warning('File %s could not be loaded', fn)
-                logger.debug('Exception was %s', e)
-                filenames.remove(fn)
+                dbd=DBD(fn, cacheDir)
+            except DbdError as e:
+                #Typically the call in the try block may fail if the
+                # cache file cannot be found because it is not in the
+                # specfied directory or the cache directory cannot be
+                # found.  Flesh out these cases and keep a log of
+                # them, we can raise an error later with all the
+                # information on missing cache files and problems
+                # later, so the caller can handle the error
+                # meaningfully.
+                if e.value == DBD_ERROR_CACHEDIR_NOT_FOUND:
+                    # if this happens, this will happen for all subsequent files to load.
+                    raise DbdError(DBD_ERROR_CACHEDIR_NOT_FOUND,
+                                   mesg=f"\nCache directory {cacheDir} could not be accessed.",
+                                   data=DbdError.MissingCacheFileData(None, cacheDir))
+                elif e.value == DBD_ERROR_CACHE_NOT_FOUND:
+                    for k in e.data.missing_cache_files.keys():
+                        missing_cacheIDs[k].append(fn)
+                else: # some other problem. Just ignore the file but produce a warning.
+                    logger.warning('File %s could not be loaded', fn)
+                    logger.debug('Exception was %s', e)
+                    logger.debug('Exception value was %d', e.value)
+                    filenames.remove(fn)
                 continue
             else:
                 dbd.close()
-            if not dbd.cacheFound:
-                missing_cacheIDs.append(dbd.cacheID) # add missing cacheId for and check later if we need it
             mission_name=dbd.get_mission_name()
             if mission_name in self.banned_missions:
                 filenames.remove(fn)
@@ -1605,30 +1615,30 @@ class MultiDBD(object):
             if self.missions and mission_name not in self.missions:
                 filenames.remove(fn)
                 continue
-            # so we decided to keep the file. Continue only when the cache file was found.
+            # so we decided to keep the file. 
             if mission_name not in self.mission_list:
                 self.mission_list.append(mission_name)
             if self.isScienceDataFile(fn):
                 self.dbds['sci'].append(dbd)
             else:
                 self.dbds['eng'].append(dbd)
-        # Now check if any of the remaining files depends on a missing cache file.
-        problems = defaultdict(list)
-        for dbd in chain(*self.dbds.values()):
-            if dbd.cacheID in missing_cacheIDs:
-                problems[dbd.cacheID].append(dbd.filename)
-        if problems:
-            mesg = f"\nOne or more cache files could not be found in {cacheDir}:\n" # craft some useful error message
-            for k, v in problems.items():
+
+        self.filenames=filenames
+        # At this stage we may have zero or more files, and some could have been removed.
+        # We will raise an error when cache files are missing and when there are no files at all.
+        if missing_cacheIDs:
+            # craft some useful error message
+            mesg = f"\nOne or more cache files could not be found in {cacheDir}:\n" 
+            for k, v in missing_cacheIDs.items():
                 mesg+=f"{k} reqd by {v[0]}"
                 if len(v)>1:
                     mesg += f" + {len(v)-1} more files."
                 mesg+="\n"
-            data = DbdError.MissingCacheFileData(dict([(k,v) for k,v in problems.items()]), cacheDir)
+            data = DbdError.MissingCacheFileData(dict([(k,v) for k,v in missing_cacheIDs.items()]), cacheDir)
             raise DbdError(DBD_ERROR_CACHE_NOT_FOUND, mesg=mesg, data=data)
         if len(self.dbds['sci'])+len(self.dbds['eng'])==0:
             raise DbdError(DBD_ERROR_ALL_FILES_BANNED, " (Read %d files.)"%(len(self.filenames)))
-        self.filenames=filenames
+
 
     def __getParameterUnits(self):
         dbds=self.dbds['eng']
