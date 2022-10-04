@@ -66,4 +66,4 @@ example code below.
    
    dbd = dbdreader.DBD("unit204-2014-212-0-0.dbd")
    t,d = dbd.get("m_depth")
-   dbd.close()
+
