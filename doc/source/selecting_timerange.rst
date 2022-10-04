@@ -28,10 +28,7 @@ window::
   print(dbdreader.epochToDateTimeStr(tm[0]))
   print("start time reduced time range:")
   print(dbdreader.epochToDateTimeStr(tm1[0]))
-  
-  # close the file again.
-  dbd.close()
-
+ 
 
 
 See also the methods :func:`dbdreader.MultiDBD.get_global_time_range` and :func:`dbdreader.MultiDBD.set_time_limits`.
