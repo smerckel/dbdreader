@@ -37,6 +37,3 @@ Example
    # interpolate roll speed on depth time
    tm,depth,roll,speed=dbd.get_sync("m_depth","m_roll","m_speed")
    print("\nmax speed %f m/s"%(np.nanmax(speed.max)))
-
-   # close the file again.
-   dbd.close()
