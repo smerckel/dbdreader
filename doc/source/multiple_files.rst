@@ -93,10 +93,7 @@ Example
         print("start time reduced time range:")
         print(dbdreader.epochToDateTimeStr(tm1[0]))
 
-        # close the file again.
-        dbd.close()
-
-
+      
         # time selection, we can achieve in a different way too.
 
         pattern_selector=dbdreader.DBDPatternSelect()
