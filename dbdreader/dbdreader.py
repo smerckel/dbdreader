@@ -165,7 +165,7 @@ DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED = 11
 
 class DbdError(Exception):
     MissingCacheFileData = namedtuple('MissingCacheFileData', 'missing_cache_files cache_dir')
-
+    
     def __init__(self,value=9,mesg=None,data=None):
         self.value=value
         self.mesg=mesg
@@ -1622,7 +1622,7 @@ class MultiDBD(object):
             if self.missions and mission_name not in self.missions:
                 filenames.remove(fn)
                 continue
-            # so we decided to keep the file.
+            # so we decided to keep the file. 
             if mission_name not in self.mission_list:
                 self.mission_list.append(mission_name)
             if self.isScienceDataFile(fn):
@@ -1635,7 +1635,7 @@ class MultiDBD(object):
         # We will raise an error when cache files are missing and when there are no files at all.
         if missing_cacheIDs:
             # craft some useful error message
-            mesg = f"\nOne or more cache files could not be found in {cacheDir}:\n"
+            mesg = f"\nOne or more cache files could not be found in {cacheDir}:\n" 
             for k, v in missing_cacheIDs.items():
                 mesg+=f"{k} reqd by {v[0]}"
                 if len(v)>1:
