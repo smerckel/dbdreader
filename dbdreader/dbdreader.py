@@ -165,7 +165,7 @@ DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED = 11
 
 class DbdError(Exception):
     MissingCacheFileData = namedtuple('MissingCacheFileData', 'missing_cache_files cache_dir')
-    
+
     def __init__(self,value=9,mesg=None,data=None):
         self.value=value
         self.mesg=mesg
@@ -506,7 +506,7 @@ class DBDHeader(object):
         except KeyError:
             r = None
         return r
-
+    
     def read_header(self, fp, filename=''):
         ''' read the header of the file, given by fp '''
         fp.seek(0)
