@@ -160,7 +160,7 @@ DBD_ERROR_ALL_FILES_BANNED=8
 DBD_ERROR_INVALID_DBD_FILE = 9
 DBD_ERROR_INVALID_ENCODING = 10
 DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED = 11
-
+DBD_ERROR_NO_DATA_TO_INTERPOLATE=12
 
 
 class DbdError(Exception):
@@ -194,6 +194,8 @@ class DbdError(Exception):
             mesg='Invalid encoding version encountered.'
         elif self.value==DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED:
             mesg='Invalid or conflicting file selection criterion/criteria specified.'
+        elif self.value==DBD_ERROR_NO_DATA_TO_INTERPOLATE:
+            mesg='One or more parameters that are to be interpolated, does/do have no data.'
         else:
             mesg=f'Undefined error. ({self.value})'
         if self.mesg:
@@ -867,7 +869,12 @@ class DBD(object):
                 r.append(_t)
                 r.append(_v)
             else:
-                r.append(numpy.interp(t, _t, _v, left=numpy.nan, right=numpy.nan))
+                try:
+                    r.append(numpy.interp(t, _t, _v, left=numpy.nan, right=numpy.nan))
+                except ValueError:
+                    r.append(t * numpy.nan)
+                    logger.info(f"No valid data to interpolate for '{params[i]}'.")
+
         return r
 
     def __get_valid_parameters(self,parameters):
@@ -1283,13 +1290,11 @@ class MultiDBD(object):
                 r.append(_t)
                 r.append(_v)
             else:
-                if len(_t) > 1:
+                try:
                     r.append(numpy.interp(t, _t, _v, left=numpy.nan, right=numpy.nan))
-                else:
-                    # no good data for this variable.
-                    logger.info("No good data for ", parameters[i])
+                except ValueError:
                     r.append(t * numpy.nan)
-
+                    logger.info(f"No valid data to interpolate for '{parameters[i]}'.")
         return r
 
     def get_list(self,*parameters,decimalLatLon=True, discardBadLatLon=True, return_nans=False):
@@ -1365,7 +1370,6 @@ class MultiDBD(object):
         offset = len(CTDparameters) + 1 # because of m_present_time is
                                         # also returned.
         tmp = self.get_sync(*CTDparameters, *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
-
         # remove all time<=1 timestamps, as there can be nans here too.
         tmp = numpy.compress(tmp[0]>1, tmp, axis=1)
         condition = tmp[2]>0
@@ -1377,6 +1381,8 @@ class MultiDBD(object):
             # vector is nan
             a = numpy.prod(tmp[offset:], axis=0)
             condition &= numpy.isfinite(a)
+        if numpy.all(condition==False):
+            raise DbdError(DBD_ERROR_NO_DATA_TO_INTERPOLATE)
         # ensure monotonicity in time
         dt = numpy.hstack( ([1], numpy.diff(tmp[1])) )
         condition &= dt>0
