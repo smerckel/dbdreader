@@ -165,7 +165,7 @@ DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED = 11
 
 class DbdError(Exception):
     MissingCacheFileData = namedtuple('MissingCacheFileData', 'missing_cache_files cache_dir')
-    
+
     def __init__(self,value=9,mesg=None,data=None):
         self.value=value
         self.mesg=mesg
@@ -506,7 +506,7 @@ class DBDHeader(object):
         except KeyError:
             r = None
         return r
-    
+
     def read_header(self, fp, filename=''):
         ''' read the header of the file, given by fp '''
         fp.seek(0)
@@ -1283,7 +1283,13 @@ class MultiDBD(object):
                 r.append(_t)
                 r.append(_v)
             else:
-                r.append(numpy.interp(t, _t, _v, left=numpy.nan, right=numpy.nan))
+                if len(_t) > 1:
+                    r.append(numpy.interp(t, _t, _v, left=numpy.nan, right=numpy.nan))
+                else:
+                    # no good data for this variable.
+                    logger.info("No good data for ", parameters[i])
+                    r.append(t * numpy.nan)
+
         return r
 
     def get_list(self,*parameters,decimalLatLon=True, discardBadLatLon=True, return_nans=False):
@@ -1615,7 +1621,7 @@ class MultiDBD(object):
             if self.missions and mission_name not in self.missions:
                 filenames.remove(fn)
                 continue
-            # so we decided to keep the file. 
+            # so we decided to keep the file.
             if mission_name not in self.mission_list:
                 self.mission_list.append(mission_name)
             if self.isScienceDataFile(fn):
@@ -1628,7 +1634,7 @@ class MultiDBD(object):
         # We will raise an error when cache files are missing and when there are no files at all.
         if missing_cacheIDs:
             # craft some useful error message
-            mesg = f"\nOne or more cache files could not be found in {cacheDir}:\n" 
+            mesg = f"\nOne or more cache files could not be found in {cacheDir}:\n"
             for k, v in missing_cacheIDs.items():
                 mesg+=f"{k} reqd by {v[0]}"
                 if len(v)>1:
