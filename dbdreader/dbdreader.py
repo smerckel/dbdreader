@@ -796,10 +796,9 @@ class DBD(object):
 
     def _get(self,*parameters,decimalLatLon=True,discardBadLatLon=False, return_nans=False):
         ''' returns time and parameter data for requested parameter '''
-        number_of_parameters=len(parameters)
         valid_parameters = self.__get_valid_parameters(parameters)
-        print(number_of_parameters, len(valid_parameters))
         invalid_parameters = [p for p in parameters if p not in valid_parameters]
+        logger.info('Requested parameters not found:', invalid_parameters)
         good_parameters = [p for p in parameters if p in valid_parameters]
         number_good_params = len(good_parameters)
         if not self.timeVariable in self.parameterNames:
@@ -840,12 +839,9 @@ class DBD(object):
                 if decimalLatLon:
                     values[i] = toDec(values[i])
         # now weave in any bad parameters with empty values..
-        print('timestamps', timestamps)
-        print('values', values)
         ts = []
         vs = []
         for i, p in enumerate(parameters):
-            print(p, p in good_parameters)
             ts += [timestamps[i]] if p in good_parameters else [numpy.array([])]
             vs += [values[i]] if p in good_parameters else [numpy.array([])]
         return ts, vs
@@ -1293,7 +1289,6 @@ class MultiDBD(object):
             parameters = [parameters[0]] + parameters[1]
 
         tv = self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=False)
-        print('TV', tv)
         t = tv[0][0]
         r = []
         for i, (_t, _v) in enumerate(tv):
@@ -1703,7 +1698,6 @@ class MultiDBD(object):
             if method in "get_sync get_xy".split(): # these methods don't support the return nans option.
                 kwds.pop("return_nans")
             try:
-                print(*p)
                 t, v = m[method](*p, **kwds)
             except DbdError as e:
                 # ignore only the no_data_to_interpolate_to error
