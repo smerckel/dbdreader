@@ -130,6 +130,12 @@ class Dbdreader_DBD_test(unittest.TestCase):
         condition3 = np.isfinite(vp)
         condition2 = np.isclose(v, vp).compress(condition3)
         assert np.all(condition1) and np.all(condition2)
+
+    def test_get_sync_on_parameter_without_values(self):
+        print("Reads in a parameter to sync that has no values.")
+        dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd")
+        _, _, x = dbd.get_sync("m_depth", "u_dbd_sensor_list_xmit_control")
+        assert np.all(np.isfinite(x)==False)
         
     def get(self,fn,x):
         try:
@@ -270,6 +276,22 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         except dbdreader.DbdError as e:
             data = e.data
             assert data.missing_cache_files['c4ec741e'][0] =="../data/unit_887-2021-321-3-0.tbd"
+
+    def test_get_sync_on_parameter_without_values(self):
+        print("Reads in a parameter to sync that has no values.")
+        dbd = dbdreader.MultiDBD("../data/sebastian-2014-204-05-00?.dbd")
+        _, _, x = dbd.get_sync("m_depth", "u_dbd_sensor_list_xmit_control")
+        # x has a 2.0 as first value, but then all nans.
+        assert np.all(np.isfinite(x[1:])==False) and x[0]==2.
+
+    def test_get_CTD_sync_on_parameter_without_values(self):
+        print("Reads in a parameter to get_CTD_sync that has no values; Assert error.")
+        dbd = dbdreader.MultiDBD("../data/sebastian-2014-204-05-00?.dbd",
+                                 complement_files=True)
+        try:
+            x = dbd.get_CTD_sync("m_depth", "u_dbd_sensor_list_xmit_control")
+        except dbdreader.DbdError as e:
+            assert e.value == dbdreader.DBD_ERROR_NO_DATA_TO_INTERPOLATE
 
         
     def get_method(self,method,fn,x,y):
