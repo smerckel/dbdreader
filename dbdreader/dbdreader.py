@@ -798,15 +798,15 @@ class DBD(object):
         ''' returns time and parameter data for requested parameter '''
         number_of_parameters=len(parameters)
         valid_parameters = self.__get_valid_parameters(parameters)
-        if len(valid_parameters)!=len(parameters):
-            invalid_parameters = [p for p in parameters if p not in valid_parameters]
-            raise DbdError(DBD_ERROR_NO_VALID_PARAMETERS,
-                           "\nMissing parameter(s): %s"%(", ".join(invalid_parameters)))
+        print(number_of_parameters, len(valid_parameters))
+        invalid_parameters = [p for p in parameters if p not in valid_parameters]
+        good_parameters = [p for p in parameters if p in valid_parameters]
+        number_good_params = len(good_parameters)
         if not self.timeVariable in self.parameterNames:
             raise DbdError(DBD_ERROR_NO_TIME_VARIABLE)
         # OK, we have some parameters to return:
         ti=self.parameterNames.index(self.timeVariable)
-        idx = [self.parameterNames.index(p) for p in parameters]
+        idx = [self.parameterNames.index(p) for p in good_parameters]
         idx_sorted=numpy.sort(idx)
         vi = tuple(idx_sorted)
         self.n_sensors=self.headerInfo['sensors_per_cycle']
@@ -820,10 +820,11 @@ class DBD(object):
                          int(return_nans))
         # map the contents of vi on timestamps and values, preserving the original order:
         idx_reorderd = [vi.index(i) for i in idx]
+        # these are for good_parameters:
         timestamps = [numpy.array(r[i]) for i in idx_reorderd]
-        values = [numpy.array(r[number_of_parameters+i]) for i in idx_reorderd]
+        values = [numpy.array(r[number_good_params+i]) for i in idx_reorderd]
         # convert to decimal lat lon if applicable:
-        for i, p in enumerate(parameters):
+        for i, p in enumerate(good_parameters):
             if return_nans:
                 idx = numpy.where(numpy.isclose(values[i],1e9))[0]
                 values[i][idx] = numpy.nan
@@ -838,7 +839,16 @@ class DBD(object):
                     timestamps[i], values[i] = numpy.compress(condition, (timestamps[i], values[i]), axis=1)
                 if decimalLatLon:
                     values[i] = toDec(values[i])
-        return timestamps, values
+        # now weave in any bad parameters with empty values..
+        print('timestamps', timestamps)
+        print('values', values)
+        ts = []
+        vs = []
+        for i, p in enumerate(parameters):
+            print(p, p in good_parameters)
+            ts += [timestamps[i]] if p in good_parameters else [numpy.array([])]
+            vs += [values[i]] if p in good_parameters else [numpy.array([])]
+        return ts, vs
 
 
     def _get_sync(self,*params, decimalLatLon=True,discardBadLatLon=True):
@@ -1283,6 +1293,7 @@ class MultiDBD(object):
             parameters = [parameters[0]] + parameters[1]
 
         tv = self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=False)
+        print('TV', tv)
         t = tv[0][0]
         r = []
         for i, (_t, _v) in enumerate(tv):
@@ -1692,6 +1703,7 @@ class MultiDBD(object):
             if method in "get_sync get_xy".split(): # these methods don't support the return nans option.
                 kwds.pop("return_nans")
             try:
+                print(*p)
                 t, v = m[method](*p, **kwds)
             except DbdError as e:
                 # ignore only the no_data_to_interpolate_to error
