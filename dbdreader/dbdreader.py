@@ -797,15 +797,15 @@ class DBD(object):
     def _get(self,*parameters,decimalLatLon=True,discardBadLatLon=False, return_nans=False):
         ''' returns time and parameter data for requested parameter '''
         valid_parameters = self.__get_valid_parameters(parameters)
-        invalid_parameters = [p for p in parameters if p not in valid_parameters]
-        logger.info('Requested parameters not found:', invalid_parameters)
-        good_parameters = [p for p in parameters if p in valid_parameters]
-        number_good_params = len(good_parameters)
+        invalid_parameters = self.__get_valid_parameters(parameters, invert=True)
+        if invalid_parameters:
+            logger.warning(f"Requested parameters not found: {'.'.join(invalid_parameters)}.")
+        number_valid_parameters = len(valid_parameters)
         if not self.timeVariable in self.parameterNames:
             raise DbdError(DBD_ERROR_NO_TIME_VARIABLE)
         # OK, we have some parameters to return:
         ti=self.parameterNames.index(self.timeVariable)
-        idx = [self.parameterNames.index(p) for p in good_parameters]
+        idx = [self.parameterNames.index(p) for p in valid_parameters]
         idx_sorted=numpy.sort(idx)
         vi = tuple(idx_sorted)
         self.n_sensors=self.headerInfo['sensors_per_cycle']
@@ -821,9 +821,9 @@ class DBD(object):
         idx_reorderd = [vi.index(i) for i in idx]
         # these are for good_parameters:
         timestamps = [numpy.array(r[i]) for i in idx_reorderd]
-        values = [numpy.array(r[number_good_params+i]) for i in idx_reorderd]
+        values = [numpy.array(r[number_valid_parameters+i]) for i in idx_reorderd]
         # convert to decimal lat lon if applicable:
-        for i, p in enumerate(good_parameters):
+        for i, p in enumerate(valid_parameters):
             if return_nans:
                 idx = numpy.where(numpy.isclose(values[i],1e9))[0]
                 values[i][idx] = numpy.nan
@@ -838,13 +838,20 @@ class DBD(object):
                     timestamps[i], values[i] = numpy.compress(condition, (timestamps[i], values[i]), axis=1)
                 if decimalLatLon:
                     values[i] = toDec(values[i])
-        # now weave in any bad parameters with empty values..
-        ts = []
-        vs = []
-        for i, p in enumerate(parameters):
-            ts += [timestamps[i]] if p in good_parameters else [numpy.array([])]
-            vs += [values[i]] if p in good_parameters else [numpy.array([])]
-        return ts, vs
+        # if we have any invalid parameters, insert empty arrays in the right places, or full length nan vectors if return_nans is True
+        if return_nans:
+            n_timestamps = timestamps[0].shape[0]
+            def get_empty_array():
+                return numpy.ones(n_timestamps)*numpy.nan
+        else:
+            def get_empty_array():
+                return numpy.array([])
+                
+        for invalid_parameter in invalid_parameters:
+            idx = parameters.index(invalid_parameter)
+            timestamps.insert(idx, get_empty_array())
+            values.insert(idx, get_empty_array())
+        return timestamps, values
 
 
     def _get_sync(self,*params, decimalLatLon=True,discardBadLatLon=True):
@@ -883,8 +890,11 @@ class DBD(object):
 
         return r
 
-    def __get_valid_parameters(self,parameters):
-        validParameters=[i for i in parameters if i in self.parameterNames]
+    def __get_valid_parameters(self,parameters, invert=False):
+        if not invert:
+            validParameters=[i for i in parameters if i in self.parameterNames]
+        else:
+            validParameters=[i for i in parameters if not i in self.parameterNames]
         return validParameters
 
     def __is_latlon_parameter(self,x):
@@ -1703,10 +1713,6 @@ class MultiDBD(object):
                 # ignore only the no_data_to_interpolate_to error
                 # as the file is probably (close to) empty
                 if e.value==DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO:
-                    continue
-                elif e.value==DBD_ERROR_NO_VALID_PARAMETERS:
-                    if e.mesg not in error_mesgs:
-                        error_mesgs.append(e.mesg)
                     continue
                 else:
                     # in all other cases reraise the error..
