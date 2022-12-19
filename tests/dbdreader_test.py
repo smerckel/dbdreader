@@ -22,8 +22,15 @@ class Dbdreader_DBD_test(unittest.TestCase):
         print("get_sync_non_existing_variable")
         v = self.get_method("sync",
                           "../data/amadeus-2014-204-05-000.sbd",
-                            "m_depth",'M_LAT','m_lon')
+                            "m_depth",'sci_water_pressure','m_lon')
         self.assertTrue(len(v)==4 and len(v[2])==len(v[1]) and np.all(np.isnan(v[2])))
+
+    def test_get_non_valid_variable(self):
+        print("get_non_valid_variable")
+        with self.assertRaises(dbdreader.DbdError) as e:
+            v=self.get("../data/amadeus-2014-204-05-000.sbd","M_LON")
+        # We expect an exception when an non-existing parameter is being requested.
+        self.assertTrue(e.exception.value==dbdreader.DBD_ERROR_NO_VALID_PARAMETERS)
 
 
     def test_get_sync(self):
@@ -172,19 +179,30 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
     
     def test_get_non_existing_variable(self):
         print("get_non_existing_variable")
-        v = self.get_method("get",self.pattern,"M_DEPTH",[])
+        v = self.get_method("get",self.pattern,"m_water_pressure",[])
         condition = len(v)==2 and len(v[1])==0 and len(v[0])==0
         self.assertTrue(condition)
+
+    def test_get_sync_non_invalid_variable(self):
+        print("get_sync_non_invalid_variable")
+        with self.assertRaises(dbdreader.DbdError) as e:
+            v = self.get_method("sync",
+                                self.pattern,
+                                "m_depth",['m_lat','M_LON'])
+        # We expect an exception when an non-existing parameter is being requested.
+        self.assertTrue(e.exception.value==dbdreader.DBD_ERROR_NO_VALID_PARAMETERS)
+
 
     def test_get_sync_non_existing_variable(self):
         print("get_sync_non_existing_variable")
         v = self.get_method("sync",
                             self.pattern,
-                            "m_depth",['m_lat','M_LON'])
+                            "m_depth",['m_lat','m_water_pressure'])
 
         condition = len(v)==4 and len(v[2]==v[3]) and np.all(np.isnan(v[3]))
         self.assertTrue(condition)
-              
+
+        
     def test_get_sync(self):
         print("get_sync")
         dbd=dbdreader.MultiDBD(pattern=self.pattern)
