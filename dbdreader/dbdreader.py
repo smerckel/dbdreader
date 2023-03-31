@@ -325,7 +325,7 @@ class DBDPatternSelect(object):
         return self.date_format
 
 
-    def select(self,pattern=None,filenames=[],from_date=None,until_date=None):
+    def select(self,pattern=None,filenames=[],from_date=None,until_date=None,cacheDir=None):
         '''Select file names from pattern or list.
 
         This method selects the filenames given a filename list or search
@@ -347,6 +347,9 @@ class DBDPatternSelect(object):
             date used aas end date criterion. If None, all files after
             from_date are included.
 
+        cachedDir: str or None, optional
+            path to CAC file cache directory. If None, the default path is used.
+
         Returns:
              list of filenames that match the criteria
 
@@ -360,7 +363,7 @@ class DBDPatternSelect(object):
 
         '''
 
-        all_filenames = self.get_filenames(pattern, filenames)
+        all_filenames = self.get_filenames(pattern, filenames, cacheDir)
 
         if not from_date and not until_date:
             # just get all files.
