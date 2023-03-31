@@ -323,5 +323,12 @@ class DBDPatternSelect_test(unittest.TestCase):
         fns=PS.select(pattern="../data/ama*.sbd",until_date="24 7 2014 18:00")
         self.assertEqual(len(fns),1)
 
-                            
+    def test_select_from_pattern_non_standard_cache_dir(self):
+        print("select from pattern non standard cache dir")
+        dbdreader.DBDPatternSelect.cache.clear()
+        PS=dbdreader.DBDPatternSelect(date_format="%d %m %Y %H:%M", cacheDir='../data/cac')
+        fns=PS.select(pattern="../data/ama*.sbd",from_date="24 7 2014 00:00")
+        fns.sort()
+        self.assertEqual(fns[0],"../data/amadeus-2014-204-05-000.sbd")
+
 unittest.main()

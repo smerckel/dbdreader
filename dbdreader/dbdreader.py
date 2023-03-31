@@ -297,10 +297,10 @@ class DBDPatternSelect(object):
     '''
     cache = {}
 
-    def __init__(self, date_format="%d %m %Y"):
+    def __init__(self, date_format="%d %m %Y", cacheDir=None):
         self.set_date_format(date_format)
-
-
+        self.cacheDir = cacheDir
+        
     def set_date_format(self,date_format):
         ''' Set date format
 
@@ -310,6 +310,9 @@ class DBDPatternSelect(object):
         ----------
         date_format: str
             format to interpret date strings. Example "%H %d %m %Y"
+
+        cachedDir: str or None, optional
+            path to CAC file cache directory. If None, the default path is used.
 
         '''
         self.date_format=date_format
@@ -325,7 +328,7 @@ class DBDPatternSelect(object):
         return self.date_format
 
 
-    def select(self,pattern=None,filenames=[],from_date=None,until_date=None,cacheDir=None):
+    def select(self,pattern=None,filenames=[],from_date=None,until_date=None):
         '''Select file names from pattern or list.
 
         This method selects the filenames given a filename list or search
@@ -347,8 +350,6 @@ class DBDPatternSelect(object):
             date used aas end date criterion. If None, all files after
             from_date are included.
 
-        cachedDir: str or None, optional
-            path to CAC file cache directory. If None, the default path is used.
 
         Returns:
              list of filenames that match the criteria
@@ -363,7 +364,7 @@ class DBDPatternSelect(object):
 
         '''
 
-        all_filenames = self.get_filenames(pattern, filenames, cacheDir)
+        all_filenames = self.get_filenames(pattern, filenames, self.cacheDir)
 
         if not from_date and not until_date:
             # just get all files.
@@ -572,7 +573,7 @@ class DBD(object):
         path to CAC file cache directory. If None, the default path is used.
     '''
 
-    def __init__(self,filename,cacheDir=None):
+    def __init__(self,filename, cacheDir=None):
 
         self.filename=filename
         logger.debug('Opening %s', filename)
