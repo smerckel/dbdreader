@@ -5,6 +5,12 @@ DBDREADER
 
 Change log
 ----------
+Version 0.4.12
+
+* PatternSelect now accepts the option of a non-standard cache
+  directory.
+  Thanks to hawesie.
+  
 Version 0.4.11
 
 * Version 0.4.9 introduced a bug that in some rare circumstances caused
