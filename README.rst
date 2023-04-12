@@ -5,6 +5,33 @@ DBDREADER
 
 Change log
 ----------
+
+Version 0.4.13
+
+* Modifies behaviour when the user requests a parameter that has no
+  data. If the requested parameter is not a valid glider sensor name,
+  assume a user-error and raise an exception, otherwise return an
+  empty array.
+
+  This behaviour fixes a bug for MultiDBD:
+  each file opened with MultiDBD would fail to produce any data if one or
+  more parameters that are asked for, are not present in the file.
+   
+  New behaviour returns data for the exisiting parameters (only); empty
+  array for the missing parameters (or nans if return_nans=True)
+
+  Concludes pull request #16 by jklymak.
+
+Version 0.4.12
+
+* PatternSelect now accepts the option of a non-standard cache
+  directory.
+  Thanks to hawesie.
+
+* MultiDBD's get_sync() now returns nan's for those parameters for
+  which no data exist, provided that at least one of the requested
+  parameters contains data. 
+  
 Version 0.4.11
 
 * Version 0.4.9 introduced a bug that in some rare circumstances caused
