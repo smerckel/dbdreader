@@ -3,26 +3,6 @@
 DBDREADER
 =========
 
-
-
-    Mofified behaviour:
-    
-    1) user requests a parameter that is not a glider sensor
-    => raise DbdError
-    
-    2) user requests a parameter that is a known glider sensor, but is not
-       present in the file(s)
-    => returns empty array, or only nans for MultiDBD with return_nans=True
-    
-    This behaviour fixes a bug for MultiDBD:
-    each file opened with MultiDBD would fail to produce any data if one or
-    more parameters that are asked for, are not present in the file.
-    
-    New behaviour returns data for the exisiting parameters (only); empty
-    array for the missing parameters (or nans if return_nans=True)
-
-
-
 Change log
 ----------
 
@@ -31,7 +11,16 @@ Version 0.4.13
 * Modifies behaviour when the user requests a parameter that has no
   data. If the requested parameter is not a valid glider sensor name,
   assume a user-error and raise an exception, otherwise return an
-  empty array. Concludes pull request #16 by jklymak.
+  empty array.
+
+  This behaviour fixes a bug for MultiDBD:
+  each file opened with MultiDBD would fail to produce any data if one or
+  more parameters that are asked for, are not present in the file.
+   
+  New behaviour returns data for the exisiting parameters (only); empty
+  array for the missing parameters (or nans if return_nans=True)
+
+  Concludes pull request #16 by jklymak.
 
 Version 0.4.12
 
