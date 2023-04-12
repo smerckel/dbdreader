@@ -10,6 +10,10 @@ Version 0.4.12
 * PatternSelect now accepts the option of a non-standard cache
   directory.
   Thanks to hawesie.
+
+* MultiDBD's get_sync() now returns nan's for those parameters for
+  which no data exist, provided that at least one of the requested
+  parameters contains data. Concludes pull request #16 by jklymak.
   
 Version 0.4.11
 
