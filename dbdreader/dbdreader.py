@@ -1680,6 +1680,7 @@ class MultiDBD(object):
         #     if i not in self.__ignore_cache]
         include_source = kwds.pop("include_source")
         data = dict([(k,[]) for k in p])
+        srcs = dict([(k,[]) for k in p])
         error_mesgs = []
         for i in self.dbds[ft]:
             if i in self.__ignore_cache:
@@ -1703,10 +1704,16 @@ class MultiDBD(object):
                     raise e
             else:
                 for _p, _t, _v in zip(p, t, v):
-                    data[_p].append((_t, _v, [i] * len(_t)) if include_source else (_t, _v))
+                    data[_p].append( (_t, _v) )
+                    if include_source:
+                        srcs[_p] += [i] * len(_t)
+                    #data[_p].append((_t, _v, [i] * len(_t)) if include_source else (_t, _v))
         if not all(data.values()):
             # nothing has been added, so all files should have returned nothing:
             raise(DbdError(DBD_ERROR_NO_VALID_PARAMETERS,
                            "\n".join(error_mesgs)))
-        return [numpy.hstack(data[_p]) for _p in p]
-
+        if not include_source:
+            data_arrays = [numpy.hstack(data[_p]) for _p in p]
+        else:
+            data_arrays = [(numpy.hstack(data[_p]),srcs[_p]) for _p in p]
+        return data_arrays
