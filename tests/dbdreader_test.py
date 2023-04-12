@@ -293,7 +293,17 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         except dbdreader.DbdError as e:
             assert e.value == dbdreader.DBD_ERROR_NO_DATA_TO_INTERPOLATE
 
+    def test_get_CTD_sync_removes_empty_timestamps(self):
+        print("Reads data using get_CTD_sync and empty timestamps should be removed.")
+        dbd = dbdreader.MultiDBD("../data/sebastian-2014-204-05-00?.dbd",
+                                 complement_files=True)
+        tctd, T, C, P = dbd.get_CTD_sync()
+        t, tctdp = dbd.get("sci_ctd41cp_timestamp")
+        idx = np.where(tctdp<1)[0]
+        assert len(idx) and len(tctd) == len(tctdp) - len(idx)
         
+        
+            
     def get_method(self,method,fn,x,y):
         dbd=dbdreader.MultiDBD(pattern=fn)
         try:

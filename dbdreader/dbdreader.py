@@ -195,7 +195,7 @@ class DbdError(Exception):
         elif self.value==DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED:
             mesg='Invalid or conflicting file selection criterion/criteria specified.'
         elif self.value==DBD_ERROR_NO_DATA_TO_INTERPOLATE:
-            mesg='One or more parameters that are to be interpolated, does/do have no data.'
+            mesg='One or more parameters that are to be interpolated, does/do not have any data.'
         else:
             mesg=f'Undefined error. ({self.value})'
         if self.mesg:
@@ -1375,8 +1375,8 @@ class MultiDBD(object):
                                         # also returned.
         tmp = self.get_sync(*CTDparameters, *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
         # remove all time<=1 timestamps, as there can be nans here too.
-        tmp = numpy.compress(tmp[0]>1, tmp, axis=1)
-        condition = tmp[2]>0
+        tmp = numpy.compress(tmp[1]>1, tmp, axis=1)
+        condition = tmp[2]>0 # conductivity > 0
         if len(parameters):
             # check for any leading or trailing nans in v, caused by
             # interpolation:
