@@ -321,6 +321,33 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         t, tctdp = dbd.get("sci_ctd41cp_timestamp")
         idx = np.where(tctdp<1)[0]
         assert len(idx) and len(tctd) == len(tctdp) - len(idx)
+
+    def test_include_source_data(self):
+        print("Verify that source DBDs correctly map to data points.")
+        multi = dbdreader.MultiDBD(pattern=self.pattern)
+
+        for parameter in multi.parameterNames["eng"] + multi.parameterNames["sci"]:
+            output = multi.get(parameter, include_source=True)
+            dbds = set(output[2])  # Unique source DBDs for this parameter
+            for dbd in dbds:
+                mask = output[2] == dbd
+                content = [output[0][mask], output[1][mask]]  # Only data attributed to this DBD
+                single = dbd.get(parameter)
+                # Data should be identical
+                assert all(content[0] == single[0])
+                assert all(content[1] == single[1])
+
+    def test_include_source_files(self):
+        print("Verify that all designated files are represented in sources.")
+        files = glob.glob(self.pattern)
+        multi = dbdreader.MultiDBD(pattern=self.pattern)
+
+        output = multi.get(*(multi.parameterNames["eng"] + multi.parameterNames["sci"]), include_source=True)
+
+        sources = {dbd.filename for parameter in output for dbd in parameter[2]}  # Unique source DBDs
+        # All files should be represented
+        assert all(file in sources for file in files)
+        assert all(source in files for source in sources)
         
         
             

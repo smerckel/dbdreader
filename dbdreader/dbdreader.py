@@ -1189,7 +1189,7 @@ class MultiDBD(object):
         self.set_time_limits()
 
 ##### public methods
-    def get(self, *parameters, decimalLatLon=True, discardBadLatLon=True, return_nans=False):
+    def get(self, *parameters, decimalLatLon=True, discardBadLatLon=True, return_nans=False, include_source=False):
         ''' Returns time and value tuple(s) for requested parameter(s)
 
         This method returns time and values tuples for a list of parameters.
@@ -1213,10 +1213,17 @@ class MultiDBD(object):
             If True, nan's are returned for those timestamps where no new value is available.
             Default value: False
 
+        include_source : bool, optional
+            If True, a third column consisting of the DBD object that a given data point was
+            extracted from will be added. Note that this causes the dtype of the returned array
+            to be "O" for object.
+            Default value: False
+
         Returns
         -------
         (ndarray, ndarray) or list of (ndarray, ndarray)
-            list of tuples of time and value vectors for each parameter requested.
+            list of tuples of time and value vectors for each parameter requested. A third
+            vector is included when include_source is True.
         '''
         eng_variables = []
         sci_variables = []
@@ -1228,7 +1235,7 @@ class MultiDBD(object):
             else:
                 positions.append(("eng", len(eng_variables)))
                 eng_variables.append(p)
-        kwds=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=return_nans)
+        kwds=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=return_nans, include_source=include_source)
 
         if len(sci_variables)>=1:
             r_sci = self._worker("get", "sci", *sci_variables, **kwds)
@@ -1716,10 +1723,12 @@ class MultiDBD(object):
 
 
     def _worker(self,method,ft,*p,**kwds):
-        # if i in _ignore_cache, the file is flagged as outside the time limits
-        #tmp=[eval("i.%s(*p)"%(method)) for i in self.dbds[ft]
-        #     if i not in self._ignore_cache]
+        try:
+            include_source = kwds.pop("include_source")
+        except KeyError:
+            include_source = False
         data = dict([(k,[]) for k in p])
+        srcs = dict([(k,[]) for k in p])
         error_mesgs = []
         for i in self.dbds[ft]:
             if i in self._ignore_cache:
@@ -1739,10 +1748,16 @@ class MultiDBD(object):
                     raise e
             else:
                 for _p, _t, _v in zip(p, t, v):
-                    data[_p].append((_t, _v))
+                    data[_p].append( (_t, _v) )
+                    if include_source:
+                        srcs[_p] += [i] * len(_t)
+                    #data[_p].append((_t, _v, [i] * len(_t)) if include_source else (_t, _v))
         if not all(data.values()):
             # nothing has been added, so all files should have returned nothing:
             raise(DbdError(DBD_ERROR_NO_VALID_PARAMETERS,
                            "\n".join(error_mesgs)))
-        return [numpy.hstack(data[_p]) for _p in p]
-
+        if not include_source:
+            data_arrays = [numpy.hstack(data[_p]) for _p in p]
+        else:
+            data_arrays = [(numpy.hstack(data[_p]),srcs[_p]) for _p in p]
+        return data_arrays
