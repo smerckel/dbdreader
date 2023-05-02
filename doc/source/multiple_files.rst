@@ -51,7 +51,7 @@ Example
 
         # open some files, using a pattern
 
-        dbd=dbdreader.MultiDBD(pattern="../data/amadeus*.[st]bd")
+        dbd=dbdreader.MultiDBD(pattern="data/amadeus*.[st]bd")
 
         # print what parameters are available:
         print("we the following science parameters:")
@@ -98,7 +98,7 @@ Example
 
         pattern_selector=dbdreader.DBDPatternSelect()
         pattern_selector.set_date_format("%d %b %Y %H")
-        selection=pattern_selector.select(pattern="../data/amadeus*.[st]bd",from_date="24 Jul 2014 18")
+        selection=pattern_selector.select(pattern="data/amadeus*.[st]bd",from_date="24 Jul 2014 18")
 
         print("full list of sbd files:")
         for i,n in enumerate(dbd.filenames):

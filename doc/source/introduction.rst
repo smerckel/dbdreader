@@ -39,19 +39,22 @@ or, fetching the source. Then, simply follow these steps.
 
 Get the source::
 
-  $ wget https://pypi.python.org/packages/source/d/dbdreader/dbdreader-0.4.0.tar.gz
+  $ wget https://pypi.python.org/packages/source/d/dbdreader/dbdreader-0.4.14.tar.gz
 
 Unpack the tarball::
 
-   $ tar xvzf dbdreader-0.4.0.tar.gz
+   $ tar xvzf dbdreader-0.4.14.tar.gz
 
 Install the package::
 
-  $ cd dbdreader-0.4.0
+  $ cd dbdreader-0.4.14
   $ python3 setup.py build
   $ sudo python3 setup.py install
 
+or use pip to install the package::
 
+  $ cd dvdreader-0.4.14
+  $ pip install .
 
 Dbdreader quickstart
 ====================

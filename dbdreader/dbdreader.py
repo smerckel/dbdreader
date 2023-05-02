@@ -1214,14 +1214,16 @@ class MultiDBD(object):
             Default value: False
 
         include_source : bool, optional
-            If True, a third column consisting of the DBD object that a given data point was
-            extracted from will be added. Note that this causes the dtype of the returned array
-            to be "O" for object.
+            If True, a list with a reference for each data point to the DBD object, where the datapoint originated from.
+            If called with a single parameter, a tuple of a Nx2 array with data and a list of N elements with refrences to a DBD object.
+            If called for more parameters, a list of such tuples is returned.
+        
             Default value: False
 
         Returns
         -------
-        (ndarray, ndarray) or list of (ndarray, ndarray)
+        ndarray or list of ndarray, or tuple(ndarray, list), or list of tuple(ndarray, list)
+        
             list of tuples of time and value vectors for each parameter requested. A third
             vector is included when include_source is True.
         '''
