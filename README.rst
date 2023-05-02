@@ -5,6 +5,15 @@ DBDREADER
 
 Change log
 ----------
+Version 0.4.14
+
+* Adds a new option to the get() method of the MultiDBD class, where
+  if the keyword include_sources=True, for each parameter an
+  additional list is returned that has for each data point a reference
+  to the DBD instance that produced the data point. This allows to
+  query the source of a specific data point.
+
+  This merges the (modified) pull request #14 by MCazaly.
 
 Version 0.4.13
 
