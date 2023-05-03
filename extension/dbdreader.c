@@ -163,9 +163,10 @@ static unsigned char read_known_cycle(FILE *fd)
   //     123.456            Four byte float.
   //     123456789.12345    Eight byte double.
   // but by this point we already know the byte order, so just skip the bytes
+  // After this, there is always 'd' (hex 64), before the state bytes begin. So
+  // Skip 12 + 1 bytes in total.
   pos = ftell(fd);
   fseek(fd, pos + 13, 0);
-
   // if we can successfully read the value, the glider byte order == host order
   if (two_byte_int == 4660) {
     return 0;
