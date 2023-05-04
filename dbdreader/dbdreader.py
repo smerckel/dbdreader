@@ -903,7 +903,7 @@ class DBD(object):
                     r.append(t * numpy.nan)
                     logger.info(f"No valid data to interpolate for '{params[i]}'.")
 
-        return r
+        return tuple(r)
 
         
     def _get_valid_parameters(self,parameters, invert=False, global_scope=False):
@@ -1118,14 +1118,6 @@ class MultiDBD(object):
         >0: the first n files are read
         <0: the last n files are read.
 
-    ensure_paired : bool
-        (DEPRECATED) if True, only those files are retained for which both engineering and science
-        data files are available.
-
-    include_paired : bool
-        (DEPRECATED) If True automatically include matching [de]bd files
-
-
     Notes
     -----
     .. versionchanged:: 0.4.0
@@ -1135,12 +1127,6 @@ class MultiDBD(object):
     def __init__(self,filenames=None,pattern=None,cacheDir=None,complemented_files_only=False,
                  complement_files=False,banned_missions=[],missions=[],
                  max_files=None, **kwds):
-        if kwds.get('ensure_paired', None):
-            complemented_files_only = kwds['ensure_paired']
-            logger.info("ensure_paired keyword is obsolete as of version 0.4.0")
-        if kwds.get('include_paired', None):
-            complement_files = kwds['include_paired']
-            logger.info("include_paired keyword is obsolete as of version 0.4.0")
 
         self._ignore_cache=[]
         if cacheDir is None:
@@ -1222,10 +1208,12 @@ class MultiDBD(object):
 
         Returns
         -------
-        ndarray or list of ndarray, or tuple(ndarray, list), or list of tuple(ndarray, list)
-        
-            list of tuples of time and value vectors for each parameter requested. A third
-            vector is included when include_source is True.
+        (ndarray, ndarray) or
+        ((ndarray, ndarray), list) or
+        [(ndarray, ndarray), (ndarray, ndarray), ...]
+        [((ndarray, ndarray), list), ((ndarray, ndarray), list), ...]
+            for a single parameter, for a single parameter, including source file list, for multiple parameters,
+            for multiple parameters, including source file list, respectively.
         '''
         eng_variables = []
         sci_variables = []
@@ -1340,46 +1328,8 @@ class MultiDBD(object):
                 except ValueError:
                     r.append(t * numpy.nan)
                     logger.info(f"No valid data to interpolate for '{parameters[i]}'.")
-        return r
+        return tuple(r)
 
-    def get_list(self,*parameters,decimalLatLon=True, discardBadLatLon=True, return_nans=False):
-        ''' Returns time and value tuples for a list of requested parameters
-
-
-        This method returns time and values tuples for a list of parameters. It
-        is basically a short-hand for a looped get() method.
-
-        Note that each parameter comes with its own time base. No interpolation
-        is done. Use get_sync() for that in stead.
-
-        Parameters
-        ----------
-        parameter_list: list of str
-            list of parameter names
-
-        decimalLatLon : bool, optional
-            If True (default), latitiude and longitude related parameters are converted to
-            decimal format, as opposed to nmea format.
-
-        discardBadLatLon : bool, optional
-            If True (default), bogus latitiude and longitude values are ignored.
-
-        return_nans : bool
-            If True, nan's are returned for those timestamps where no new value is available.
-            Default value: False
-
-        Returns
-        -------
-        list of (ndarray, ndarray)
-            list of tuples of time and value vectors for each parameter requested.
-
-        .. deprecated:: 0.4.0
-
-        .. note::
-            get_list() is deprecated, and will be removed in a future version. Use .get() instead.
-        '''
-        logger.info("get_list has been deprecated in version 0.4.0 and may be removed in the future. Use get instead.")
-        return self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=return_nans)
 
 
     def get_CTD_sync(self, *parameters, decimalLatLon=True, discardBadLatLon=True):
@@ -1432,7 +1382,7 @@ class MultiDBD(object):
         dt = numpy.hstack( ([1], numpy.diff(tmp[1])) )
         condition &= dt>0
         _, tctd, C, T, P, *v = numpy.compress(condition, tmp, axis=1)
-        return [tctd, C, T, P] + v
+        return tuple([tctd, C, T, P] + v)
 
     def has_parameter(self,parameter):
         '''Has this file parameter?
@@ -1759,7 +1709,8 @@ class MultiDBD(object):
             raise(DbdError(DBD_ERROR_NO_VALID_PARAMETERS,
                            "\n".join(error_mesgs)))
         if not include_source:
-            data_arrays = [numpy.hstack(data[_p]) for _p in p]
+            data_arrays = [(numpy.hstack([_d[0] for _d in data[_p]]), numpy.hstack([_d[1] for _d in data[_p]])) for _p in p]
         else:
-            data_arrays = [(numpy.hstack(data[_p]),srcs[_p]) for _p in p]
+            data_arrays = [((numpy.hstack([_d[0] for _d in data[_p]]), numpy.hstack([_d[1] for _d in data[_p]])), srcs[_p]) for _p in p]
         return data_arrays
+
