@@ -28,7 +28,8 @@ static void get_by_read_per_byte(int ti,
 				 file_info_t FileInfo,
 				 int return_nans,
 				 double ***data,
-				 int *ndata);
+				 int *ndata,
+				 int skip_initial_line);
 
 static double read_sensor_value(FILE *fd,
 				int bs, unsigned char flip);
@@ -64,7 +65,8 @@ double ***get_variable(int ti,
 		       int nv,
 		       file_info_t FileInfo,
 		       int return_nans,
-		       int *ndata)
+		       int *ndata,
+		       int skip_initial_line)
 {
   int i,j;
   double ***data;
@@ -102,7 +104,7 @@ double ***get_variable(int ti,
   for(i=i;i<nv+1;i++){
     vit[i]=vi[i-1];
   }
-  get_by_read_per_byte(nti,vit,nvt,FileInfo,return_nans,data,ndata);
+  get_by_read_per_byte(nti,vit,nvt,FileInfo,return_nans,data,ndata, skip_initial_line);
   free(vit);
   return(data);
 }
@@ -181,7 +183,8 @@ static void get_by_read_per_byte(int nti,
 				 file_info_t FileInfo,
 				 int return_nans,
 				 double ***result,
-				 int *ndata)
+				 int *ndata,
+				 int skip_initial_line)
 {
 
   unsigned chunksize;
@@ -197,7 +200,7 @@ static void get_by_read_per_byte(int nti,
   int *read_vi;
 
   int min_offset_value;
-  byte writing_first_line = 1;
+  int write_data = !skip_initial_line; // 0: only first line is not output; 1: all lines are output
 
   if (return_nans==1)
     min_offset_value=-2; // include the notfound/samevalue/update
@@ -257,7 +260,7 @@ static void get_by_read_per_byte(int nti,
 	}
       }
       
-      if (!writing_first_line){
+      if (write_data){
 	for(i=0; i<nv; i++){
 	  if ((offsets[i]>=min_offset_value) && (i!=nti)){// && isfinite(read_result[i])){
 	    j=i-(int)(i>nti);
@@ -270,7 +273,7 @@ static void get_by_read_per_byte(int nti,
 	}
       }
       else {
-	writing_first_line=0;
+	write_data=1; // after first line, always write the data.
       }
     }
     /* jump to the next state block */

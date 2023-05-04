@@ -22,6 +22,7 @@ except:
 
 logger = logging.getLogger(os.path.basename(__file__))
 
+# Parameters that a compatible with transforming from nmea to decimal format:
 LATLON_PARAMS = ["m_lat",
                  "m_lon",
                  "c_wpt_lat",
@@ -564,7 +565,7 @@ class DBDHeader(object):
 
 
 class DBD(object):
-    ''' Class to read a single DBD type file
+    '''Class to read a single DBD type file
 
     Parameters
     ----------
@@ -574,8 +575,19 @@ class DBD(object):
 
     cachedDir: str or None, optional
         path to CAC file cache directory. If None, the default path is used.
-    '''
 
+
+    SKIP_INITIAL_LINE : bool class variable, controlling the behaviour
+        of the binary reader: if set to True, all first lines of data
+        in the binary files are skipped otherwise they are
+        read. Default value is True, as the data in the initial file
+        have usually no scienitific merit (random value or arbitrarily
+        old); only for debugging purposes one may want to have the
+        initial data line read.
+    '''
+    
+    SKIP_INITIAL_LINE = True
+    
     def __init__(self,filename, cacheDir=None):
 
         self.filename=filename
@@ -831,7 +843,8 @@ class DBD(object):
                          self.filename,
                          ti,
                          vi,
-                         int(return_nans))
+                         int(return_nans),
+                         int(DBD.SKIP_INITIAL_LINE))
         # map the contents of vi on timestamps and values, preserving the original order:
         idx_reorderd = [vi.index(i) for i in idx]
         # these are for good_parameters:

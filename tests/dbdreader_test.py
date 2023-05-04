@@ -143,6 +143,19 @@ class Dbdreader_DBD_test(unittest.TestCase):
         dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd")
         _, _, x = dbd.get_sync("m_depth", "u_dbd_sensor_list_xmit_control")
         assert np.all(np.isfinite(x)==False)
+
+
+    def test_get_reading_initial_data_line(self):
+        print("Tests whether initial data line can be read if requested.")
+        
+        dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd")
+        t0, v0 = dbd.get("m_depth")
+        dbdreader.DBD.SKIP_INITIAL_LINE=False
+        dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd")
+        t1, v1 = dbd.get("m_depth")
+        dbdreader.DBD.SKIP_INITIAL_LINE=True
+        assert len(v0) == len(v1) - 1
+        
         
     def get(self,fn,x):
         try:
@@ -346,6 +359,16 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         assert all(file in sources for file in files)
         assert all(source in files for source in sources)
         
+    def test_get_reading_initial_data_line(self):
+        print("Tests whether initial data line can be read if requested.")
+        
+        dbd = dbdreader.MultiDBD(self.pattern)
+        t0, v0 = dbd.get("m_depth")
+        dbdreader.DBD.SKIP_INITIAL_LINE=False
+        dbd = dbdreader.MultiDBD(self.pattern)
+        t1, v1 = dbd.get("m_depth")
+        dbdreader.DBD.SKIP_INITIAL_LINE=True
+        assert len(v0) == len(v1) - len(dbd.dbds['eng'])
             
     def get_method(self,method,fn,x,y):
         dbd=dbdreader.MultiDBD(pattern=fn)
