@@ -1,3 +1,4 @@
+from itertools import chain
 import warnings
 import os
 import struct
@@ -576,21 +577,22 @@ class DBD(object):
     cachedDir: str or None, optional
         path to CAC file cache directory. If None, the default path is used.
 
+    skip_initial_line : bool, default: True
+        controls the behaviour of the binary reader: if set to True,
+        all first lines of data in the binary files are skipped
+        otherwise they are read. Default value is True, as the data in
+        the initial file have usually no scienitific merit (random
+        value or arbitrarily old); only for debugging purposes one may
+        want to have the initial data line read.
 
-    SKIP_INITIAL_LINE : bool class variable, controlling the behaviour
-        of the binary reader: if set to True, all first lines of data
-        in the binary files are skipped otherwise they are
-        read. Default value is True, as the data in the initial file
-        have usually no scienitific merit (random value or arbitrarily
-        old); only for debugging purposes one may want to have the
-        initial data line read.
     '''
     
     SKIP_INITIAL_LINE = True
     
-    def __init__(self,filename, cacheDir=None):
-
+    def __init__(self,filename, cacheDir=None, skip_initial_line=True):
+        
         self.filename=filename
+        self.skip_initial_line = skip_initial_line
         logger.debug('Opening %s', filename)
         if cacheDir==None:
             self.cacheDir=CACHEDIR
@@ -844,7 +846,7 @@ class DBD(object):
                          ti,
                          vi,
                          int(return_nans),
-                         int(DBD.SKIP_INITIAL_LINE))
+                         int(self.skip_initial_line))
         # map the contents of vi on timestamps and values, preserving the original order:
         idx_reorderd = [vi.index(i) for i in idx]
         # these are for good_parameters:
@@ -1139,7 +1141,7 @@ class MultiDBD(object):
     '''
     def __init__(self,filenames=None,pattern=None,cacheDir=None,complemented_files_only=False,
                  complement_files=False,banned_missions=[],missions=[],
-                 max_files=None, **kwds):
+                 max_files=None, skip_initial_line=True, **kwds):
 
         self._ignore_cache=[]
         if cacheDir is None:
@@ -1171,14 +1173,14 @@ class MultiDBD(object):
             self.filenames=fns[max_files:]
         else:
             self.filenames=fns
-
+            
         if complement_files:
             self._add_paired_filenames()
 
         if complemented_files_only:
             self.pruned_files=self._prune_unmatched(cacheDir)
 
-        self._update_dbd_inventory(cacheDir)
+        self._update_dbd_inventory(cacheDir, skip_initial_line)
         self.parameterNames=dict((k,self._getParameterList(v)) \
                                      for k,v in self.dbds.items())
         self.parameterUnits=self._getParameterUnits()
@@ -1397,7 +1399,21 @@ class MultiDBD(object):
         _, tctd, C, T, P, *v = numpy.compress(condition, tmp, axis=1)
         return tuple([tctd, C, T, P] + v)
 
+    def set_skip_initial_line(self, skip_initial_line):
+        '''Sets the reading mode of the binary reader to skip the initial data entry or not.
+
+        Parameters
+        ----------
+        skip_initial_line : bool
+            Sets the attribute `skip_initial_line` of each DBD
+            instance, controlling the reading of the first data entry
+            of each binary file.
+        '''
+        for i in chain(*self.dbds.values()):
+            i.skip_initial_line = skip_initial_line
+
     def has_parameter(self,parameter):
+
         '''Has this file parameter?
         Returns
         -------
@@ -1596,13 +1612,13 @@ class MultiDBD(object):
         else :
             return list(map(lambda x: self._format_time(x,fmt), time_limits))
 
-    def _update_dbd_inventory(self, cacheDir):
+    def _update_dbd_inventory(self, cacheDir, skip_initial_lines):
         self.dbds={'eng':[],'sci':[]}
         filenames=list(self.filenames)
         missing_cacheIDs = defaultdict(list)
         for fn in self.filenames:
             try:
-                dbd=DBD(fn, cacheDir)
+                dbd=DBD(fn, cacheDir, skip_initial_lines)
             except DbdError as e:
                 #Typically the call in the try block may fail if the
                 # cache file cannot be found because it is not in the

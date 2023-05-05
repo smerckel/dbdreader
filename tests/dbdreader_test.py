@@ -150,10 +150,8 @@ class Dbdreader_DBD_test(unittest.TestCase):
         
         dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd")
         t0, v0 = dbd.get("m_depth")
-        dbdreader.DBD.SKIP_INITIAL_LINE=False
-        dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd")
+        dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd", skip_initial_line=False)
         t1, v1 = dbd.get("m_depth")
-        dbdreader.DBD.SKIP_INITIAL_LINE=True
         assert len(v0) == len(v1) - 1
         
         
@@ -364,11 +362,13 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         
         dbd = dbdreader.MultiDBD(self.pattern)
         t0, v0 = dbd.get("m_depth")
-        dbdreader.DBD.SKIP_INITIAL_LINE=False
-        dbd = dbdreader.MultiDBD(self.pattern)
+        dbd = dbdreader.MultiDBD(self.pattern, skip_initial_line=False)
         t1, v1 = dbd.get("m_depth")
-        dbdreader.DBD.SKIP_INITIAL_LINE=True
-        assert len(v0) == len(v1) - len(dbd.dbds['eng'])
+        dbd = dbdreader.MultiDBD(self.pattern)
+        dbd.set_skip_initial_line(False)
+        t2, v2 = dbd.get("m_depth")
+
+        assert (len(v0) == len(v1) - len(dbd.dbds['eng'])) and (len(v1)==len(v2))
             
     def get_method(self,method,fn,x,y):
         dbd=dbdreader.MultiDBD(pattern=fn)
