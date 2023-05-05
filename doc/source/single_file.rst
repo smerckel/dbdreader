@@ -1,17 +1,30 @@
 Class DBD : reading single files
 ********************************
 
-API
-===
+DBD API
+=======
 
 The DBD class is designed to be used with a single file, either a dbd
-(sbd) or ebd (tbd) file.
+(sbd) or ebd (tbd) file. The actual reading of the binary files if
+offloaded to a C-extension.
+
+There is a small issue with the way the glider creates a new
+file. When opening a new file, all sensors are reported as updated,
+even though most sensors are not, and report whatever value is stored
+in memory. As a result all sensors that update regularly will be
+reported with old values. Therefore the default behaviour is to
+disregard the first data entry for each sensor. There are, however,
+some sensors that are set once, and never update. Dropping the first
+data entry, also drops this information. Therefore, for specific or
+debugging purposes, the default behaviour can be altered to also
+include the first data entries of all sensors, by setting the optional
+keyword ``skip_initial_line`` to False, when calling the constructor.
 
 .. autoclass:: dbdreader.DBD
    :members: 
    
-Example
-=======
+DBD Example
+===========
 ::
 
    import numpy as np

@@ -1,17 +1,22 @@
 Class MultiDBD : reading multiple files
 ***************************************
 
-API
-===
+MultiDBD API
+============
 
 The MultiDBD class is designed to be used with multiple files, either dbd's
 (sbd's) or ebd's (tbd's), or a mixture.
 
+As for single dbd files, using the class::dbdreader.DBD, the behaviour
+of the binary reader can be modified using the ``skip_initial_line``
+keyword to the constructor. See also :ref:`Class DBD : reading single files`.
+
+
 .. autoclass:: dbdreader.MultiDBD
-   :members: 
-   
-Example
-=======
+   :members:
+
+MultiDBD Example
+================
 ::
 
         import numpy as np
