@@ -32,7 +32,7 @@ The latest dbdreader package is available from the python package index
 
 Install using pip::
 
-  pip dbdreader
+  pip install dbdreader
 
 or, fetching the source. Then, simply follow these steps.
 
@@ -53,7 +53,7 @@ Install the package::
 
 or use pip to install the package::
 
-  $ cd dvdreader-0.4.14
+  $ cd dbdreader-0.4.14
   $ pip install .
 
 Dbdreader quickstart
