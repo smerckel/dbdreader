@@ -4,6 +4,7 @@ import dbdreader
 import glob
 import numpy as np
 import os
+import hashlib
 import unittest
 
 class Dbdreader_DBD_test(unittest.TestCase):
@@ -407,4 +408,28 @@ class DBDPatternSelect_test(unittest.TestCase):
         fns.sort()
         self.assertEqual(fns[0],"../data/amadeus-2014-204-05-000.sbd")
 
+
+class DBDList_test(unittest.TestCase):
+
+    def test_sorting(self):
+        print("Test file name sorting...")
+        fns = [['amadeus-2019-3-1.sbd', 'amadeus-2019-3-12.sbd', 'amadeus-2019-3-9.sbd', 'amadeus-2019-3-5.sbd', 'amadeus-2019-3-11.sbd', 'amadeus-2019-3-2.sbd', 'amadeus-2019-3-6.sbd', 'amadeus-2019-3-8.sbd', 'amadeus-2019-3-3.sbd', 'amadeus-2019-3-10.sbd', 'amadeus-2019-3-14.sbd', 'amadeus-2019-3-4.sbd', 'amadeus-2019-3-0.sbd', 'amadeus-2019-3-13.sbd', 'amadeus-2019-3-7.sbd'],
+               ['amadeus-2019-03-012.sbd', 'amadeus-2019-03-014.sbd', 'amadeus-2019-03-005.sbd', 'amadeus-2019-03-011.sbd', 'amadeus-2019-03-000.sbd', 'amadeus-2019-03-010.sbd', 'amadeus-2019-03-002.sbd', 'amadeus-2019-03-003.sbd', 'amadeus-2019-03-004.sbd', 'amadeus-2019-03-001.sbd', 'amadeus-2019-03-009.sbd', 'amadeus-2019-03-013.sbd', 'amadeus-2019-03-006.sbd', 'amadeus-2019-03-007.sbd', 'amadeus-2019-03-008.sbd'],
+               ['amadeus-2008-11-9.sbd', 'amadeus-2000-3-3.sbd', 'amadeus-2014-16-10.sbd', 'amadeus-2019-12-0.sbd', 'amadeus-2018-22-11.sbd', 'amadeus-2013-17-2.sbd', 'amadeus-2009-9-12.sbd', 'amadeus-2004-22-4.sbd', 'amadeus-2000-9-8.sbd', 'amadeus-2015-17-5.sbd', 'amadeus-2014-1-1.sbd', 'amadeus-2006-24-13.sbd', 'amadeus-2015-0-6.sbd', 'amadeus-2011-4-14.sbd', 'amadeus-2012-0-7.sbd'],
+               ['amadeus-2011-01-009.sbd', 'amadeus-2016-14-012.sbd', 'amadeus-2003-07-002.sbd', 'amadeus-2009-06-006.sbd', 'amadeus-2005-22-000.sbd', 'amadeus-2018-12-004.sbd', 'amadeus-2017-09-003.sbd', 'amadeus-2010-16-008.sbd', 'amadeus-2012-13-007.sbd', 'amadeus-2000-09-005.sbd', 'amadeus-2004-22-013.sbd', 'amadeus-2004-03-011.sbd', 'amadeus-2017-01-010.sbd', 'amadeus-2007-01-014.sbd', 'amadeus-2007-05-001.sbd'],
+               ['hereon-amadeus-2019-3-14.sbd', 'hereon-amadeus-2019-3-11.sbd', 'hereon-amadeus-2019-3-12.sbd', 'hereon-amadeus-2019-3-10.sbd', 'hereon-amadeus-2019-3-6.sbd', 'hereon-amadeus-2019-3-2.sbd', 'hereon-amadeus-2019-3-0.sbd', 'hereon-amadeus-2019-3-4.sbd', 'hereon-amadeus-2019-3-9.sbd', 'hereon-amadeus-2019-3-1.sbd', 'hereon-amadeus-2019-3-7.sbd', 'hereon-amadeus-2019-3-8.sbd', 'hereon-amadeus-2019-3-3.sbd', 'hereon-amadeus-2019-3-5.sbd', 'hereon-amadeus-2019-3-13.sbd'],
+               ['hereon-amadeus-2019-03-002.sbd', 'hereon-amadeus-2019-03-012.sbd', 'hereon-amadeus-2019-03-006.sbd', 'hereon-amadeus-2019-03-007.sbd', 'hereon-amadeus-2019-03-000.sbd', 'hereon-amadeus-2019-03-004.sbd', 'hereon-amadeus-2019-03-013.sbd', 'hereon-amadeus-2019-03-005.sbd', 'hereon-amadeus-2019-03-011.sbd', 'hereon-amadeus-2019-03-010.sbd', 'hereon-amadeus-2019-03-009.sbd', 'hereon-amadeus-2019-03-003.sbd', 'hereon-amadeus-2019-03-014.sbd', 'hereon-amadeus-2019-03-008.sbd', 'hereon-amadeus-2019-03-001.sbd']
+               ]
+        md5s = ["d0a6f1ca054cbbd1d88c5277aba6321f",
+                "9b8647386c7aac9aa0d6ceecb4163989",
+                "29974804932aabf064a2a3479e36963c",
+                "40d8973e1b050faa7ba0c7560c021c39",
+                "2cf354d5918879ef2f26a73350b64814"]
+        for l, md5 in zip(fns, md5s):
+            fn = dbdreader.DBDList(l)
+            fn.sort()
+            x=hashlib.md5("".join(fn).encode('ascii'))
+            assert x.hexdigest() == md5
+         
+        
 unittest.main()
