@@ -5,6 +5,14 @@ DBDREADER
 
 Change log
 ----------
+
+Version 0.4.15
+
+* Modifies sorting key algorithm to the DBDList class. This fixes a 
+  bug when glider data filenames are composed of a glider name that 
+  contains a dash. For example, filenames such as hereon-amadeus-2019-3-1.sbd
+  would fail, but are valid now.
+
 Version 0.4.14
 
 * Adds a new option to the get() method of the MultiDBD class, where
