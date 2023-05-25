@@ -824,9 +824,9 @@ class DBD(object):
         invalid_parameters = self._get_valid_parameters(parameters, invert=True, global_scope=True)
         if invalid_parameters:
             if len(invalid_parameters)==1:
-                mesg = f"Parameter {invalid_parameters[0]} is an unknown glider sensor name."
+                mesg = f"Parameter {invalid_parameters[0]} is an unknown glider sensor name. ({self.filename})"
             else:
-                mesg = f"Parameters {{{','.join(invalid_parameters)}}} are unknown glider sensor names."
+                mesg = f"Parameters {{{','.join(invalid_parameters)}}} are unknown glider sensor names. ({self.filename})"
             raise DbdError(value=DBD_ERROR_NO_VALID_PARAMETERS, mesg=mesg, data=invalid_parameters)
 
         valid_parameters = self._get_valid_parameters(parameters)
@@ -1137,15 +1137,30 @@ class MultiDBD(object):
         >0: the first n files are read
         <0: the last n files are read.
 
+    skip_initial_line: bool (default: True)
+        If True, the first data line in each dbd file (and friends) is not read.
+
+
+    
     Notes
     -----
+
+    Upon creating the dbd file, when starting a new mission or dive segment, all parameters
+    are written and marked as updated. In reality, most parameters are NOT update, and the
+    value written is the value in memory, which may be several minutes old, or even longer. It
+    has been pointed out to me that a handful parameters, are set only once, before creating the
+    dbd file. Since these parameters are not of interest for normal data processing, the first
+    line of data is skipped by default, but can be read if required.
+
+
+    
     .. versionchanged:: 0.4.0
         ensure_paired and included_paired keywords have been replaced by complemented_files_only
         and complement_files, respectively.
     '''
     def __init__(self,filenames=None,pattern=None,cacheDir=None,complemented_files_only=False,
                  complement_files=False,banned_missions=[],missions=[],
-                 max_files=None, skip_initial_line=True, **kwds):
+                 max_files=None, skip_initial_line=True):
 
         self._ignore_cache=[]
         if cacheDir is None:
