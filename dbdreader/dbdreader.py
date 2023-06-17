@@ -1200,6 +1200,7 @@ class MultiDBD(object):
             self.pruned_files=self._prune_unmatched(cacheDir)
 
         self._update_dbd_inventory(cacheDir, skip_initial_line)
+        self.set_skip_initial_line(skip_initial_line)
         self.parameterNames=dict((k,self._getParameterList(v)) \
                                      for k,v in self.dbds.items())
         self.parameterUnits=self._getParameterUnits()
