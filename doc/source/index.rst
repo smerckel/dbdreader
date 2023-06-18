@@ -15,9 +15,10 @@ Contents:
    single_file
    multiple_files
    ctd
+   selecting_files
    selecting_timerange
-   dbdreader
    modules
+
 
 Contact
 ~~~~~~~
@@ -25,7 +26,7 @@ Contact
 If you have any suggestions, remarks or feature wishes, you can
 contact me via
 
-email: <lucas.merckelbach@hzg.de>
+email: <lucas.merckelbach@hereon.de>
 
 
 Indices and tables

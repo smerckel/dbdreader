@@ -1,3 +1,4 @@
+from itertools import chain
 import warnings
 import os
 import struct
@@ -254,18 +255,22 @@ class DBDList(list):
     *p : variable length list of str
         filenames
     '''
+    REGEX = re.compile("-[0-9]*-[0-9]*-[0-9]*\.[demnstDEMNST][bB][dD]")
+    
     def __init__(self,*p):
         list.__init__(self,*p)
 
-    def _keyFilename(self,x):
-        xx=re.sub("\.[demnstDEMNST][bB][dD]","",os.path.basename(x))
-        if "-" in xx:
-            xxx=xx.split("-")
-            n=sum([int(i)*10**j for i,j in zip(xxx[1:],[8,5,3,0])])
-            return xxx[0]+"%d"%(n)
+    def _keyFilename(self, key):
+        match = DBDList.REGEX.search(key)
+        if match and len(match.group())>=13: # minimal format: -xxxx-x-x.yyy
+            s, extension = os.path.splitext(match.group())
+            number_fields = s.split("-")
+            n=sum([int(i)*10**j for i,j in zip(number_fields[1:],[5,3,0])]) # first field is '', so skip over
+            r = f"{key[:match.span()[0]]}-{n}{extension.lower()}"
         else:
-            return xx
-
+            r = key.lower()
+        return r
+    
     def sort(self,cmp=None, key=None, reverse=False):
         ''' sorts filenames ensuring dbd files are in chronological order in place
 
@@ -576,21 +581,22 @@ class DBD(object):
     cachedDir: str or None, optional
         path to CAC file cache directory. If None, the default path is used.
 
+    skip_initial_line : bool, default: True
+        controls the behaviour of the binary reader: if set to True,
+        all first lines of data in the binary files are skipped
+        otherwise they are read. Default value is True, as the data in
+        the initial file have usually no scienitific merit (random
+        value or arbitrarily old); only for debugging purposes one may
+        want to have the initial data line read.
 
-    SKIP_INITIAL_LINE : bool class variable, controlling the behaviour
-        of the binary reader: if set to True, all first lines of data
-        in the binary files are skipped otherwise they are
-        read. Default value is True, as the data in the initial file
-        have usually no scienitific merit (random value or arbitrarily
-        old); only for debugging purposes one may want to have the
-        initial data line read.
     '''
     
     SKIP_INITIAL_LINE = True
     
-    def __init__(self,filename, cacheDir=None):
-
+    def __init__(self,filename, cacheDir=None, skip_initial_line=True):
+        
         self.filename=filename
+        self.skip_initial_line = skip_initial_line
         logger.debug('Opening %s', filename)
         if cacheDir==None:
             self.cacheDir=CACHEDIR
@@ -818,9 +824,9 @@ class DBD(object):
         invalid_parameters = self._get_valid_parameters(parameters, invert=True, global_scope=True)
         if invalid_parameters:
             if len(invalid_parameters)==1:
-                mesg = f"Parameter {invalid_parameters[0]} is an unknown glider sensor name."
+                mesg = f"Parameter {invalid_parameters[0]} is an unknown glider sensor name. ({self.filename})"
             else:
-                mesg = f"Parameters {{{','.join(invalid_parameters)}}} are unknown glider sensor names."
+                mesg = f"Parameters {{{','.join(invalid_parameters)}}} are unknown glider sensor names. ({self.filename})"
             raise DbdError(value=DBD_ERROR_NO_VALID_PARAMETERS, mesg=mesg, data=invalid_parameters)
 
         valid_parameters = self._get_valid_parameters(parameters)
@@ -844,7 +850,7 @@ class DBD(object):
                          ti,
                          vi,
                          int(return_nans),
-                         int(DBD.SKIP_INITIAL_LINE))
+                         int(self.skip_initial_line))
         # map the contents of vi on timestamps and values, preserving the original order:
         idx_reorderd = [vi.index(i) for i in idx]
         # these are for good_parameters:
@@ -1131,15 +1137,30 @@ class MultiDBD(object):
         >0: the first n files are read
         <0: the last n files are read.
 
+    skip_initial_line: bool (default: True)
+        If True, the first data line in each dbd file (and friends) is not read.
+
+
+    
     Notes
     -----
+
+    Upon creating the dbd file, when starting a new mission or dive segment, all parameters
+    are written and marked as updated. In reality, most parameters are NOT update, and the
+    value written is the value in memory, which may be several minutes old, or even longer. It
+    has been pointed out to me that a handful parameters, are set only once, before creating the
+    dbd file. Since these parameters are not of interest for normal data processing, the first
+    line of data is skipped by default, but can be read if required.
+
+
+    
     .. versionchanged:: 0.4.0
         ensure_paired and included_paired keywords have been replaced by complemented_files_only
         and complement_files, respectively.
     '''
     def __init__(self,filenames=None,pattern=None,cacheDir=None,complemented_files_only=False,
                  complement_files=False,banned_missions=[],missions=[],
-                 max_files=None, **kwds):
+                 max_files=None, skip_initial_line=True):
 
         self._ignore_cache=[]
         if cacheDir is None:
@@ -1171,14 +1192,14 @@ class MultiDBD(object):
             self.filenames=fns[max_files:]
         else:
             self.filenames=fns
-
+            
         if complement_files:
             self._add_paired_filenames()
 
         if complemented_files_only:
             self.pruned_files=self._prune_unmatched(cacheDir)
 
-        self._update_dbd_inventory(cacheDir)
+        self._update_dbd_inventory(cacheDir, skip_initial_line)
         self.parameterNames=dict((k,self._getParameterList(v)) \
                                      for k,v in self.dbds.items())
         self.parameterUnits=self._getParameterUnits()
@@ -1397,7 +1418,21 @@ class MultiDBD(object):
         _, tctd, C, T, P, *v = numpy.compress(condition, tmp, axis=1)
         return tuple([tctd, C, T, P] + v)
 
+    def set_skip_initial_line(self, skip_initial_line):
+        '''Sets the reading mode of the binary reader to skip the initial data entry or not.
+
+        Parameters
+        ----------
+        skip_initial_line : bool
+            Sets the attribute `skip_initial_line` of each DBD
+            instance, controlling the reading of the first data entry
+            of each binary file.
+        '''
+        for i in chain(*self.dbds.values()):
+            i.skip_initial_line = skip_initial_line
+
     def has_parameter(self,parameter):
+
         '''Has this file parameter?
         Returns
         -------
@@ -1596,13 +1631,13 @@ class MultiDBD(object):
         else :
             return list(map(lambda x: self._format_time(x,fmt), time_limits))
 
-    def _update_dbd_inventory(self, cacheDir):
+    def _update_dbd_inventory(self, cacheDir, skip_initial_lines):
         self.dbds={'eng':[],'sci':[]}
         filenames=list(self.filenames)
         missing_cacheIDs = defaultdict(list)
         for fn in self.filenames:
             try:
-                dbd=DBD(fn, cacheDir)
+                dbd=DBD(fn, cacheDir, skip_initial_lines)
             except DbdError as e:
                 #Typically the call in the try block may fail if the
                 # cache file cannot be found because it is not in the
