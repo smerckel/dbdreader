@@ -21,21 +21,22 @@
 import sys
 import os
 import re
-import getopt
+import argparse
 
-def usage():
-    print('')
-    print('Script to flip back and forth between the long and short names of the')
-    print('dbd or sbd files.')
-    print('')
-    print('Optionally supply -s to make the filenames sortable using sort()')
-    print('or supply -n to keep the original filename')
-    print('')
-    print('supply -c to convert between old style to new style')
-    print('supply -C to convert between new style to old style')
-    print('Default is sorting activated.')
-    print(' Lmm 27 Mar 2007')
-    sys.exit(0)
+
+parser = argparse.ArgumentParser(
+    prog=__name__,
+    description='''Program to rename dbd files and friends from numeric format to long format, or vice versa,
+    or convert the long format into a sortable name or the original Webb Research long format,
+    or decompress LZ4 compressed files.''',
+    epilog='')
+
+parser.add_argument('filenames', nargs="*", help="Filename(s) to process")
+parser.add_argument('-s', action='store_true', default=True, help='Ensures long format filenames are sortable')
+parser.add_argument('-n', action='store_true', help='Keeps the original long format filenames (which do not sort correctly).')
+parser.add_argument('-c', '--convertToSortable', action='store_true', help='Converts files from original long format to a sortable long format')
+parser.add_argument('-C', '--convertToOriginal', action='store_true', help='Converts files from a sortable long format to the original long format')
+
 
 def makeSortable(filename):
     [basename,ext]=filename.split('.')
@@ -47,32 +48,11 @@ def makeSortable(filename):
     filename=".".join([basename,ext])
     return(filename)
     
-SORT=True # default
-CONVERTold=False # default
-CONVERTnew=False # default
-try:
-    R=getopt.getopt(sys.argv[1:],'cCsnh')
-except getopt.GetoptError:
-    print("Wrong option(s)!")
-    usage()
-    
-for (o,a) in R[0]:
-    if o=='-s':
-        SORT=True
-    if o=='-n':
-        SORT=False
-    if o=='-c':
-        CONVERTnew=True
-    if o=='-C':
-        CONVERTold=True
 
-    if o=='-h':
-        usage()
-        
+args = parser.parse_args()
 
-files=R[1]
 
-for i in files:
+for i in args.filenames:
     fd=open(i,'br')
     ID=fd.readline().decode('ascii').strip()
     ignoreIt=False
@@ -100,20 +80,20 @@ for i in files:
         ignoreIt=True
     if not ignoreIt:
         command=None
-        if CONVERTnew or CONVERTold: # input filename must be the longfilename
+        if args.convertToSortable or args.convertToOriginal: # input filename must be the longfilename
             # check if we have a longfilename
             if i not in [longfilename,makeSortable(longfilename)]:
                 print("Chose to ignore processing ",i)
             else:
-                if i==makeSortable(longfilename) and CONVERTold:
+                if i==makeSortable(longfilename) and args.convertToOriginal:
                     # switch to old format
                     command="mv "+i+" "+longfilename
-                elif i==longfilename and CONVERTnew:
+                elif i==longfilename and args.convertToSortable:
                     command="mv "+longfilename+" "+makeSortable(longfilename)
                 else:
                     print("ignoring "+i)
         else: # changing from long to short names or vice versa
-            if SORT:
+            if args.s and not args.n:
                 longfilename=makeSortable(longfilename)
             if i==shortfilename:
                 command="mv "+shortfilename+" "+longfilename
