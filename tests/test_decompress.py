@@ -109,7 +109,8 @@ def test_extension_generator():
                '../data/01600000.ncd',
                '../data/01600000.ncg',
                '../data/01600000.scd',
-               '../data/01600000.tcd']
+               '../data/01600000.tcd',
+               '../data/00aa00aa.ccc']
     outfiles = ['../data/01600000.dbd',
                '../data/01600000.ebd',
                '../data/01600000.mbd',
@@ -117,7 +118,8 @@ def test_extension_generator():
                '../data/01600000.nbd',
                '../data/01600000.nlg',
                '../data/01600000.sbd',
-               '../data/01600000.tbd']
+                '../data/01600000.tbd',
+                '../data/00aa00aa.cac']
     for a, b in zip(infiles, outfiles):
         assert fd._generate_filename_for_output(a) == b
 
@@ -126,4 +128,44 @@ def test_extension_generator_with_invalid_extension():
     fd = FileDecompressor()
     with pytest.raises(ValueError):
         s = fd._generate_filename_for_output('01600000.cd')
+
+
+        
+# Open a file and lazy read block by block. Check cac filesCompares with 
+# uncompressed file
+#
+def test_read_ccc_file():
+    with open('../data/cac/06a36d4e.cac', 'rb') as fp:
+        verification_data = fp.read()
+    filename = '../data/cac/06a36d4e.ccc'
+    data = b''
+    with Decompressor(filename) as d:
+        for block in d.decompressed_blocks():
+            data += block
+    assert data == verification_data
+
+# Using the CompressedFile object to read a compressed text file
+def test_CompressedFile(load_verification_data):
+    verification_data = load_verification_data
+    filename = '../data/01600000.mcg'
+    lines = []
+    with CompressedFile(filename) as fd:
+        while True:
+            line = fd.readline()
+            if not line:
+                break
+            lines.append(line)
+        data = b"".join(lines)
+    assert data == verification_data
+
+# Using the CompressedFile object to read a compressed text file, using readlines() method.
+def test_CompressedFileReadlines(load_verification_data):
+    verification_data = load_verification_data
+    filename = '../data/01600000.mcg'
+    with CompressedFile(filename) as fd:
+        lines = fd.readlines()
+        data = b"".join(lines)
+    assert data == verification_data
+
+    
     

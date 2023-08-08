@@ -23,6 +23,7 @@ import os
 import re
 import argparse
 
+import dbdreader.decompress 
 
 parser = argparse.ArgumentParser(
     prog=__name__,
@@ -36,7 +37,8 @@ parser.add_argument('-s', action='store_true', default=True, help='Ensures long 
 parser.add_argument('-n', action='store_true', help='Keeps the original long format filenames (which do not sort correctly).')
 parser.add_argument('-c', '--convertToSortable', action='store_true', help='Converts files from original long format to a sortable long format')
 parser.add_argument('-C', '--convertToOriginal', action='store_true', help='Converts files from a sortable long format to the original long format')
-
+parser.add_argument('-x', '--decompress', action='store_true', help='Decompresses LZ4 comrpessed files.')
+parser.add_argument('-X', '--decompressAndRemoveCompressed', action='store_true', help='Decompresses LZ4 comrpessed files, and removes the compressed file')
 
 def makeSortable(filename):
     [basename,ext]=filename.split('.')
@@ -49,26 +51,28 @@ def makeSortable(filename):
     return(filename)
     
 
-args = parser.parse_args()
+def is_compressed(filename):
+    [basename,ext]=filename.split('.')
+    # all compressed [demnst]bd files end in [demnst]cd
+    return bool(re.search("c[dg]$", filename))
 
 
-for i in args.filenames:
-    fd=open(i,'br')
-    ID=fd.readline().decode('ascii').strip()
+def get_short_and_long_filenames(lines, filename):
+    ID=lines[0]
     ignoreIt=False
+    shortfilename=''
+    longfilename=''
     if ID=='dbd_label:    DBD(dinkum_binary_data)file':
-        for j in range(4):
-            shortfilename=fd.readline().decode('ascii').strip()
-        longfilename=fd.readline().decode('ascii').strip()
+        shortfilename=lines[4]
+        longfilename=lines[5]
         shortfilename=re.sub("^.* ","",shortfilename)
         longfilename=re.sub("^.* ","",longfilename)
-        extension=re.sub("^.*\.","",i)
+        extension=re.sub("^.*\.","",filename)
         shortfilename+="."+extension
         longfilename+="."+extension
     elif "the8x3_filename" in ID: # mlg file apparently...
-        longfilename=fd.readline().decode('ascii').strip()
-        tmp=fd.readline().decode('ascii').strip()
-        if 'mlg' in tmp:
+        longfilename=lines[1]
+        if filename.lower().endswith('mlg'):
             extension='.mlg'
         else:
             extension='.nlg'
@@ -76,8 +80,25 @@ for i in args.filenames:
 
         longfilename=re.sub("^full_filename: +","",longfilename)+extension
     else:
-        sys.stderr.write("Ignoring %s\n"%(i))
+        sys.stderr.write("Ignoring %s\n"%(filename))
         ignoreIt=True
+    return ignoreIt, shortfilename, longfilename
+
+args = parser.parse_args()
+
+
+for i in args.filenames:
+    if not os.path.exists(i):
+        print(f"{i} does not exist. Ignoring.")
+        continue
+    if is_compressed(i):
+        with dbdreader.decompress.CompressedFile(i) as fd:
+            lines = [fd.readline().decode('ascii').strip() for j in range(7)]
+    else:
+        with open(i,'br') as fd:
+            lines = [fd.readline().decode('ascii').strip() for j in range(7)]
+    ignoreIt, shortfilename, longfilename = get_short_and_long_filenames(lines, i)
+    
     if not ignoreIt:
         command=None
         if args.convertToSortable or args.convertToOriginal: # input filename must be the longfilename
@@ -88,8 +109,10 @@ for i in args.filenames:
                 if i==makeSortable(longfilename) and args.convertToOriginal:
                     # switch to old format
                     command="mv "+i+" "+longfilename
+                    new_filename = longfilename
                 elif i==longfilename and args.convertToSortable:
                     command="mv "+longfilename+" "+makeSortable(longfilename)
+                    new_filename = makeSortable(longfilename)
                 else:
                     print("ignoring "+i)
         else: # changing from long to short names or vice versa
@@ -97,11 +120,23 @@ for i in args.filenames:
                 longfilename=makeSortable(longfilename)
             if i==shortfilename:
                 command="mv "+shortfilename+" "+longfilename
+                new_filename = longfilename
             else:
                 command="mv "+longfilename+" "+shortfilename
+                new_filename = shortfilename
         if command!=None:
-            print("command: ",command)
+            target = new_filename
             R=os.system(command)
+            msg = f"{i} ->"
             if R!=0:
                 raise ValueError("Could not execute %s"%(command))
-    fd.close()
+            if args.decompress or args.decompressAndRemoveCompressed:
+                target = dbdreader.decompress.decompress_file(new_filename)
+                if args.decompressAndRemoveCompressed:
+                    os.unlink(new_filename)
+                    msg = f"{msg} {target}"
+                else:
+                    msg = f"{msg} {target}/{new_filename}"
+            else:
+                msg = f"{msg} {target}"
+            print(msg)
