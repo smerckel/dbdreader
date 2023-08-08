@@ -1,0 +1,129 @@
+import sys
+sys.path.insert(0, '../')
+
+import os
+from hashlib import md5
+
+if not __name__ == '__main__':
+    from pytest import fixture
+else:
+    def fixture(func):
+        def inner():
+            return func()
+        return inner
+
+import pytest
+    
+from dbdreader.decompress import *
+
+
+@fixture
+def load_verification_data():
+    filename_verify = '../data/01600000.mlg'
+    with open(filename_verify, 'rb') as fp:
+        data = fp.read()
+    return data
+        
+# Open a file and lazy read block by block. Compares with 
+# uncompressed file
+#
+def test_read_file(load_verification_data):
+    verification_data = load_verification_data
+    filename = '../data/01600000.mcg'
+    data = b''
+    with Decompressor(filename) as d:
+        for block in d.decompressed_blocks():
+            data += block
+    assert data == verification_data
+
+# Open a file and decompress whole file. Compares with 
+# uncompressed file
+#
+def test_read_file_in_memory(load_verification_data):
+    verification_data = load_verification_data
+    filename = '../data/01600000.mcg'
+    with Decompressor(filename) as d:
+        data = d.decompress()
+    assert data == verification_data
+
+# Open a file and decompress first block only. 
+# 
+#
+def test_read_file_one_block_only():
+    filename = '../data/01600000.mcg'
+    with Decompressor(filename) as d:
+        blocks = [block for block in d.decompressed_blocks(n=1)]
+    assert len(blocks) == 1
+
+# Open a file and lazy read block by block. Compares with 
+# uncompressed file. Instead of using with statement, open file
+# explicitly
+def test_read_file_explicit_file_opener(load_verification_data):
+    verification_data = load_verification_data
+    filename = '../data/01600000.mcg'
+    data = b''
+    d = Decompressor()
+    with open(filename, 'rb') as fp:
+        for block in d.decompressed_blocks(fp=fp):
+            data += block
+    assert data == verification_data
+
+# Open a file and decompress whole file. Compares with 
+# uncompressed file. Instead of using with statement, open file
+# explicitly
+def test_read_file_in_memory_explicit_file_opener(load_verification_data):
+    verification_data = load_verification_data
+    filename = '../data/01600000.mcg'
+    d = Decompressor()
+    with open(filename, 'rb') as fp:
+        data = d.decompress(fp=fp)
+    assert data == verification_data
+
+# using the convenience function decompress_file
+def test_convenience_function():
+    filename = '../data/01600000.dcd'
+    filename_decompressed = filename.replace('dcd','dbd')
+    try:
+        os.unlink(filename_decompressed)
+    except:
+        pass
+    decompress_file(filename)
+    assert os.path.exists(filename_decompressed)
+    with open(filename_decompressed, 'rb') as fp:
+        data_decompressed = fp.read()
+    try:
+        os.unlink(filename_decompressed)
+    except:
+        pass
+    assert md5(data_decompressed).hexdigest() == 'f6935ba8307efb29dcb16fb2429e167d'
+
+# Test whether all extensions are translated correctly.
+def test_extension_generator():
+    fd = FileDecompressor()
+    s = fd._generate_filename_for_output('01600000.dcd')
+    assert s == '01600000.dbd'
+    infiles = ['../data/01600000.dcd',
+               '../data/01600000.ecd',
+               '../data/01600000.mcd',
+               '../data/01600000.mcg',
+               '../data/01600000.ncd',
+               '../data/01600000.ncg',
+               '../data/01600000.scd',
+               '../data/01600000.tcd']
+    outfiles = ['../data/01600000.dbd',
+               '../data/01600000.ebd',
+               '../data/01600000.mbd',
+               '../data/01600000.mlg',
+               '../data/01600000.nbd',
+               '../data/01600000.nlg',
+               '../data/01600000.sbd',
+               '../data/01600000.tbd']
+    for a, b in zip(infiles, outfiles):
+        assert fd._generate_filename_for_output(a) == b
+
+# Test behaviour for invalid file.
+def test_extension_generator_with_invalid_extension():
+    fd = FileDecompressor()
+    with pytest.raises(ValueError):
+        s = fd._generate_filename_for_output('01600000.cd')
+    
