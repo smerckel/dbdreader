@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "dbdreader.h"
+#include "decompress.h"
 
 /*
   bswap_ = functions for swapping the byte-order of shorts, floats and doubles
@@ -50,7 +51,14 @@ FILE *open_dbd_file(char *filename)
 {
   FILE *fd;
 
-  fd=fopen(filename,"rb");
+  const int compressed = is_file_compressed(filename);
+
+  if (compressed){
+    fd=fopen_compressed_file(filename);
+  }
+  else{
+    fd=fopen(filename,"rb");
+  }
 
   return(fd);
 }
@@ -159,7 +167,7 @@ static unsigned char read_known_cycle(FILE *fd)
   // which is 4660
   unsigned short two_byte_int;
   fread((void*)(&two_byte_int), sizeof(two_byte_int), 1, fd);
-  //printf("two_byte_int : %d\n", two_byte_int);
+
 
   // the next 12 bytes are:
   //     123.456            Four byte float.

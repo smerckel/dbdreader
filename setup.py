@@ -24,7 +24,10 @@ setuptools.setup(
     install_requires = 'numpy'.split(),
     ext_modules = [
            setuptools.Extension("_dbdreader",
-                                ["extension/py_dbdreader.c","extension/dbdreader.c"],
+                                ["extension/py_dbdreader.c",
+                                 "extension/dbdreader.c",
+                                 "extension/decompress.c"],
+                                libraries = ['lz4'],
                                 include_dirs=['extension/include'])
     ],
     classifiers=[

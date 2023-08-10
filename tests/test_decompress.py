@@ -13,7 +13,9 @@ else:
         return inner
 
 import pytest
-    
+import numpy as np
+
+import dbdreader
 from dbdreader.decompress import *
 
 
@@ -169,3 +171,54 @@ def test_CompressedFileReadlines(load_verification_data):
 
     
     
+# Test reading of data/01600000.dcd and check it is identical to data/01600000.dbd
+def test_read_compressed_file_C_code():
+    compressed_filename = '../data/01600001.dcd'
+    regular_filename = '../data/01600001.dbd'
+    compressed_dbd = dbdreader.DBD(compressed_filename, cacheDir='../data/cac')
+    regular_dbd = dbdreader.DBD(regular_filename, cacheDir='../data/cac')
+    compressed_data = compressed_dbd.get("m_depth")
+    regular_data = regular_dbd.get("m_depth")
+    assert np.all(compressed_data[0]==regular_data[0]) and np.all(compressed_data[1]==regular_data[1])
+    
+# Test reading of data/0160000?.dcd MultiDBD
+def test_read_compressed_files_C_code():
+    pattern = '../data/0160000?.dcd'
+    dbd = dbdreader.MultiDBD(pattern, cacheDir='../data/cac')
+    t, d = dbd.get("m_depth")
+    assert t.ptp() == pytest.approx(2511.95, 0.01)
+
+
+# Test missing cac file for single dbd_label
+def test_missing_cac_file_for_single_compressed_file():
+    try:
+        os.unlink('../data/cac/daad1b20.cac')
+    except:
+        pass
+    
+    with pytest.raises(dbdreader.DbdError):
+        dbd = dbdreader.DBD('../data/01600000.ecd', cacheDir='../data/cac')
+
+# Test missing cac file being created from ccc file for MultiDBD
+def test_missing_cac_file_for_compressed_file_multidbd():
+    try:
+        os.unlink('../data/cac/daad1b20.cac')
+    except:
+        pass
+    
+    dbd = dbdreader.MultiDBD('../data/0160000?.ecd', cacheDir='../data/cac')
+    assert os.path.exists('../data/cac/daad1b20.cac')
+
+
+# Test we can open compressed flight and science files.
+def test_open_flight_and_science_files():
+    dbd = dbdreader.MultiDBD('../data/0160000?.?cd', cacheDir='../data/cac')
+
+# Test we can open compressed flight and science files.
+def test_open_flight_and_science_files_finding_complement_files():
+    dbd = dbdreader.MultiDBD('../data/0160000?.dcd', complement_files=True, cacheDir='../data/cac')
+
+    
+
+    
+        

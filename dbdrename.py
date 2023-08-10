@@ -20,8 +20,8 @@
 
 import sys
 import os
-import re
 import argparse
+import re
 
 import dbdreader.decompress 
 
@@ -51,10 +51,6 @@ def makeSortable(filename):
     return(filename)
     
 
-def is_compressed(filename):
-    [basename,ext]=filename.split('.')
-    # all compressed [demnst]bd files end in [demnst]cd
-    return bool(re.search("c[dg]$", filename))
 
 
 def get_short_and_long_filenames(lines, filename):
@@ -91,7 +87,7 @@ for i in args.filenames:
     if not os.path.exists(i):
         print(f"{i} does not exist. Ignoring.")
         continue
-    if is_compressed(i):
+    if dbdreader.decompress.is_compressed(i):
         with dbdreader.decompress.CompressedFile(i) as fd:
             lines = [fd.readline().decode('ascii').strip() for j in range(7)]
     else:

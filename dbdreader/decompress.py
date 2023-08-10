@@ -1,5 +1,6 @@
 import os
 from io import BytesIO as ioBytesIO
+from re import search as re_match
 import lz4.block
 
 
@@ -26,7 +27,7 @@ class Decompressor:
     SIZEFIELDSIZE = 2
     ENDIANESS = 'big'
     COMPRESSION_FACTOR=10
-    
+    CHUNKSIZE = 1024*32
     def __init__(self, filename=None, fp=None):
         self.filename = filename
         self.fp = fp
@@ -50,7 +51,7 @@ class Decompressor:
         sb = fp.read(Decompressor.SIZEFIELDSIZE)
         if sb:
             size = int.from_bytes(sb, Decompressor.ENDIANESS)
-            b = lz4.block.decompress(fp.read(size), size * Decompressor.COMPRESSION_FACTOR)
+            b = lz4.block.decompress(fp.read(size), Decompressor.CHUNKSIZE)
         else:
             b = None
         return b
@@ -157,6 +158,10 @@ def decompress_file(filename):
     '''Decompreses a glider data file and writes the normal binary file.'''
     return FileDecompressor().decompress(filename)
 
+def is_compressed(filename):
+    [basename,ext]=os.path.splitext(filename)
+    # all compressed [demnst]bd files end in [demnst]cd
+    return bool(re_match("[demnst]c[dg]$", ext))
 
 
 class BytesIORW:
@@ -226,4 +231,13 @@ class CompressedFile:
             if not line:
                 break
             yield line
+
+    def seek(self, offset):
+        return self.bytesIO.bytesIO.seek(offset)
+
+    def tell(self):
+        return self.bytesIO.bytesIO.tell()
     
+
+    def close(self):
+        self.fp.close()
