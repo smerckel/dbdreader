@@ -1,0 +1,1904 @@
+the8x3_filename:    01600000
+full_filename:    k_999-2023-107-0-0
+ 13.67  2 01600000.mcg LOG FILE OPENED
+timestamp: Tue Apr 18 16:29:57 2023
+Teledyne Webb Research G3 Glider
+ G3S Glider tags/master-V10.08-0-gd49784de 2022-04-21 14:35:39
+Vehicle Name: k_999
+MissionSTARTDate: 18 Apr 2023 16:29:43 Z
+Mission Name:   initial.mi
+Mission Number: k_999-2023-107-0-0 (0160.0000)
+log_c_stack():
+  1-abend           2-surface         3-surface         4-goto_wpt        5-yo              
+  6-prepare_to_dive 7-sensors_in      
+report_heap_size(): M_FREE_HEAP=192.9K(197500 bytes)
+                    M_MIN_FREE_HEAP=192.9K(197500 bytes)
+                    M_SRAM_FREE_HEAP=1213.6K(1242744 bytes)
+                    M_SRAM_MIN_FREE_HEAP=1213.6K(1242736 bytes)
+pre_mission_init():End of Initialization
+ 16.00  3 behavior sensors_in_7: STATE UnInited -> Active
+ 16.00    behavior sensors_in_7: argument: c_att_time = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_pressure_time = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_alt_time = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: u_battery_time = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: u_vacuum_time = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_leakdetect_time = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_gps_on = 0.000000 bool
+ 16.00    behavior sensors_in_7: argument: c_science_all_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_profile_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb2f_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb2c_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb2lss_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_sam_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_moteopd_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bbfl2s_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_fl3slo_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb3slo_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_oxy3835_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_whfctd_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bam_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_ocr504R_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_ocr504I_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_badd_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_flntu_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_fl3slov2_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb3slov2_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_ocr507R_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_ocr507I_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb3slov3_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb2fls_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb2flsV2_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_oxy3835_wphase_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_auvb_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb2fV2_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_tarr_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bbfl2sV2_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_glbps_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_sscsd_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb2flsV3_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_fire_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb2flsV4_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb2flsV5_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_logger_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bbam_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_uModem_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_rinkoII_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_dvl_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb2flsV6_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_flbbrh_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_flur_on = -1.000000 sec
+ 16.00    behavior sensors_in_7: argument: c_bb2flsV7_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_flbbcd_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_dmon_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_c3sfl_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_suna_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_satpar_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_vsf_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_oxy4_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_bsipar_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_flbb_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_vr2c_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_ctd41cp2_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_echosndr853_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_flrh_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_bb2flsV8_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_uviluxPAH_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_ad2cp_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_miniProCO2_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_pCO2_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_seaOWL_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_azfp_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_ubat_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_lisst_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_lms_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_svs603_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_microRider_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_bb2flsV9_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_sbe41n_ph_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_fl2UrRh_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_flbbbbV1_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_flbbbbV2_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_obsvr_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_fl2PeCdom_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_wetlabsA_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_wetlabsB_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_wetlabsC_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_echodroid_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_tau_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_rbrodo_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_solocam_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_amar_on = -1.000000 sec
+ 16.01    behavior sensors_in_7: argument: c_vro_on = -1.000000 sec
+ 16.01    behavior prepare_to_dive_6: STATE UnInited -> Waiting for Activation
+ 16.02    behavior prepare_to_dive_6: argument: args_from_file = -1.000000 enum
+ 16.02    behavior prepare_to_dive_6: argument: start_when = 0.000000 enum
+ 16.02    behavior prepare_to_dive_6: argument: wait_time = 720.000000 sec
+ 16.02    behavior prepare_to_dive_6: argument: max_thermal_charge_time = 120.000000 sec
+ 16.02    behavior prepare_to_dive_6: argument: max_pumping_charge_time = 1000.000000 sec
+ 16.02    behavior prepare_to_dive_6: STATE Waiting for Activation -> Active
+ 16.02    init_gps_input()
+ 16.02    behavior prepare_to_dive_6: SUBSTATE 0 UnInited->1 : Waiting for initial GPS fix
+ 16.02    behavior yo_5: STATE UnInited -> Waiting for Activation
+ 16.02    behavior yo_5: argument: args_from_file = -1.000000 enum
+ 16.02    behavior yo_5: argument: start_when = 4.000000 enum
+ 16.02    behavior yo_5: argument: start_diving = 1.000000 enum
+ 16.02    behavior yo_5: argument: num_half_cycles_to_do = -1.000000 nodim
+ 16.02    behavior yo_5: argument: d_target_depth = 100.000000 m
+ 16.02    behavior yo_5: argument: d_target_altitude = -1.000000 m
+ 16.02    behavior yo_5: argument: d_use_bpump = 2.000000 enum
+ 16.02    behavior yo_5: argument: d_bpump_value = -1000.000000 X
+ 16.02    behavior yo_5: argument: d_use_pitch = 3.000000 enum
+ 16.02    behavior yo_5: argument: d_pitch_value = -0.430000 X
+ 16.02    behavior yo_5: argument: d_stop_when_hover_for = 180.000000 sec
+ 16.02    behavior yo_5: argument: d_stop_when_stalled_for = 240.000000 sec
+ 16.02    behavior yo_5: argument: d_speed_min = -100.000000 m/s
+ 16.02    behavior yo_5: argument: d_speed_max = 100.000000 m/s
+ 16.02    behavior yo_5: argument: d_use_thruster = 0.000000 enum
+ 16.02    behavior yo_5: argument: d_thruster_value = 0.000000 X
+ 16.02    behavior yo_5: argument: d_depth_rate_method = 3.000000 enum
+ 16.03    behavior yo_5: argument: d_wait_for_pitch = 1.000000 bool
+ 16.03    behavior yo_5: argument: d_wait_for_ballast = 100.000000 sec
+ 16.03    behavior yo_5: argument: d_delta_bpump_speed = 50.000000 X
+ 16.03    behavior yo_5: argument: d_delta_bpump_ballast = 25.000000 X
+ 16.03    behavior yo_5: argument: d_time_ratio = 1.100000 X
+ 16.03    behavior yo_5: argument: d_use_sc_model = 0.000000 bool
+ 16.03    behavior yo_5: argument: d_max_thermal_charge_time = 1200.000000 sec
+ 16.03    behavior yo_5: argument: d_max_pumping_charge_time = 300.000000 sec
+ 16.03    behavior yo_5: argument: d_thr_reqd_pres_mul = 1.500000 nodim
+ 16.03    behavior yo_5: argument: c_target_depth = 30.000000 m
+ 16.03    behavior yo_5: argument: c_target_altitude = -1.000000 m
+ 16.03    behavior yo_5: argument: c_use_bpump = 2.000000 enum
+ 16.03    behavior yo_5: argument: c_bpump_value = 1000.000000 X
+ 16.03    behavior yo_5: argument: c_use_pitch = 3.000000 enum
+ 16.03    behavior yo_5: argument: c_pitch_value = 0.430000 X
+ 16.03    behavior yo_5: argument: c_stop_when_hover_for = 180.000000 sec
+ 16.03    behavior yo_5: argument: c_stop_when_stalled_for = 240.000000 sec
+ 16.03    behavior yo_5: argument: c_speed_min = 100.000000 m/s
+ 16.03    behavior yo_5: argument: c_speed_max = -100.000000 m/s
+ 16.03    behavior yo_5: argument: c_use_thruster = 0.000000 enum
+ 16.03    behavior yo_5: argument: c_thruster_value = 0.000000 X
+ 16.03    behavior yo_5: argument: end_action = 2.000000 enum
+ 16.03    behavior yo_5: argument: stop_when = 5.000000 enum
+ 16.03    behavior yo_5: argument: when_secs = 1200.000000 sec
+ 16.03    behavior yo_5: argument: when_wpt_dist = 10.000000 m
+ 16.03    behavior surface_3: STATE UnInited -> Waiting for Activation
+ 16.03    behavior surface_3: argument: args_from_file = -1.000000 enum
+ 16.03    behavior surface_3: argument: start_when = 12.000000 enum
+ 16.03    behavior surface_3: argument: when_secs = 2700.000000 sec
+ 16.03    behavior surface_3: argument: when_wpt_dist = 10.000000 m
+ 16.03    behavior surface_3: argument: when_num_inflections = -1.000000 nodim
+ 16.03    behavior surface_3: argument: end_action = 1.000000 enum
+ 16.03    behavior surface_3: argument: report_all = 0.000000 bool
+ 16.03    behavior surface_3: argument: gps_wait_time = 300.000000 sec
+ 16.03    behavior surface_3: argument: keystroke_wait_time = 300.000000 sec
+ 16.03    behavior surface_3: argument: end_wpt_dist = 0.000000 m
+ 16.03    behavior surface_3: argument: c_use_bpump = 2.000000 enum
+ 16.03    behavior surface_3: argument: c_bpump_value = 1000.000000 X
+ 16.03    behavior surface_3: argument: c_use_pitch = 3.000000 enum
+ 16.03    behavior surface_3: argument: c_pitch_value = 0.453800 X
+ 16.03    behavior surface_3: argument: c_stop_when_air_pump = 0.000000 bool
+ 16.03    behavior surface_3: argument: c_use_thruster = 0.000000 enum
+ 16.03    behavior surface_3: argument: c_thruster_value = 0.000000 X
+ 16.03    behavior surface_3: argument: printout_cycle_time = 60.000000 sec
+ 16.03    behavior surface_3: argument: gps_postfix_wait_time = 60.000000 sec
+ 16.04    behavior surface_3: argument: force_iridium_use = 0.000000 nodim
+ 16.04    behavior surface_3: argument: min_time_between_gps_fixes = 300.000000 sec
+ 16.04    behavior surface_3: argument: sensor_input_wait_time = 10.000000 sec
+ 16.04    behavior surface_3: argument: when_utc_timestamp = -1.000000 dtime
+ 16.04    behavior surface_3: argument: when_utc_on_surface = 0.000000 bool
+ 16.04    behavior surface_3: argument: strobe_on = 0.000000 bool
+ 16.04    behavior surface_3: argument: thruster_burst = 0.000000 bool
+ 16.04    behavior surface_2: STATE UnInited -> Waiting for Activation
+ 16.04    behavior surface_2: argument: args_from_file = -1.000000 enum
+ 16.04    behavior surface_2: argument: start_when = 8.000000 enum
+ 16.04    behavior surface_2: argument: when_secs = 1200.000000 sec
+ 16.04    behavior surface_2: argument: when_wpt_dist = 25.000000 m
+ 16.04    behavior surface_2: argument: when_num_inflections = -1.000000 nodim
+ 16.04    behavior surface_2: argument: end_action = 3.000000 enum
+ 16.04    behavior surface_2: argument: report_all = 0.000000 bool
+ 16.04    behavior surface_2: argument: gps_wait_time = 600.000000 sec
+ 16.04    behavior surface_2: argument: keystroke_wait_time = 300.000000 sec
+ 16.04    behavior surface_2: argument: end_wpt_dist = 2000.000000 m
+ 16.04    behavior surface_2: argument: c_use_bpump = 2.000000 enum
+ 16.04    behavior surface_2: argument: c_bpump_value = 1000.000000 X
+ 16.04    behavior surface_2: argument: c_use_pitch = 3.000000 enum
+ 16.04    behavior surface_2: argument: c_pitch_value = 0.453800 X
+ 16.04    behavior surface_2: argument: c_stop_when_air_pump = 0.000000 bool
+ 16.04    behavior surface_2: argument: c_use_thruster = 0.000000 enum
+ 16.04    behavior surface_2: argument: c_thruster_value = 0.000000 X
+ 16.04    behavior surface_2: argument: printout_cycle_time = 60.000000 sec
+ 16.04    behavior surface_2: argument: gps_postfix_wait_time = 60.000000 sec
+ 16.04    behavior surface_2: argument: force_iridium_use = 0.000000 nodim
+ 16.04    behavior surface_2: argument: min_time_between_gps_fixes = 300.000000 sec
+ 16.04    behavior surface_2: argument: sensor_input_wait_time = 10.000000 sec
+ 16.04    behavior surface_2: argument: when_utc_timestamp = -1.000000 dtime
+ 16.04    behavior surface_2: argument: when_utc_on_surface = 0.000000 bool
+ 16.04    behavior surface_2: argument: strobe_on = 0.000000 bool
+ 16.04    behavior surface_2: argument: thruster_burst = 0.000000 bool
+ 16.04    handle_cop_tickle(48600.000000,-1.000000)
+                 hardware supports cop timeout jumper readback.
+                 no_cop_tickle_percent is NOT enabled.
+                 NO_COP_TICKLE_FOR is enabled.
+                 MS_ABORT_NO_TICKLE is ENABLED
+                 Will abort after no tickles for 810 minutes (13.50 hours).
+ 16.05    behavior abend_1: STATE UnInited -> Active
+ 16.05    behavior abend_1: argument: overdepth = 10000.000000 m
+ 16.05    behavior abend_1: argument: overdepth_sample_time = 15.000000 sec
+ 16.05    behavior abend_1: argument: overtime = -1.000000 sec
+ 16.05    behavior abend_1: argument: undervolts = 8.750000 volts
+ 16.05    behavior abend_1: argument: undervolts_sample_time = 60.000000 sec
+ 16.05    behavior abend_1: argument: samedepth_for = 1200.000000 sec
+ 16.05    behavior abend_1: argument: samedepth_for_sample_time = 30.000000 sec
+ 16.05    behavior abend_1: argument: stalled_for = -1.000000 sec
+ 16.05    behavior abend_1: argument: stalled_for_sample_time = 1800.000000 sec
+ 16.05    behavior abend_1: argument: no_cop_tickle_for = 48600.000000 sec
+ 16.05    behavior abend_1: argument: no_cop_tickle_percent = -1.000000 %
+ 16.05    behavior abend_1: argument: no_comms_tickle_for = 72.000000 hours
+ 16.05    behavior abend_1: argument: eng_pressure_mul = 0.900000 nodim
+ 16.05    behavior abend_1: argument: eng_pressure_sample_time = 15.000000 sec
+ 16.05    behavior abend_1: argument: max_wpt_distance = 300000.000000 m
+ 16.05    behavior abend_1: argument: chk_sensor_reasonableness = 1.000000 bool
+ 16.05    behavior abend_1: argument: reqd_free_heap = 50000.000000 bytes
+ 16.05    behavior abend_1: argument: leakdetect_sample_time = 60.000000 sec
+ 16.05    behavior abend_1: argument: vacuum_min = 4.000000 inHg
+ 16.05    behavior abend_1: argument: vacuum_max = 11.500000 inHg
+ 16.05    behavior abend_1: argument: vacuum_sample_time = 120.000000 sec
+ 16.06    behavior abend_1: argument: oil_volume_sample_time = 180.000000 sec
+ 16.06    behavior abend_1: argument: max_allowable_busy_cpu_cycles = 75.000000 cycles
+ 16.06    behavior abend_1: argument: remaining_charge_min = 10.000000 %
+ 16.06    behavior abend_1: argument: remaining_charge_sample_time = 60.000000 sec
+ 16.06    behavior abend_1: argument: use_thruster_for_ascent = 0.000000 bool
+ 16.06    behavior abend_1: argument: invalid_gps = 10.000000 nodim
+ 16.06    behavior abend_1: argument: check_emergency_battery_active = 0.000000 bool
+ 16.06    behavior abend_1: argument: samedepth_for_surfacing = 900.000000 sec
+ 16.06    sensor: m_gps_status = 2 enum
+ 16.06    sensor: m_gps_invalid_lat = 5139.268 lat
+ 16.06    sensor: m_gps_invalid_lon = -12807.7235 lon
+ 19.07    sensor: m_gps_status = 2 enum
+ 19.07    sensor: m_gps_invalid_lat = 5139.268 lat
+ 19.07    sensor: m_gps_invalid_lon = -12807.7235 lon
+report_heap_size(): M_FREE_HEAP=192.3K(196892 bytes)
+                    M_MIN_FREE_HEAP=192.3K(196892 bytes)
+                    M_SRAM_FREE_HEAP=1213.6K(1242744 bytes)
+                    M_SRAM_MIN_FREE_HEAP=1213.6K(1242736 bytes)
+ 23.99  5 sensor: m_gps_status = 2 enum
+ 24.00    sensor: m_gps_invalid_lat = 5139.268 lat
+ 24.00    sensor: m_gps_invalid_lon = -12807.7235 lon
+ 29.77  6 sensor: m_gps_status = 2 enum
+ 29.77    sensor: m_gps_invalid_lat = 5139.268 lat
+ 29.77    sensor: m_gps_invalid_lon = -12807.7235 lon
+ 34.81  7 sensor: m_gps_status = 2 enum
+ 34.81    sensor: m_gps_invalid_lat = 5139.268 lat
+ 34.81    sensor: m_gps_invalid_lon = -12807.7235 lon
+ 39.82  8 sensor: m_gps_status = 1 enum
+ 39.82    sensor: m_gps_ignored_lat = 5139.2655 lat
+ 39.82    sensor: m_gps_ignored_lon = -12807.7518 lon
+ 44.86 10 sensor: m_gps_status = 1 enum
+ 44.86    sensor: m_gps_ignored_lat = 5139.2658 lat
+ 44.86    sensor: m_gps_ignored_lon = -12807.7477 lon
+ 49.86 11 sensor: m_gps_status = 1 enum
+ 49.86    sensor: m_gps_ignored_lat = 5139.2662 lat
+ 49.87    sensor: m_gps_ignored_lon = -12807.7509 lon
+ 54.87 12 sensor: m_gps_status = 1 enum
+ 54.87    sensor: m_gps_ignored_lat = 5139.2655 lat
+ 54.87    sensor: m_gps_ignored_lon = -12807.7506 lon
+ 59.88 13 sensor: m_gps_status = 1 enum
+ 59.88    sensor: m_gps_ignored_lat = 5139.2655 lat
+ 59.88    sensor: m_gps_ignored_lon = -12807.7506 lon
+ 64.88 15 sensor: m_gps_lat = 5139.2656 lat
+ 64.88    sensor: m_gps_lon = -12807.7508 lon
+ 64.88    sensor: m_gps_status = 0 enum
+ 72.04 16 end_gps_input()
+time set to: 2023-04-18T16:30:57
+ 72.04    behavior prepare_to_dive_6: SUBSTATE 1 ->2 : All done
+ 72.05    behavior prepare_to_dive_6: STATE Active -> Complete
+ 72.05    behavior yo_5: STATE Waiting for Activation -> Active
+ 72.05    behavior dive_to_501: STATE UnInited -> Active
+ 72.05    behavior dive_to_501: argument: target_depth = 100.000000 m
+ 72.05    behavior dive_to_501: argument: target_altitude = -1.000000 m
+ 72.05    behavior dive_to_501: argument: use_bpump = 2.000000 enum
+ 72.05    behavior dive_to_501: argument: bpump_value = -1000.000000 X
+ 72.05    behavior dive_to_501: argument: use_pitch = 3.000000 enum
+ 72.05    behavior dive_to_501: argument: pitch_value = -0.430000 X
+ 72.05    behavior dive_to_501: argument: start_when = 0.000000 enum
+ 72.05    behavior dive_to_501: argument: stop_when_hover_for = 180.000000 sec
+ 72.05    behavior dive_to_501: argument: stop_when_stalled_for = 240.000000 sec
+ 72.05    behavior dive_to_501: argument: stop_when_air_pump = 0.000000 bool
+ 72.05    behavior dive_to_501: argument: initial_inflection = 1.000000 bool
+ 72.05    behavior dive_to_501: argument: speed_min = -100.000000 m/s
+ 72.05    behavior dive_to_501: argument: speed_max = 100.000000 m/s
+ 72.05    behavior dive_to_501: argument: use_thruster = 0.000000 enum
+ 72.05    behavior dive_to_501: argument: thruster_value = 0.000000 X
+ 72.05    behavior dive_to_501: argument: depth_rate_method = 3.000000 enum
+ 72.05    behavior dive_to_501: argument: wait_for_pitch = 1.000000 bool
+ 72.05    behavior dive_to_501: argument: wait_for_ballast = 100.000000 sec
+ 72.05    behavior dive_to_501: argument: delta_bpump_speed = 50.000000 X
+ 72.05    behavior dive_to_501: argument: delta_bpump_ballast = 25.000000 X
+ 72.05    behavior dive_to_501: argument: time_ratio = 1.100000 X
+ 72.05    behavior dive_to_501: argument: use_sc_model = 0.000000 bool
+ 72.05    behavior dive_to_501: argument: max_thermal_charge_time = 1200.000000 sec
+ 72.05    behavior dive_to_501: argument: max_pumping_charge_time = 300.000000 sec
+ 72.05    behavior dive_to_501: argument: thr_reqd_pres_mul = 1.500000 nodim
+ 72.06    behavior dive_to_501: SUBSTATE 0 UnInited->1 : waiting for initial depth reading
+ 72.06    behavior goto_wpt_4: STATE UnInited -> Active
+ 72.06    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+ 72.06    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+ 72.06    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+ 72.06    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+ 72.06    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+ 72.06    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+ 72.06    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+ 72.06    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+ 72.06    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+ 72.06    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+ 72.06    Waypoint: lat lon lmc_x lmc_y
+ 72.06            5139.266 -12807.751                    0                    0
+ 72.07    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+ 76.05 17 behavior dive_to_501: SUBSTATE 1 ->4 : diving
+ 76.05    behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+ 76.05    behavior goto_wpt_4: STATE Active -> UnInited
+ 76.05    behavior surface_2: STATE Waiting for Activation -> Active
+ 76.06    behavior surface_2: SUBSTATE 0 UnInited->1 : climb_to the surface
+ 78.37    behavior climb_to_201: STATE UnInited -> Active
+ 78.37    behavior climb_to_201: argument: target_depth = 4.000000 m
+ 78.37    behavior climb_to_201: argument: target_altitude = -1.000000 m
+ 78.37    behavior climb_to_201: argument: use_bpump = 2.000000 enum
+ 78.37    behavior climb_to_201: argument: bpump_value = 1000.000000 X
+ 78.37    behavior climb_to_201: argument: use_pitch = 3.000000 enum
+ 78.37    behavior climb_to_201: argument: pitch_value = 0.453800 X
+ 78.37    behavior climb_to_201: argument: start_when = 0.000000 enum
+ 78.37    behavior climb_to_201: argument: stop_when_hover_for = -1.000000 sec
+ 78.37    behavior climb_to_201: argument: stop_when_stalled_for = -1.000000 sec
+ 78.37    behavior climb_to_201: argument: stop_when_air_pump = 0.000000 bool
+ 78.37    behavior climb_to_201: argument: initial_inflection = 1.000000 bool
+ 78.37    behavior climb_to_201: argument: speed_min = 100.000000 m/s
+ 78.37    behavior climb_to_201: argument: speed_max = -100.000000 m/s
+ 78.37    behavior climb_to_201: argument: use_thruster = 0.000000 enum
+ 78.37    behavior climb_to_201: argument: thruster_value = 0.000000 X
+ 78.37    behavior climb_to_201: SUBSTATE 0 UnInited->1 : waiting for initial depth reading
+ 78.37    behavior climb_to_201: SUBSTATE 1 ->4 : climbing
+ 78.38    behavior climb_to_201: SUBSTATE 4 ->5 : Complete reached depth
+ 78.38    behavior climb_to_201: STATE Active -> Complete
+ 78.38    behavior surface_2: SUBSTATE 1 ->2 : waiting for various sensors
+ 78.38    behavior surface_2: SUBSTATE 2 ->3 : waiting for GPS fix
+ 78.38    init_gps_input()
+ 79.39    sensor: m_gps_lat = 5139.2655 lat
+ 79.39    sensor: m_gps_lon = -12807.7511 lon
+ 79.39    sensor: m_gps_status = 0 enum
+ 80.05 18 behavior goto_wpt_4: STATE UnInited -> Active
+ 80.05    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+ 80.05    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+ 80.05    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+ 80.05    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+ 80.05    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+ 80.05    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+ 80.05    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+ 80.05    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+ 80.05    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+ 80.05    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+ 80.05    Waypoint: lat lon lmc_x lmc_y
+ 80.05            5139.266 -12807.751                    0                    0
+ 80.06    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+ 80.06    end_gps_input()
+ 80.06    init_gps_input()
+ 80.06    behavior surface_2: SUBSTATE 3 ->4 : Picking iridium or freewave
+ 80.06    behavior surface_2: SUBSTATE 4 ->5 : Waiting for more gps fixes
+ 80.06    end_gps_input()
+ 80.06    behavior surface_2: SUBSTATE 5 ->7 : waiting for control-C to exit/resume
+ 84.05 19 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+ 88.05 20 behavior goto_wpt_4: STATE Active -> UnInited
+ 92.05 21 behavior goto_wpt_4: STATE UnInited -> Active
+ 92.05    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+ 92.05    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+ 92.05    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+ 92.05    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+ 92.05    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+ 92.06    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+ 92.06    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+ 92.06    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+ 92.06    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+ 92.06    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+ 92.06    Waypoint: lat lon lmc_x lmc_y
+ 92.06            5139.266 -12807.751                    0                    0
+ 92.06    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+ 96.06 22 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+ 96.06    behavior goto_wpt_4: STATE Active -> UnInited
+100.06 23 behavior goto_wpt_4: STATE UnInited -> Active
+100.06    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+100.06    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+100.06    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+100.06    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+100.06    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+100.06    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+100.06    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+100.06    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+100.06    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+100.06    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+100.06    Waypoint: lat lon lmc_x lmc_y
+100.06            5139.266 -12807.751                    0                    0
+100.07    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+104.06 24 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+108.06 25 behavior goto_wpt_4: STATE Active -> UnInited
+112.06 26 behavior goto_wpt_4: STATE UnInited -> Active
+112.06    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+112.06    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+112.06    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+112.06    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+112.06    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+112.06    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+112.06    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+112.06    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+112.06    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+112.06    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+112.07    Waypoint: lat lon lmc_x lmc_y
+112.07            5139.266 -12807.751                    0                    0
+112.07    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+116.07 27 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+116.07    behavior goto_wpt_4: STATE Active -> UnInited
+120.07 28 behavior goto_wpt_4: STATE UnInited -> Active
+120.07    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+120.07    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+120.07    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+120.07    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+120.07    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+120.07    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+120.07    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+120.07    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+120.07    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+120.07    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+120.07    Waypoint: lat lon lmc_x lmc_y
+120.07            5139.266 -12807.751                    0                    0
+120.08    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+124.07 29 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+128.07 30 behavior goto_wpt_4: STATE Active -> UnInited
+132.07 31 behavior goto_wpt_4: STATE UnInited -> Active
+132.07    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+132.07    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+132.07    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+132.07    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+132.07    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+132.07    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+132.07    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+132.07    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+132.07    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+132.07    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+132.08    Waypoint: lat lon lmc_x lmc_y
+132.08            5139.266 -12807.751                    0                    0
+132.08    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+136.08 32 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+136.08    behavior goto_wpt_4: STATE Active -> UnInited
+140.08 33 behavior goto_wpt_4: STATE UnInited -> Active
+140.08    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+140.08    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+140.08    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+140.08    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+140.08    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+140.08    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+140.08    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+140.08    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+140.08    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+140.08    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+140.08    Waypoint: lat lon lmc_x lmc_y
+140.08            5139.266 -12807.751                    0                    0
+140.09    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+144.08 34 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+148.08 35 behavior goto_wpt_4: STATE Active -> UnInited
+152.08 36 behavior goto_wpt_4: STATE UnInited -> Active
+152.08    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+152.08    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+152.08    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+152.08    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+152.08    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+152.08    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+152.08    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+152.08    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+152.09    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+152.09    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+152.09    Waypoint: lat lon lmc_x lmc_y
+152.09            5139.266 -12807.751                    0                    0
+152.09    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+156.09 37 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+156.09    behavior goto_wpt_4: STATE Active -> UnInited
+163.06 38 behavior goto_wpt_4: STATE UnInited -> Active
+163.06    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+163.06    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+163.06    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+163.06    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+163.06    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+163.06    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+163.06    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+163.06    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+163.06    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+163.06    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+163.07    Waypoint: lat lon lmc_x lmc_y
+163.07            5139.266 -12807.751                    0                    0
+163.07    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+167.06 39 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+167.07    behavior goto_wpt_4: STATE Active -> UnInited
+171.06 40 behavior goto_wpt_4: STATE UnInited -> Active
+171.07    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+171.07    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+171.07    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+171.07    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+171.07    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+171.07    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+171.07    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+171.07    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+171.07    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+171.07    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+171.07    Waypoint: lat lon lmc_x lmc_y
+171.07            5139.266 -12807.751                    0                    0
+171.07    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+175.07 41 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+175.07    behavior goto_wpt_4: STATE Active -> UnInited
+179.07 42 behavior goto_wpt_4: STATE UnInited -> Active
+179.07    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+179.07    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+179.07    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+179.07    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+179.07    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+179.07    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+179.07    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+179.07    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+179.07    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+179.07    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+179.08    Waypoint: lat lon lmc_x lmc_y
+179.08            5139.266 -12807.751                    0                    0
+179.08    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+183.08 43 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+183.08    behavior goto_wpt_4: STATE Active -> UnInited
+187.08 44 behavior goto_wpt_4: STATE UnInited -> Active
+187.08    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+187.08    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+187.08    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+187.08    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+187.08    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+187.08    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+187.08    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+187.08    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+187.08    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+187.08    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+187.08    Waypoint: lat lon lmc_x lmc_y
+187.09            5139.266 -12807.751                    0                    0
+187.09    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+191.08 45 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+191.08    behavior goto_wpt_4: STATE Active -> UnInited
+195.08 46 behavior goto_wpt_4: STATE UnInited -> Active
+195.08    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+195.08    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+195.08    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+195.08    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+195.08    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+195.08    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+195.08    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+195.08    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+195.08    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+195.08    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+195.09    Waypoint: lat lon lmc_x lmc_y
+195.09            5139.266 -12807.751                    0                    0
+195.09    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+199.09 47 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+203.08 48 behavior goto_wpt_4: STATE Active -> UnInited
+207.08 49 behavior goto_wpt_4: STATE UnInited -> Active
+207.09    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+207.09    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+207.09    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+207.09    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+207.09    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+207.09    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+207.09    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+207.09    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+207.09    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+207.09    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+207.09    Waypoint: lat lon lmc_x lmc_y
+207.09            5139.266 -12807.751                    0                    0
+207.09    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+211.09 50 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+211.09    behavior goto_wpt_4: STATE Active -> UnInited
+215.09 51 behavior goto_wpt_4: STATE UnInited -> Active
+215.09    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+215.09    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+215.09    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+215.09    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+215.09    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+215.09    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+215.09    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+215.09    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+215.09    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+215.09    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+215.10    Waypoint: lat lon lmc_x lmc_y
+215.10            5139.266 -12807.751                    0                    0
+215.10    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+219.09 52 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+223.09 53 behavior goto_wpt_4: STATE Active -> UnInited
+227.09 54 behavior goto_wpt_4: STATE UnInited -> Active
+227.10    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+227.10    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+227.10    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+227.10    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+227.10    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+227.10    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+227.10    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+227.10    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+227.10    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+227.10    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+227.10    Waypoint: lat lon lmc_x lmc_y
+227.10            5139.266 -12807.751                    0                    0
+227.10    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+231.10 55 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+231.10    behavior goto_wpt_4: STATE Active -> UnInited
+235.10 56 behavior goto_wpt_4: STATE UnInited -> Active
+235.10    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+235.10    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+235.10    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+235.10    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+235.10    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+235.10    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+235.10    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+235.10    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+235.10    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+235.10    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+235.10    Waypoint: lat lon lmc_x lmc_y
+235.11            5139.266 -12807.751                    0                    0
+235.11    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+239.10 57 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+243.10 58 behavior goto_wpt_4: STATE Active -> UnInited
+248.24 59 behavior goto_wpt_4: STATE UnInited -> Active
+248.24    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+248.24    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+248.24    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+248.24    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+248.24    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+248.24    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+248.24    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+248.24    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+248.24    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+248.24    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+248.25    Waypoint: lat lon lmc_x lmc_y
+248.25            5139.266 -12807.751                    0                    0
+248.25    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+252.24 60 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+252.25    behavior goto_wpt_4: STATE Active -> UnInited
+256.24 61 behavior goto_wpt_4: STATE UnInited -> Active
+256.25    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+256.25    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+256.25    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+256.25    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+256.25    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+256.25    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+256.25    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+256.25    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+256.25    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+256.25    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+256.25    Waypoint: lat lon lmc_x lmc_y
+256.25            5139.266 -12807.751                    0                    0
+256.25    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+260.25 62 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+260.25    behavior goto_wpt_4: STATE Active -> UnInited
+264.25 63 behavior goto_wpt_4: STATE UnInited -> Active
+264.25    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+264.25    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+264.25    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+264.25    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+264.25    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+264.25    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+264.25    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+264.25    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+264.25    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+264.25    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+264.25    Waypoint: lat lon lmc_x lmc_y
+264.25            5139.266 -12807.751                    0                    0
+264.26    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+268.25 64 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+268.26    behavior goto_wpt_4: STATE Active -> UnInited
+272.25 65 behavior goto_wpt_4: STATE UnInited -> Active
+272.25    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+272.25    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+272.25    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+272.25    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+272.25    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+272.26    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+272.26    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+272.26    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+272.26    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+272.26    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+272.26    Waypoint: lat lon lmc_x lmc_y
+272.26            5139.266 -12807.751                    0                    0
+272.26    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+276.26 66 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+276.26    behavior goto_wpt_4: STATE Active -> UnInited
+280.26 67 behavior goto_wpt_4: STATE UnInited -> Active
+280.26    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+280.26    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+280.26    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+280.26    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+280.26    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+280.26    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+280.26    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+280.26    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+280.26    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+280.26    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+280.26    Waypoint: lat lon lmc_x lmc_y
+280.26            5139.266 -12807.751                    0                    0
+280.27    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+284.26 68 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+288.26 69 behavior goto_wpt_4: STATE Active -> UnInited
+292.33 70 behavior goto_wpt_4: STATE UnInited -> Active
+292.33    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+292.33    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+292.33    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+292.33    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+292.33    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+292.33    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+292.33    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+292.33    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+292.33    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+292.33    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+292.34    Waypoint: lat lon lmc_x lmc_y
+292.34            5139.266 -12807.751                    0                    0
+292.34    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+296.33 71 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+296.33    behavior goto_wpt_4: STATE Active -> UnInited
+300.33 72 behavior goto_wpt_4: STATE UnInited -> Active
+300.38    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+300.38    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+300.38    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+300.38    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+300.38    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+300.38    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+300.38    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+300.38    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+300.38    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+300.38    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+300.38    Waypoint: lat lon lmc_x lmc_y
+300.39            5139.266 -12807.751                    0                    0
+300.39    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+304.33 73 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+308.33 74 behavior goto_wpt_4: STATE Active -> UnInited
+312.33 75 behavior goto_wpt_4: STATE UnInited -> Active
+312.33    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+312.33    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+312.33    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+312.33    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+312.33    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+312.34    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+312.34    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+312.34    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+312.34    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+312.34    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+312.34    Waypoint: lat lon lmc_x lmc_y
+312.34            5139.266 -12807.751                    0                    0
+312.34    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:-0.0203 C_FIN:0.0000
+316.34 76 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+316.34    behavior goto_wpt_4: STATE Active -> UnInited
+320.34 77 behavior goto_wpt_4: STATE UnInited -> Active
+320.34    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+320.34    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+320.34    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+320.34    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+320.34    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+320.34    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+320.34    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+320.34    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+320.34    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+320.34    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+320.34    Waypoint: lat lon lmc_x lmc_y
+320.35            5139.266 -12807.751                    0                    0
+320.35    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+324.34 78 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+324.34    behavior goto_wpt_4: STATE Active -> UnInited
+328.34 79 behavior goto_wpt_4: STATE UnInited -> Active
+328.34    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+328.34    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+328.34    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+328.34    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+328.34    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+328.34    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+328.34    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+328.34    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+328.34    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+328.34    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+328.35    Waypoint: lat lon lmc_x lmc_y
+328.35            5139.266 -12807.751                    0                    0
+328.35    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+335.37 80 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+335.37    behavior goto_wpt_4: STATE Active -> UnInited
+339.37 81 behavior goto_wpt_4: STATE UnInited -> Active
+339.37    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+339.37    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+339.37    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+339.37    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+339.37    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+339.37    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+339.37    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+339.37    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+339.37    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+339.37    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+339.37    Waypoint: lat lon lmc_x lmc_y
+339.37            5139.266 -12807.751                    0                    0
+339.38    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+343.37 82 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+343.37    behavior goto_wpt_4: STATE Active -> UnInited
+347.37 83 behavior goto_wpt_4: STATE UnInited -> Active
+347.37    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+347.37    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+347.37    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+347.37    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+347.37    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+347.37    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+347.37    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+347.37    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+347.37    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+347.37    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+347.38    Waypoint: lat lon lmc_x lmc_y
+347.38            5139.266 -12807.751                    0                    0
+347.38    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+351.38 84 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+351.38    behavior goto_wpt_4: STATE Active -> UnInited
+355.38 85 behavior goto_wpt_4: STATE UnInited -> Active
+355.38    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+355.38    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+355.38    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+355.38    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+355.38    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+355.38    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+355.38    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+355.38    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+355.38    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+355.38    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+355.38    Waypoint: lat lon lmc_x lmc_y
+355.38            5139.266 -12807.751                    0                    0
+355.38    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+359.38 86 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+363.38 87 behavior goto_wpt_4: STATE Active -> UnInited
+367.38 88 behavior goto_wpt_4: STATE UnInited -> Active
+367.38    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+367.38    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+367.38    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+367.38    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+367.38    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+367.38    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+367.38    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+367.38    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+367.38    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+367.38    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+367.38    Waypoint: lat lon lmc_x lmc_y
+367.39            5139.266 -12807.751                    0                    0
+367.39    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+371.38 89 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+371.39    behavior goto_wpt_4: STATE Active -> UnInited
+375.38 90 behavior goto_wpt_4: STATE UnInited -> Active
+375.38    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+375.38    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+375.38    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+375.38    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+375.38    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+375.39    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+375.39    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+375.39    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+375.39    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+375.39    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+375.39    Waypoint: lat lon lmc_x lmc_y
+375.39            5139.266 -12807.751                    0                    0
+375.39    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+379.39 91 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+383.39 92 behavior goto_wpt_4: STATE Active -> UnInited
+387.39 93 behavior goto_wpt_4: STATE UnInited -> Active
+387.39    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+387.39    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+387.39    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+387.39    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+387.39    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+387.39    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+387.39    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+387.39    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+387.39    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+387.39    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+387.39    Waypoint: lat lon lmc_x lmc_y
+387.39            5139.266 -12807.751                    0                    0
+387.40    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+391.39 94 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+391.40    behavior goto_wpt_4: STATE Active -> UnInited
+395.39 95 behavior goto_wpt_4: STATE UnInited -> Active
+395.39    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+395.39    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+395.39    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+395.39    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+395.39    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+395.40    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+395.40    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+395.40    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+395.40    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+395.40    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+395.40    Waypoint: lat lon lmc_x lmc_y
+395.40            5139.266 -12807.751                    0                    0
+395.40    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+399.40 96 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+403.40 97 behavior goto_wpt_4: STATE Active -> UnInited
+407.40 98 behavior goto_wpt_4: STATE UnInited -> Active
+407.40    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+407.40    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+407.40    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+407.40    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+407.40    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+407.40    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+407.40    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+407.40    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+407.40    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+407.40    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+407.40    Waypoint: lat lon lmc_x lmc_y
+407.40            5139.266 -12807.751                    0                    0
+407.41    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+411.40 99 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+411.40    behavior goto_wpt_4: STATE Active -> UnInited
+415.40  0 behavior goto_wpt_4: STATE UnInited -> Active
+415.40    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+415.40    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+415.40    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+415.40    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+415.40    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+415.40    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+415.40    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+415.40    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+415.40    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+415.40    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+415.41    Waypoint: lat lon lmc_x lmc_y
+415.41            5139.266 -12807.751                    0                    0
+415.41    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+419.41  1 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+427.36  2 behavior goto_wpt_4: STATE Active -> UnInited
+431.36  3 behavior goto_wpt_4: STATE UnInited -> Active
+431.36    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+431.36    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+431.36    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+431.36    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+431.36    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+431.36    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+431.36    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+431.36    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+431.36    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+431.36    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+431.37    Waypoint: lat lon lmc_x lmc_y
+431.37            5139.266 -12807.751                    0                    0
+431.37    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+435.37  4 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+435.37    behavior goto_wpt_4: STATE Active -> UnInited
+439.37  5 behavior goto_wpt_4: STATE UnInited -> Active
+439.37    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+439.37    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+439.37    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+439.37    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+439.37    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+439.37    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+439.37    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+439.37    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+439.37    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+439.37    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+439.37    Waypoint: lat lon lmc_x lmc_y
+439.37            5139.266 -12807.751                    0                    0
+439.38    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+443.37  6 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+443.38    behavior goto_wpt_4: STATE Active -> UnInited
+447.37  7 behavior goto_wpt_4: STATE UnInited -> Active
+447.38    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+447.38    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+447.38    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+447.38    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+447.38    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+447.38    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+447.38    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+447.38    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+447.38    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+447.38    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+447.38    Waypoint: lat lon lmc_x lmc_y
+447.38            5139.266 -12807.751                    0                    0
+447.38    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+451.38  8 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+451.38    behavior goto_wpt_4: STATE Active -> UnInited
+455.38  9 behavior goto_wpt_4: STATE UnInited -> Active
+455.38    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+455.38    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+455.38    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+455.38    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+455.38    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+455.38    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+455.38    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+455.38    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+455.38    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+455.38    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+455.38    Waypoint: lat lon lmc_x lmc_y
+455.38            5139.266 -12807.751                    0                    0
+455.39    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+459.38 10 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+463.38 11 behavior goto_wpt_4: STATE Active -> UnInited
+467.38 12 behavior goto_wpt_4: STATE UnInited -> Active
+467.38    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+467.38    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+467.38    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+467.38    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+467.38    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+467.38    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+467.38    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+467.38    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+467.38    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+467.38    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+467.39    Waypoint: lat lon lmc_x lmc_y
+467.39            5139.266 -12807.751                    0                    0
+467.39    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+471.39 13 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+471.39    behavior goto_wpt_4: STATE Active -> UnInited
+475.39 14 behavior goto_wpt_4: STATE UnInited -> Active
+475.39    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+475.39    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+475.39    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+475.39    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+475.39    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+475.39    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+475.39    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+475.39    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+475.39    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+475.39    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+475.39    Waypoint: lat lon lmc_x lmc_y
+475.39            5139.266 -12807.751                    0                    0
+475.39    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+479.39 15 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+483.39 16 behavior goto_wpt_4: STATE Active -> UnInited
+487.39 17 behavior goto_wpt_4: STATE UnInited -> Active
+487.39    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+487.39    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+487.39    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+487.39    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+487.39    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+487.39    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+487.39    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+487.39    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+487.39    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+487.39    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+487.40    Waypoint: lat lon lmc_x lmc_y
+487.40            5139.266 -12807.751                    0                    0
+487.40    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+491.40 18 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+491.40    behavior goto_wpt_4: STATE Active -> UnInited
+495.40 19 behavior goto_wpt_4: STATE UnInited -> Active
+495.40    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+495.40    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+495.40    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+495.40    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+495.40    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+495.40    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+495.40    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+495.40    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+495.40    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+495.40    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+495.40    Waypoint: lat lon lmc_x lmc_y
+495.40            5139.266 -12807.751                    0                    0
+495.41    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+499.40 20 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+503.40 21 behavior goto_wpt_4: STATE Active -> UnInited
+507.45 22 behavior goto_wpt_4: STATE UnInited -> Active
+507.45    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+507.46    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+507.46    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+507.46    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+507.46    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+507.46    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+507.46    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+507.46    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+507.46    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+507.46    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+507.46    Waypoint: lat lon lmc_x lmc_y
+507.46            5139.266 -12807.751                    0                    0
+507.46    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+511.45 23 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+511.45    behavior goto_wpt_4: STATE Active -> UnInited
+515.45 24 behavior goto_wpt_4: STATE UnInited -> Active
+515.46    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+515.46    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+515.46    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+515.46    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+515.46    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+515.46    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+515.46    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+515.46    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+515.46    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+515.46    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+515.46    Waypoint: lat lon lmc_x lmc_y
+515.46            5139.266 -12807.751                    0                    0
+515.46    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+519.46 25 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+527.16 26 behavior goto_wpt_4: STATE Active -> UnInited
+531.16 27 behavior goto_wpt_4: STATE UnInited -> Active
+531.16    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+531.16    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+531.16    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+531.16    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+531.16    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+531.16    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+531.16    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+531.16    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+531.16    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+531.16    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+531.16    Waypoint: lat lon lmc_x lmc_y
+531.16            5139.266 -12807.751                    0                    0
+531.17    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+535.16 28 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+535.16    behavior goto_wpt_4: STATE Active -> UnInited
+539.16 29 behavior goto_wpt_4: STATE UnInited -> Active
+539.16    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+539.16    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+539.16    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+539.16    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+539.16    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+539.16    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+539.16    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+539.16    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+539.16    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+539.16    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+539.17    Waypoint: lat lon lmc_x lmc_y
+539.17            5139.266 -12807.751                    0                    0
+539.17    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+543.17 30 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+543.17    behavior goto_wpt_4: STATE Active -> UnInited
+547.17 31 behavior goto_wpt_4: STATE UnInited -> Active
+547.17    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+547.17    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+547.17    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+547.17    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+547.17    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+547.17    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+547.17    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+547.17    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+547.17    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+547.17    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+547.17    Waypoint: lat lon lmc_x lmc_y
+547.17            5139.266 -12807.751                    0                    0
+547.18    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+551.17 32 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+551.17    behavior goto_wpt_4: STATE Active -> UnInited
+555.17 33 behavior goto_wpt_4: STATE UnInited -> Active
+555.17    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+555.17    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+555.17    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+555.17    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+555.17    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+555.17    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+555.17    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+555.17    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+555.17    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+555.17    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+555.18    Waypoint: lat lon lmc_x lmc_y
+555.18            5139.266 -12807.751                    0                    0
+555.18    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+559.18 34 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+563.17 35 behavior goto_wpt_4: STATE Active -> UnInited
+567.18 36 behavior goto_wpt_4: STATE UnInited -> Active
+567.18    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+567.18    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+567.18    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+567.18    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+567.18    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+567.18    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+567.18    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+567.18    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+567.18    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+567.18    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+567.18    Waypoint: lat lon lmc_x lmc_y
+567.18            5139.266 -12807.751                    0                    0
+567.18    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+571.18 37 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+571.18    behavior goto_wpt_4: STATE Active -> UnInited
+575.18 38 behavior goto_wpt_4: STATE UnInited -> Active
+575.18    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+575.18    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+575.18    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+575.18    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+575.18    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+575.18    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+575.18    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+575.18    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+575.18    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+575.18    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+575.19    Waypoint: lat lon lmc_x lmc_y
+575.19            5139.266 -12807.751                    0                    0
+575.19    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+579.18 39 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+583.18 40 behavior goto_wpt_4: STATE Active -> UnInited
+587.18 41 behavior goto_wpt_4: STATE UnInited -> Active
+587.19    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+587.19    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+587.19    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+587.19    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+587.19    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+587.19    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+587.19    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+587.19    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+587.19    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+587.19    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+587.19    Waypoint: lat lon lmc_x lmc_y
+587.19            5139.266 -12807.751                    0                    0
+587.19    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+591.19 42 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+591.19    behavior goto_wpt_4: STATE Active -> UnInited
+595.19 43 behavior goto_wpt_4: STATE UnInited -> Active
+595.19    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+595.19    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+595.19    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+595.19    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+595.19    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+595.19    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+595.19    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+595.19    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+595.19    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+595.19    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+595.20    Waypoint: lat lon lmc_x lmc_y
+595.20            5139.266 -12807.751                    0                    0
+595.20    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+599.19 44 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+603.20 45 behavior goto_wpt_4: STATE Active -> UnInited
+607.20 46 behavior goto_wpt_4: STATE UnInited -> Active
+607.20    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+607.20    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+607.20    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+607.20    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+607.20    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+607.20    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+607.20    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+607.20    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+607.20    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+607.20    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+607.20    Waypoint: lat lon lmc_x lmc_y
+607.20            5139.266 -12807.751                    0                    0
+607.21    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+612.34 47 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:0.0637 C_FIN:0.0000
+616.34 48 behavior goto_wpt_4: STATE Active -> UnInited
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:-0.0232 C_FIN:0.0000
+620.34 49 behavior goto_wpt_4: STATE UnInited -> Active
+620.35    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+620.35    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+620.35    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+620.35    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+620.35    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+620.35    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+620.35    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+620.35    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+620.35    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+620.35    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+620.35    Waypoint: lat lon lmc_x lmc_y
+620.35            5139.266 -12807.751                    0                    0
+620.35    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+624.34 50 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+628.34 51 behavior goto_wpt_4: STATE Active -> UnInited
+632.34 52 behavior goto_wpt_4: STATE UnInited -> Active
+632.35    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+632.35    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+632.35    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+632.35    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+632.35    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+632.35    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+632.35    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+632.35    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+632.35    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+632.35    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+632.35    Waypoint: lat lon lmc_x lmc_y
+632.35            5139.266 -12807.751                    0                    0
+632.35    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+636.35 53 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+636.35    behavior goto_wpt_4: STATE Active -> UnInited
+640.35 54 behavior goto_wpt_4: STATE UnInited -> Active
+640.35    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+640.35    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+640.35    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+640.35    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+640.35    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+640.35    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+640.35    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+640.35    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+640.35    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+640.35    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+640.36    Waypoint: lat lon lmc_x lmc_y
+640.36            5139.266 -12807.751                    0                    0
+640.36    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+644.35 55 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+648.35 56 behavior goto_wpt_4: STATE Active -> UnInited
+652.35 57 behavior goto_wpt_4: STATE UnInited -> Active
+652.36    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+652.36    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+652.36    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+652.36    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+652.36    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+652.36    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+652.36    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+652.36    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+652.36    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+652.36    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+652.36    Waypoint: lat lon lmc_x lmc_y
+652.36            5139.266 -12807.751                    0                    0
+652.36    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+656.36 58 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+656.36    behavior goto_wpt_4: STATE Active -> UnInited
+660.36 59 behavior goto_wpt_4: STATE UnInited -> Active
+660.36    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+660.36    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+660.36    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+660.36    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+660.36    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+660.36    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+660.36    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+660.36    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+660.36    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+660.36    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+660.36    Waypoint: lat lon lmc_x lmc_y
+660.37            5139.266 -12807.751                    0                    0
+660.37    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+664.36 60 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+668.36 61 behavior goto_wpt_4: STATE Active -> UnInited
+672.36 62 behavior goto_wpt_4: STATE UnInited -> Active
+672.37    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+672.37    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+672.37    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+672.37    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+672.37    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+672.37    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+672.37    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+672.37    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+672.37    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+672.37    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+672.37    Waypoint: lat lon lmc_x lmc_y
+672.37            5139.266 -12807.751                    0                    0
+672.37    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+676.37 63 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+676.37    behavior goto_wpt_4: STATE Active -> UnInited
+680.37 64 behavior goto_wpt_4: STATE UnInited -> Active
+680.37    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+680.37    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+680.37    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+680.37    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+680.37    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+680.37    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+680.37    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+680.37    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+680.37    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+680.37    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+680.38    Waypoint: lat lon lmc_x lmc_y
+680.38            5139.266 -12807.751                    0                    0
+680.38    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+684.37 65 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+688.37 66 behavior goto_wpt_4: STATE Active -> UnInited
+692.37 67 behavior goto_wpt_4: STATE UnInited -> Active
+692.37    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+692.37    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+692.37    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+692.37    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+692.37    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+692.37    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+692.37    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+692.37    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+692.37    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+692.37    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+692.38    Waypoint: lat lon lmc_x lmc_y
+692.38            5139.266 -12807.751                    0                    0
+692.38    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+696.38 68 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+696.38    behavior goto_wpt_4: STATE Active -> UnInited
+700.38 69 behavior goto_wpt_4: STATE UnInited -> Active
+700.38    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+700.38    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+700.38    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+700.38    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+700.38    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+700.38    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+700.38    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+700.38    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+700.38    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+700.38    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+700.38    Waypoint: lat lon lmc_x lmc_y
+700.38            5139.266 -12807.751                    0                    0
+700.38    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+707.27 70 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+711.27 71 behavior goto_wpt_4: STATE Active -> UnInited
+715.27 72 behavior goto_wpt_4: STATE UnInited -> Active
+715.27    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+715.27    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+715.27    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+715.27    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+715.27    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+715.27    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+715.27    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+715.27    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+715.27    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+715.27    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+715.27    Waypoint: lat lon lmc_x lmc_y
+715.27            5139.266 -12807.751                    0                    0
+715.28    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+719.27 73 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+723.27 74 behavior goto_wpt_4: STATE Active -> UnInited
+727.33 75 behavior goto_wpt_4: STATE UnInited -> Active
+727.33    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+727.33    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+727.33    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+727.33    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+727.33    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+727.33    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+727.33    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+727.33    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+727.33    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+727.33    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+727.33    Waypoint: lat lon lmc_x lmc_y
+727.33            5139.266 -12807.751                    0                    0
+727.33    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+731.32 76 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+731.33    behavior goto_wpt_4: STATE Active -> UnInited
+735.32 77 behavior goto_wpt_4: STATE UnInited -> Active
+735.33    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+735.33    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+735.33    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+735.33    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+735.33    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+735.33    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+735.33    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+735.33    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+735.33    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+735.33    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+735.33    Waypoint: lat lon lmc_x lmc_y
+735.33            5139.266 -12807.751                    0                    0
+735.33    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+739.33 78 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+743.33 79 behavior goto_wpt_4: STATE Active -> UnInited
+747.33 80 behavior goto_wpt_4: STATE UnInited -> Active
+747.33    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+747.33    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+747.33    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+747.33    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+747.33    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+747.33    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+747.33    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+747.33    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+747.33    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+747.33    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+747.34    Waypoint: lat lon lmc_x lmc_y
+747.34            5139.266 -12807.751                    0                    0
+747.34    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+751.33 81 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+751.34    behavior goto_wpt_4: STATE Active -> UnInited
+755.33 82 behavior goto_wpt_4: STATE UnInited -> Active
+755.34    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+755.34    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+755.34    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+755.34    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+755.34    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+755.34    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+755.34    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+755.34    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+755.34    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+755.34    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+755.34    Waypoint: lat lon lmc_x lmc_y
+755.34            5139.266 -12807.751                    0                    0
+755.34    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+759.34 83 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+759.34    behavior goto_wpt_4: STATE Active -> UnInited
+763.34 84 behavior goto_wpt_4: STATE UnInited -> Active
+763.34    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+763.34    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+763.34    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+763.34    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+763.34    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+763.34    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+763.34    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+763.34    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+763.34    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+763.34    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+763.35    Waypoint: lat lon lmc_x lmc_y
+763.35            5139.266 -12807.751                    0                    0
+763.35    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+767.35 85 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+767.35    behavior goto_wpt_4: STATE Active -> UnInited
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:0.0579 C_FIN:0.0000
+771.35 86 behavior goto_wpt_4: STATE UnInited -> Active
+771.35    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+771.35    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+771.35    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+771.35    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+771.35    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+771.35    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+771.35    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+771.35    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+771.35    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+771.35    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+771.35    Waypoint: lat lon lmc_x lmc_y
+771.35            5139.266 -12807.751                    0                    0
+771.35    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+775.35 87 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+775.35    behavior goto_wpt_4: STATE Active -> UnInited
+779.35 88 behavior goto_wpt_4: STATE UnInited -> Active
+779.35    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+779.35    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+779.35    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+779.35    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+779.35    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+779.35    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+779.35    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+779.35    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+779.35    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+779.35    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+779.36    Waypoint: lat lon lmc_x lmc_y
+779.36            5139.266 -12807.751                    0                    0
+779.36    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+783.36 89 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+783.36    behavior goto_wpt_4: STATE Active -> UnInited
+787.36 90 behavior goto_wpt_4: STATE UnInited -> Active
+787.36    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+787.36    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+787.36    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+787.36    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+787.36    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+787.36    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+787.36    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+787.36    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+787.36    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+787.36    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+787.36    Waypoint: lat lon lmc_x lmc_y
+787.36            5139.266 -12807.751                    0                    0
+787.37    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+793.43 91 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+797.43 92 behavior goto_wpt_4: STATE Active -> UnInited
+801.43 93 behavior goto_wpt_4: STATE UnInited -> Active
+801.43    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+801.43    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+801.43    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+801.43    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+801.43    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+801.44    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+801.44    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+801.44    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+801.44    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+801.44    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+801.44    Waypoint: lat lon lmc_x lmc_y
+801.44            5139.266 -12807.751                    0                    0
+801.44    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+805.44 94 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+805.44    behavior goto_wpt_4: STATE Active -> UnInited
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:-0.0724 C_FIN:0.0000
+809.44 95 behavior goto_wpt_4: STATE UnInited -> Active
+809.44    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+809.44    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+809.44    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+809.44    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+809.44    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+809.44    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+809.44    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+809.44    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+809.44    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+809.44    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+809.45    Waypoint: lat lon lmc_x lmc_y
+809.45            5139.266 -12807.751                    0                    0
+809.45    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+813.44 96 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+817.44 97 behavior goto_wpt_4: STATE Active -> UnInited
+821.44 98 behavior goto_wpt_4: STATE UnInited -> Active
+821.45    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+821.45    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+821.45    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+821.45    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+821.45    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+821.45    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+821.45    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+821.45    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+821.45    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+821.45    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+821.45    Waypoint: lat lon lmc_x lmc_y
+821.45            5139.266 -12807.751                    0                    0
+821.45    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+825.45 99 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+825.45    behavior goto_wpt_4: STATE Active -> UnInited
+829.45  0 behavior goto_wpt_4: STATE UnInited -> Active
+829.45    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+829.45    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+829.45    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+829.45    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+829.45    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+829.45    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+829.45    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+829.45    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+829.45    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+829.45    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+829.45    Waypoint: lat lon lmc_x lmc_y
+829.46            5139.266 -12807.751                    0                    0
+829.46    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+833.46  1 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+833.46    behavior goto_wpt_4: STATE Active -> UnInited
+837.45  2 behavior goto_wpt_4: STATE UnInited -> Active
+837.46    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+837.46    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+837.46    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+837.46    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+837.46    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+837.46    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+837.46    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+837.46    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+837.46    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+837.46    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+837.46    Waypoint: lat lon lmc_x lmc_y
+837.46            5139.266 -12807.751                    0                    0
+837.46    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+841.46  3 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+841.46    behavior goto_wpt_4: STATE Active -> UnInited
+845.46  4 behavior goto_wpt_4: STATE UnInited -> Active
+845.46    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+845.46    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+845.46    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+845.46    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+845.46    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+845.46    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+845.46    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+845.46    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+845.46    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+845.46    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+845.47    Waypoint: lat lon lmc_x lmc_y
+845.47            5139.266 -12807.751                    0                    0
+845.47    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+849.46  5 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+849.47    behavior goto_wpt_4: STATE Active -> UnInited
+853.46  6 behavior goto_wpt_4: STATE UnInited -> Active
+853.47    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+853.47    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+853.47    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+853.47    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+853.47    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+853.47    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+853.47    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+853.47    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+853.47    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+853.47    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+853.47    Waypoint: lat lon lmc_x lmc_y
+853.47            5139.266 -12807.751                    0                    0
+853.47    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+857.47  7 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+857.47    behavior goto_wpt_4: STATE Active -> UnInited
+861.47  8 behavior goto_wpt_4: STATE UnInited -> Active
+861.47    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+861.47    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+861.47    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+861.47    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+861.47    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+861.47    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+861.47    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+861.47    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+861.47    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+861.47    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+861.48    Waypoint: lat lon lmc_x lmc_y
+861.48            5139.266 -12807.751                    0                    0
+861.48    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+865.48  9 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+865.48    behavior goto_wpt_4: STATE Active -> UnInited
+869.48 10 behavior goto_wpt_4: STATE UnInited -> Active
+869.48    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+869.48    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+869.48    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+869.48    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+869.48    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+869.48    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+869.48    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+869.48    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+869.48    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+869.48    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+869.48    Waypoint: lat lon lmc_x lmc_y
+869.48            5139.266 -12807.751                    0                    0
+869.48    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+873.48 11 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+877.48 12 behavior goto_wpt_4: STATE Active -> UnInited
+884.47 13 behavior goto_wpt_4: STATE UnInited -> Active
+884.47    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+884.47    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+884.47    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+884.47    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+884.47    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+884.47    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+884.47    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+884.47    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+884.47    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+884.47    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+884.48    Waypoint: lat lon lmc_x lmc_y
+884.48            5139.266 -12807.751                    0                    0
+884.48    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+888.48 14 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+888.48    behavior goto_wpt_4: STATE Active -> UnInited
+892.48 15 behavior goto_wpt_4: STATE UnInited -> Active
+892.48    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+892.48    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+892.48    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+892.48    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+892.48    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+892.48    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+892.48    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+892.48    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+892.48    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+892.48    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+892.48    Waypoint: lat lon lmc_x lmc_y
+892.48            5139.266 -12807.751                    0                    0
+892.49    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+896.48 16 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+896.48    behavior goto_wpt_4: STATE Active -> UnInited
+900.48 17 behavior goto_wpt_4: STATE UnInited -> Active
+900.49    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+900.49    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+900.49    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+900.49    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+900.49    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+900.49    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+900.49    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+900.49    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+900.49    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+900.55    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+900.55    Waypoint: lat lon lmc_x lmc_y
+900.55            5139.266 -12807.751                    0                    0
+900.55    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+904.49 18 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+904.49    behavior goto_wpt_4: STATE Active -> UnInited
+908.49 19 behavior goto_wpt_4: STATE UnInited -> Active
+908.49    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+908.49    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+908.49    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+908.49    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+908.49    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+908.49    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+908.49    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+908.49    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+908.49    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+908.49    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+908.49    Waypoint: lat lon lmc_x lmc_y
+908.49            5139.266 -12807.751                    0                    0
+908.49    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+912.49 20 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+912.49    behavior goto_wpt_4: STATE Active -> UnInited
+916.49 21 behavior goto_wpt_4: STATE UnInited -> Active
+916.49    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+916.49    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+916.49    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+916.49    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+916.49    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+916.49    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+916.49    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+916.49    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+916.49    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+916.49    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+916.50    Waypoint: lat lon lmc_x lmc_y
+916.50            5139.266 -12807.751                    0                    0
+916.50    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:0.0840 C_FIN:0.0000
+920.50 22 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+920.50    behavior goto_wpt_4: STATE Active -> UnInited
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:-0.0666 C_FIN:0.0000
+924.50 23 behavior goto_wpt_4: STATE UnInited -> Active
+924.50    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+924.50    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+924.50    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+924.50    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+924.50    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+924.50    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+924.50    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+924.50    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+924.50    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+924.50    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+924.50    Waypoint: lat lon lmc_x lmc_y
+924.50            5139.266 -12807.751                    0                    0
+924.50    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+928.50 24 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+932.50 25 behavior goto_wpt_4: STATE Active -> UnInited
+936.50 26 behavior goto_wpt_4: STATE UnInited -> Active
+936.50    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+936.50    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+936.50    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+936.50    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+936.50    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+936.50    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+936.50    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+936.50    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+936.50    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+936.50    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+936.51    Waypoint: lat lon lmc_x lmc_y
+936.51            5139.266 -12807.751                    0                    0
+936.51    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+940.63 27 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+940.63    behavior goto_wpt_4: STATE Active -> UnInited
+944.63 28 behavior goto_wpt_4: STATE UnInited -> Active
+944.63    behavior goto_wpt_4: argument: start_when = 1.000000 enum
+944.63    behavior goto_wpt_4: argument: stop_when = 7.000000 enum
+944.63    behavior goto_wpt_4: argument: when_wpt_dist = 25.000000 m
+944.63    behavior goto_wpt_4: argument: wpt_units = 0.000000 enum
+944.63    behavior goto_wpt_4: argument: wpt_x = 0.000000 X
+944.63    behavior goto_wpt_4: argument: wpt_y = 0.000000 X
+944.63    behavior goto_wpt_4: argument: utm_zd = 19.000000 byte
+944.63    behavior goto_wpt_4: argument: utm_zc = 19.000000 byte
+944.63    behavior goto_wpt_4: argument: end_action = 2.000000 enum
+944.63    behavior goto_wpt_4: SUBSTATE 0 UnInited->1 : Translating waypoint to LMC
+944.63    Waypoint: lat lon lmc_x lmc_y
+944.64            5139.266 -12807.751                    0                    0
+944.64    behavior goto_wpt_4: SUBSTATE 1 ->2 : waiting an initial cycle
+948.63 29 behavior goto_wpt_4: SUBSTATE 2 ->3 : Waiting until we get to waypoint
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:0.0550 C_FIN:0.0000
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:-0.0203 C_FIN:0.0000
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:-0.0347 C_FIN:0.0000
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:-0.0318 C_FIN:0.0000
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:-0.0232 C_FIN:0.0000
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:-0.0289 C_FIN:0.0000
+  1125 71 Pressure sensor has been re-calibrated, i.e. ZEROed
+            F_OCEAN_PRESSURE_MIN: 0.079 ==> 0.080
+            delta volts: 0.001, delta bar: -0.125, delta meters: 0.000
+            auto deadband(bar)+-: 0.025(bar) max allowed+-(bar): 0.200
+:OOD:digifin_mgr_ctrl:OUT OF DEADBAND: M_FIN:0.0434 C_FIN:0.0000
+  1201 90 write_segment_closing_diag_info():
+             name in ALLCAPS means CRITICAL device (* => SUPERCRITICAL)
+                  [I Installed] [- Not_Installed]
+                    [u In_use] [- Not_In_use] [X Out_of_Service]
+             name       limits     stats (#total/#mission/#segment)
+                        os w/s w/m os       errors      warnings      oddities
+ 0        simdrvr  -
+ 1    test_driver  -
+ 2          ARGOS* I u  -1  20   5  0
+ 3       WATCHDOG  I u  -1  -1  -1  0
+ 4        DEADMAN  I u  -1  20   5  0
+ 5        CONSOLE* I u  -1  20   5  0
+ 6            GPS  I u  -1  20   5  0
+ 7   attitude_rev  I u   3  20   5  0
+ 8 ocean_pressure  I u   3  20   5  0
+ 9         vacuum  I u   3  20   5  0
+10        battery  I u   3  20   5  0
+11       air_pump  I u   3  20   5  0
+12    pitch_motor  I u   3  20   5  0
+13  science_super  I u   3  20   5  0
+14        digifin  I u   3  20   5  0
+15      altimeter  -
+16  altimeter_232  I u   3  20   5  0
+17        IRIDIUM* I u  -1  20   5  0 [   0   0  0] [   0   0  0] [   2   0  0]
+18     leakdetect  I u   3  20   5  0
+19       recovery  -
+20        coulomb  I u   3  20   5  0
+21       veh_temp  I u   3  20   5  0
+22  BUOYANCY_PUMP  -
+23        DE_PUMP  -
+24        HD_PUMP  I u   3  20   5  0
+25       thruster  -
+devices:(t/m/s) errs:   0/   0/   0 warn:   0/   0/   0 odd:   2/   0/   0
+  1201    print_device_queue():
+   0 argos
+   1 gps
+  1201    print_all_devices():
+  Time since device sched start this cycle(ms) = 1322868
+  device scheduler total allowable run time(ms)= 1358860
+  device drivers called normally               = yes
+
+                                    call 
+                           last  # again recal      run(ms)            allow 
+ #         NAME         S -DTms       ms +DTms last  min  avg  max Rmax   ms
+ 0        simdrvr _ _ _ 2
+ 1    test_driver _ _ _ 2
+ 2          ARGOS I U _ 0     0  7   500   356    0    0 1440 4730    0 6000 
+ 3       WATCHDOG I U _ 0     0  1 DONE  DONE     0    0    0    1    0  500 
+ 4        DEADMAN I U _ 0     0  1 DONE  DONE     0    0    0    1    0  500 
+ 5        CONSOLE I U _ 0     0  1 DONE  DONE     1    0    1    1    0  500 
+ 6            GPS I U _ 0     0  4  1000   884    0    0    1    7    7 6000 
+ 7   attitude_rev I U _ 0     0  1 DONE  DONE     0    0    0    1    0 1000 
+ 8 ocean_pressure I U _ 0     0  2 DONE  DONE    50    0  206  456    0 2000 
+ 9         vacuum I U _ 0     0  1 DONE  DONE     0    0   29   50    0  500 
+10        battery I U _ 0     0  1 DONE  DONE     0    0    0   40    0  500 
+11       air_pump I U _ 0     0  1 DONE  DONE     0    0    0    2    0  500 
+12    pitch_motor I U _ 0     0  2 DONE  DONE     1    0    1  330    0 2000 
+13  science_super I U _ 0     03087     1   -57    0    0    0  171    0 5000 
+14        digifin I U _ 0     0  1 DONE  DONE   500  498 6901 8169    0 1000*
+15      altimeter _ _ _ 2
+16  altimeter_232 I U _ 0     0  1 DONE  DONE     0    0    0    0    0  500 
+17        IRIDIUM I U _ 0     0  1 DONE  DONE     0    0    0  305    0 1500 
+18     leakdetect I U _ 0     0  1 DONE  DONE     1    0   47  120    0 1000 
+19       recovery _ _ _ 2
+20        coulomb I U _ 0     0  1 DONE  DONE   220  220  220  225    0 1000 
+21       veh_temp I U _ 0     0  1 DONE  DONE    50    0   40   51    0  500 
+22  BUOYANCY_PUMP _ _ _ 2
+23        DE_PUMP _ _ _ 2
+24        HD_PUMP I U _ 0     0  1 DONE  DONE    40    0   33   40    0 2000 
+25       thruster _ _ _ 2
+>>>>SOME DEVICES xxx_ctrl() RAN TOO LONG<<<<<
+  1201    Done:print_all_devices()
+  1201    Done:write_segment_closing_diag_info():
+  1201    01600000.mcg LOG FILE CLOSED

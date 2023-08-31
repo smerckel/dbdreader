@@ -20,22 +20,27 @@
 
 import sys
 import os
+import argparse
 import re
-import getopt
 
-def usage():
-    print('')
-    print('Script to flip back and forth between the long and short names of the')
-    print('dbd or sbd files.')
-    print('')
-    print('Optionally supply -s to make the filenames sortable using sort()')
-    print('or supply -n to keep the original filename')
-    print('')
-    print('supply -c to convert between old style to new style')
-    print('supply -C to convert between new style to old style')
-    print('Default is sorting activated.')
-    print(' Lmm 27 Mar 2007')
-    sys.exit(0)
+import dbdreader.decompress 
+
+parser = argparse.ArgumentParser(
+    prog=__name__,
+    description='''Program to rename dbd files and friends from numeric format to long format, or vice versa,
+    or convert the long format into a sortable name or the original Webb Research long format,
+    or decompress LZ4 compressed files.''',
+    epilog='')
+
+parser.add_argument('filenames', nargs="*", help="Filename(s) to process")
+parser.add_argument('-s', action='store_true', default=True, help='Ensures long format filenames are sortable')
+parser.add_argument('-n', action='store_true', help='Keeps the original long format filenames (which do not sort correctly).')
+parser.add_argument('-c', '--convertToSortable', action='store_true', help='Converts files from original long format to a sortable long format')
+parser.add_argument('-C', '--convertToOriginal', action='store_true', help='Converts files from a sortable long format to the original long format')
+parser.add_argument('-x', '--decompress', action='store_true', help='Decompresses LZ4 comrpessed files.')
+parser.add_argument('-X', '--decompressAndRemoveCompressed', action='store_true', help='Decompresses LZ4 comrpessed files, and removes the compressed file')
+parser.add_argument('-d', '--doNotChangeNameFormat', action='store_true', help='Does not change the filename format. (Only useful in combination with -x or -X)')
+
 
 def makeSortable(filename):
     [basename,ext]=filename.split('.')
@@ -47,48 +52,25 @@ def makeSortable(filename):
     filename=".".join([basename,ext])
     return(filename)
     
-SORT=True # default
-CONVERTold=False # default
-CONVERTnew=False # default
-try:
-    R=getopt.getopt(sys.argv[1:],'cCsnh')
-except getopt.GetoptError:
-    print("Wrong option(s)!")
-    usage()
-    
-for (o,a) in R[0]:
-    if o=='-s':
-        SORT=True
-    if o=='-n':
-        SORT=False
-    if o=='-c':
-        CONVERTnew=True
-    if o=='-C':
-        CONVERTold=True
 
-    if o=='-h':
-        usage()
-        
 
-files=R[1]
 
-for i in files:
-    fd=open(i,'br')
-    ID=fd.readline().decode('ascii').strip()
+def get_short_and_long_filenames(lines, filename):
+    ID=lines[0]
     ignoreIt=False
+    shortfilename=''
+    longfilename=''
     if ID=='dbd_label:    DBD(dinkum_binary_data)file':
-        for j in range(4):
-            shortfilename=fd.readline().decode('ascii').strip()
-        longfilename=fd.readline().decode('ascii').strip()
+        shortfilename=lines[4]
+        longfilename=lines[5]
         shortfilename=re.sub("^.* ","",shortfilename)
         longfilename=re.sub("^.* ","",longfilename)
-        extension=re.sub("^.*\.","",i)
+        extension=re.sub("^.*\.","",filename)
         shortfilename+="."+extension
         longfilename+="."+extension
     elif "the8x3_filename" in ID: # mlg file apparently...
-        longfilename=fd.readline().decode('ascii').strip()
-        tmp=fd.readline().decode('ascii').strip()
-        if 'mlg' in tmp:
+        longfilename=lines[1]
+        if filename.lower().endswith('mlg'):
             extension='.mlg'
         else:
             extension='.nlg'
@@ -96,32 +78,80 @@ for i in files:
 
         longfilename=re.sub("^full_filename: +","",longfilename)+extension
     else:
-        sys.stderr.write("Ignoring %s\n"%(i))
+        sys.stderr.write("Ignoring %s\n"%(filename))
         ignoreIt=True
+    return ignoreIt, shortfilename, longfilename
+
+args = parser.parse_args()
+
+# override the default value of -s if -d is specified
+if args.doNotChangeNameFormat:
+    args.s=False
+
+for i in args.filenames:
+    if not os.path.exists(i):
+        print(f"{i} does not exist. Ignoring.")
+        continue
+    if dbdreader.decompress.is_compressed(i):
+        with dbdreader.decompress.CompressedFile(i) as fd:
+            lines = [fd.readline().decode('ascii').strip() for j in range(7)]
+    else:
+        with open(i,'br') as fd:
+            lines = [fd.readline().decode('ascii').strip() for j in range(7)]
+    ignoreIt, shortfilename, longfilename = get_short_and_long_filenames(lines, i)
+
+    basename = os.path.basename(i)
+    prefix = i.replace(basename, "")
+    
     if not ignoreIt:
         command=None
-        if CONVERTnew or CONVERTold: # input filename must be the longfilename
+        if args.convertToSortable or args.convertToOriginal: # input filename must be the longfilename
             # check if we have a longfilename
             if i not in [longfilename,makeSortable(longfilename)]:
                 print("Chose to ignore processing ",i)
             else:
-                if i==makeSortable(longfilename) and CONVERTold:
+                if i==makeSortable(longfilename) and args.convertToOriginal:
                     # switch to old format
                     command="mv "+i+" "+longfilename
-                elif i==longfilename and CONVERTnew:
+                    new_filename = longfilename
+                elif i==longfilename and args.convertToSortable:
                     command="mv "+longfilename+" "+makeSortable(longfilename)
+                    new_filename = makeSortable(longfilename)
                 else:
                     print("ignoring "+i)
         else: # changing from long to short names or vice versa
-            if SORT:
-                longfilename=makeSortable(longfilename)
-            if i==shortfilename:
-                command="mv "+shortfilename+" "+longfilename
-            else:
-                command="mv "+longfilename+" "+shortfilename
+            if not args.n and not args.s: # -d has been requested
+                new_filename = i
+                if args.decompress or args.decompressAndRemoveCompressed:
+                    command = ""
+            else: # create the new_filename by translating
+                if args.s and not args.n:
+                    longfilename=makeSortable(longfilename)
+                if basename==shortfilename:
+                    new_filename = os.path.join(prefix, longfilename)
+                    old_filename = os.path.join(prefix, shortfilename)
+                    command = f"mv {old_filename} {new_filename}"
+                else:
+                    new_filename = os.path.join(prefix, shortfilename)
+                    old_filename = os.path.join(prefix, longfilename)
+                    command = f"mv {old_filename} {new_filename}"
+                    
         if command!=None:
-            print("command: ",command)
-            R=os.system(command)
+            target = new_filename
+            if command:
+                R=os.system(command)
+            else:
+                R=0
+            msg = f"{i} ->"
             if R!=0:
                 raise ValueError("Could not execute %s"%(command))
-    fd.close()
+            if args.decompress or args.decompressAndRemoveCompressed:
+                target = dbdreader.decompress.decompress_file(new_filename)
+                if args.decompressAndRemoveCompressed:
+                    os.unlink(new_filename)
+                    msg = f"{msg} {target}"
+                else:
+                    msg = f"{msg} {target}/{new_filename}"
+            else:
+                msg = f"{msg} {target}"
+            print(msg)

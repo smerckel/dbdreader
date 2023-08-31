@@ -5,7 +5,10 @@ with open("dbdreader/__init__.py", "r") as fh:
 
 with open("README.rst", "r") as fh:
     long_description = fh.read()
-
+    
+with open('requirements.txt') as fh:
+    install_requires = [line.strip() for line in fh]
+    
 setuptools.setup(
     name="dbdreader",
     version=VERSION,
@@ -21,10 +24,13 @@ setuptools.setup(
                     'gui_scripts':[]
     },
     scripts = ['dbdrename.py','cac_gen.py'],
-    install_requires = 'numpy'.split(),
+    install_requires = install_requires,
     ext_modules = [
            setuptools.Extension("_dbdreader",
-                                ["extension/py_dbdreader.c","extension/dbdreader.c"],
+                                ["extension/py_dbdreader.c",
+                                 "extension/dbdreader.c",
+                                 "extension/decompress.c"],
+                                libraries = ['lz4'],
                                 include_dirs=['extension/include'])
     ],
     classifiers=[
