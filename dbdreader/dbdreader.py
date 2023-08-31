@@ -10,6 +10,7 @@ import datetime
 from calendar import timegm
 from collections import defaultdict, namedtuple
 import _dbdreader
+import dbdreader.decompress
 import logging
 
 # make sure we interpret timestamps in the english language but don't
@@ -255,7 +256,7 @@ class DBDList(list):
     *p : variable length list of str
         filenames
     '''
-    REGEX = re.compile("-[0-9]*-[0-9]*-[0-9]*\.[demnstDEMNST][bB][dD]")
+    REGEX = re.compile(r"-[0-9]*-[0-9]*-[0-9]*\.[demnstDEMNST][bB][dD]")
     
     def __init__(self,*p):
         list.__init__(self,*p)
@@ -602,8 +603,12 @@ class DBD(object):
             self.cacheDir=CACHEDIR
         else:
             self.cacheDir=cacheDir
-        with open(filename,'br') as self.fp:
-            self.headerInfo,parameterInfo,self.cacheFound, self.cacheID = self._read_header(self.cacheDir)
+        if dbdreader.decompress.is_compressed(filename):
+            with dbdreader.decompress.CompressedFile(filename) as self.fp:
+                self.headerInfo,parameterInfo,self.cacheFound, self.cacheID = self._read_header(self.cacheDir)
+        else:
+            with open(filename,'br') as self.fp:
+                self.headerInfo,parameterInfo,self.cacheFound, self.cacheID = self._read_header(self.cacheDir)
         # number of bytes each states section consists of:
         self.n_state_bytes=self.headerInfo['state_bytes_per_cycle']
         # size of variables used
@@ -1456,7 +1461,7 @@ class MultiDBD(object):
             True if file fn is a science file
         '''
         fn = fn.lower()
-        return fn.endswith("ebd") | fn.endswith("tbd") | fn.endswith("nbd")
+        return fn.endswith("ebd") | fn.endswith("tbd") | fn.endswith("nbd") | fn.endswith("ecd") | fn.endswith("tcd") | fn.endswith("ncd")
 
     def get_time_range(self,fmt="%d %b %Y %H:%M"):
         '''Get start and end date of the time range selection set
@@ -1524,7 +1529,7 @@ class MultiDBD(object):
     #### private methods
 
     def _get_matching_fn(self, fn):
-        sci_extensions = ".ebd .tbd .nmd".split()
+        sci_extensions = ".ebd .tbd .nbd .ecd .tcd .ncd".split()
         _, extension = os.path.splitext(fn)
         matchingExtension = list(extension) # make the string mutable.
         if extension not in sci_extensions:
@@ -1631,38 +1636,60 @@ class MultiDBD(object):
         else :
             return list(map(lambda x: self._format_time(x,fmt), time_limits))
 
+    def _safely_open_dbd_file(self, fn, cacheDir, skip_initial_lines, missing_cacheIDs, check_for_compressed_cac=True):
+        dbd = None
+        try:
+            dbd=DBD(fn, cacheDir, skip_initial_lines)
+        except DbdError as e:
+            #Typically the call in the try block may fail if the
+            # cache file cannot be found because it is not in the
+            # specfied directory or the cache directory cannot be
+            # found.  Flesh out these cases and keep a log of
+            # them, we can raise an error later with all the
+            # information on missing cache files and problems
+            # later, so the caller can handle the error
+            # meaningfully.
+            if e.value == DBD_ERROR_CACHEDIR_NOT_FOUND:
+                # if this happens, this will happen for all subsequent files to load.
+                raise DbdError(DBD_ERROR_CACHEDIR_NOT_FOUND,
+                               mesg=f"\nCache directory {cacheDir} could not be accessed.",
+                               data=DbdError.MissingCacheFileData(None, cacheDir))
+            elif e.value == DBD_ERROR_CACHE_NOT_FOUND:
+                # The cache file could not be found. Let's try if there is a compressed cache file.
+                # if yes, then decompress it and try again.
+                _cacheID = list(e.data.missing_cache_files.keys())[0] # we open a single file, so only one cache file can be missing.
+                missing_cache_filename = os.path.join(cacheDir, _cacheID+'.ccc')
+                if check_for_compressed_cac and os.path.exists(missing_cache_filename):
+                    dbdreader.decompress.decompress_file(missing_cache_filename)
+                    result = "try_again"
+                else:
+                    for k in e.data.missing_cache_files.keys():
+                        missing_cacheIDs[k].append(fn)
+                    result = "failed"
+            else: # some other problem. Just ignore the file but produce a warning.
+                logger.warning('File %s could not be loaded', fn)
+                logger.debug('Exception was %s', e)
+                logger.debug('Exception value was %d', e.value)
+                result = "ignore"
+        else:
+            result = "ok"
+            dbd.close()
+        return dbd, result
+        
     def _update_dbd_inventory(self, cacheDir, skip_initial_lines):
         self.dbds={'eng':[],'sci':[]}
         filenames=list(self.filenames)
         missing_cacheIDs = defaultdict(list)
         for fn in self.filenames:
-            try:
-                dbd=DBD(fn, cacheDir, skip_initial_lines)
-            except DbdError as e:
-                #Typically the call in the try block may fail if the
-                # cache file cannot be found because it is not in the
-                # specfied directory or the cache directory cannot be
-                # found.  Flesh out these cases and keep a log of
-                # them, we can raise an error later with all the
-                # information on missing cache files and problems
-                # later, so the caller can handle the error
-                # meaningfully.
-                if e.value == DBD_ERROR_CACHEDIR_NOT_FOUND:
-                    # if this happens, this will happen for all subsequent files to load.
-                    raise DbdError(DBD_ERROR_CACHEDIR_NOT_FOUND,
-                                   mesg=f"\nCache directory {cacheDir} could not be accessed.",
-                                   data=DbdError.MissingCacheFileData(None, cacheDir))
-                elif e.value == DBD_ERROR_CACHE_NOT_FOUND:
-                    for k in e.data.missing_cache_files.keys():
-                        missing_cacheIDs[k].append(fn)
-                else: # some other problem. Just ignore the file but produce a warning.
-                    logger.warning('File %s could not be loaded', fn)
-                    logger.debug('Exception was %s', e)
-                    logger.debug('Exception value was %d', e.value)
+            dbd, result = self._safely_open_dbd_file(fn, cacheDir, skip_initial_lines, missing_cacheIDs)
+            if result == "ignore" or result == "failed":
+                filenames.remove(fn)
+            elif result == "try_again":
+                dbd, result = self._safely_open_dbd_file(fn, cacheDir, skip_initial_lines, missing_cacheIDs, check_for_compressed_cac=False)
+                if result == "ignore" or result == "failed":
                     filenames.remove(fn)
+            if result!="ok":
                 continue
-            else:
-                dbd.close()
             mission_name=dbd.get_mission_name()
             if mission_name in self.banned_missions:
                 filenames.remove(fn)
