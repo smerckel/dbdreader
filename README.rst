@@ -6,6 +6,11 @@ DBDREADER
 Change log
 ----------
 
+Version 0.5.0
+
+* Adds support for reading compressed data files
+* dbdrename.py now accepts -x and -X options to rename compressed data files as uncompressed data files
+
 Version 0.4.15
 
 * Modifies sorting key algorithm to the DBDList class. This fixes a 
