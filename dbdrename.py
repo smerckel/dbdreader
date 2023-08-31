@@ -39,6 +39,8 @@ parser.add_argument('-c', '--convertToSortable', action='store_true', help='Conv
 parser.add_argument('-C', '--convertToOriginal', action='store_true', help='Converts files from a sortable long format to the original long format')
 parser.add_argument('-x', '--decompress', action='store_true', help='Decompresses LZ4 comrpessed files.')
 parser.add_argument('-X', '--decompressAndRemoveCompressed', action='store_true', help='Decompresses LZ4 comrpessed files, and removes the compressed file')
+parser.add_argument('-d', '--doNotChangeNameFormat', action='store_true', help='Does not change the filename format. (Only useful in combination with -x or -X)')
+
 
 def makeSortable(filename):
     [basename,ext]=filename.split('.')
@@ -82,6 +84,9 @@ def get_short_and_long_filenames(lines, filename):
 
 args = parser.parse_args()
 
+# override the default value of -s if -d is specified
+if args.doNotChangeNameFormat:
+    args.s=False
 
 for i in args.filenames:
     if not os.path.exists(i):
@@ -94,6 +99,9 @@ for i in args.filenames:
         with open(i,'br') as fd:
             lines = [fd.readline().decode('ascii').strip() for j in range(7)]
     ignoreIt, shortfilename, longfilename = get_short_and_long_filenames(lines, i)
+
+    basename = os.path.basename(i)
+    prefix = i.replace(basename, "")
     
     if not ignoreIt:
         command=None
@@ -112,17 +120,28 @@ for i in args.filenames:
                 else:
                     print("ignoring "+i)
         else: # changing from long to short names or vice versa
-            if args.s and not args.n:
-                longfilename=makeSortable(longfilename)
-            if i==shortfilename:
-                command="mv "+shortfilename+" "+longfilename
-                new_filename = longfilename
-            else:
-                command="mv "+longfilename+" "+shortfilename
-                new_filename = shortfilename
+            if not args.n and not args.s: # -d has been requested
+                new_filename = i
+                if args.decompress or args.decompressAndRemoveCompressed:
+                    command = ""
+            else: # create the new_filename by translating
+                if args.s and not args.n:
+                    longfilename=makeSortable(longfilename)
+                if basename==shortfilename:
+                    new_filename = os.path.join(prefix, longfilename)
+                    old_filename = os.path.join(prefix, shortfilename)
+                    command = f"mv {old_filename} {new_filename}"
+                else:
+                    new_filename = os.path.join(prefix, shortfilename)
+                    old_filename = os.path.join(prefix, longfilename)
+                    command = f"mv {old_filename} {new_filename}"
+                    
         if command!=None:
             target = new_filename
-            R=os.system(command)
+            if command:
+                R=os.system(command)
+            else:
+                R=0
             msg = f"{i} ->"
             if R!=0:
                 raise ValueError("Could not execute %s"%(command))
