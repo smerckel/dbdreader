@@ -27,39 +27,36 @@ Installing dbdreader
 
 dbdreader is written for python3. Python2.7 is not supported.
 
-The latest dbdreader package is available from the python package index
-(https://pypi.python.org), so that you can install it using pip.
+The code is developed at github
+(https://github.com/smerckel/dbdreader) from where you can get the
+source code. 
+
+Alternatively, the latest dbdreader package is available from the
+python package index (https://pypi.python.org), so that you can
+install it using pip.
 
 Install using pip::
 
   pip install dbdreader
 
-or, fetching the source. Then, simply follow these steps.
 
+The dbdreader module contains a C extension, which requires a compiler
+to be installed. Furthermore, as of version 0.5.1, dbdreader is able
+to uncompress lz4-compressed data files, which requires the lz4
+library and header files.
 
-Get the source::
-
-  $ wget https://pypi.python.org/packages/source/d/dbdreader/dbdreader-0.4.14.tar.gz
-
-Unpack the tarball::
-
-   $ tar xvzf dbdreader-0.4.14.tar.gz
-
-Install the package::
-
-  $ cd dbdreader-0.4.14
-  $ python3 setup.py build
-  $ sudo python3 setup.py install
-
-or use pip to install the package::
-
-  $ cd dbdreader-0.4.14
-  $ pip install .
++---------+-------------------------------------------+
+| Fedora  |  dnf install gcc lz4-libs lz4-devel       |    
++---------+-------------------------------------------+
+| Ubuntu  |  apt-get install gcc liblz4-1 liblz4-dev  |
++---------+-------------------------------------------+
+| Windows |  Microsoft C++ build tools  + lz4 ?       |
++---------+-------------------------------------------+
 
 Dbdreader quickstart
 ====================
 
-The package comes with a number of examples. however, to give you a
+The package comes with a number of examples. However, to give you a
 flavour of how easy it is to read one or two variables, consider the
 example code below.
 

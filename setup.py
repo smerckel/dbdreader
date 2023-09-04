@@ -20,10 +20,11 @@ setuptools.setup(
     url='https://dbdreader.readthedocs.io/en/latest/',
     packages=['dbdreader'],
     py_modules=[],
-    entry_points = {'console_scripts':[],
+    entry_points = {'console_scripts':['dbdrename=dbdreader.scripts:dbdrename',
+                                        'cac_gen=dbdreader.scripts:cac_gen'],
                     'gui_scripts':[]
     },
-    scripts = ['dbdrename.py','cac_gen.py'],
+    scripts = [],
     install_requires = install_requires,
     ext_modules = [
            setuptools.Extension("_dbdreader",
