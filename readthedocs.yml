@@ -9,7 +9,7 @@ version: 2
 build:
   os: ubuntu-22.04
   apt_packages:
-    - liblz4
+    - liblz4-1
     - liblz4-dev
 
   tools:
