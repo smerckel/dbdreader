@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdint.h>
 #include "decompress.h"
 
 // private function declarations
@@ -73,11 +74,11 @@ static FILE* fopen_compressed_file_fopen(const char* filename){
 
   // Try to open the file, in case it has been written already:
   FILE* fpmem;
-  fpmem = fopen(base, "r");
+  fpmem = fopen(base, "rb");
   if (fpmem==NULL) {
     /* opening of decompressed file failed, assume it is not there,
        and so we write it now. */
-    fpmem = fopen(base, "w");
+    fpmem = fopen(base, "wb");
     if (fpmem!=NULL){
       size_t uncompressed_file_size;
       uncompressed_file_size = write_compressed_file_to_memory(filename, fpmem);
@@ -86,7 +87,7 @@ static FILE* fopen_compressed_file_fopen(const char* filename){
 	fpmem=NULL;
       else{
 	/* Writing was successfull, now reopen the file for reading.*/
-	fpmem = fopen(base, "r");
+	fpmem = fopen(base, "rb");
       }
     }
   }

@@ -171,7 +171,7 @@ def test_CompressedFileReadlines(load_verification_data):
 
     
     
-# Test reading of data/01600000.dcd and check it is identical to data/01600000.dbd
+# Test reading of data/01600001.dcd and check it is identical to data/01600001.dbd
 def test_read_compressed_file_C_code():
     compressed_filename = '../data/01600001.dcd'
     regular_filename = '../data/01600001.dbd'
