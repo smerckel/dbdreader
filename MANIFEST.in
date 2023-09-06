@@ -1,6 +1,10 @@
-include README.txt COPYING MANIFEST.in INSTALL 
-include extension/*
-include extension/include/*
+include README.rst COPYING COPYRIGHT MANIFEST.in INSTALL.rst LICENSE
+include requirements.txt
+include extension/*.c
+include extension/include/*.h
+include lz4/*
 include tests/*.py
-include data/*.[stdem]bd
+include data/*.[stdem][bcl][dg]
+include data/cac/*.c[ac]c
+include data/cac_missing/*.cac
 include examples/*.py
