@@ -1,5 +1,6 @@
 import setuptools
 import sys
+import os
 
 with open("dbdreader/__init__.py", "r") as fh:
     VERSION = fh.readline().strip().split("=")[1].replace('"', '')
@@ -11,18 +12,30 @@ with open('requirements.txt') as fh:
     install_requires = [line.strip() for line in fh]
 
 
+# Now determine what we need to build ourselves.    
+sources = ["extension/py_dbdreader.c",
+           "extension/dbdreader.c",
+           "extension/decompress.c"]
+include_dirs = ['extension/include']
+library_dirs = []
 
-if sys.platform.startswith('linux'):
-    libraries = ['lz4']
-    include_dirs = ['extension/include']
-    library_dirs = []
-elif sys.platform.startswith('win'):
-    libraries = ['liblz4_static']
-    include_dirs=['extension/include','lz4']
-    library_dirs=['lz4']
+if sys.platform == 'linux':
+    # we can check for a system-wide installed library of lz4
+    liblz4_found = os.system('./checkliblz4.sh')==0
+elif sys.platform.startswith("win"):
+    liblz4_found=False
 else:
-    raise ValueError("Unknow platform. File an issue on github...")
+    liblz4_found=False
 
+if liblz4_found:
+    # We are on a linux platform, and have access to system-wide
+    # installed library of lz4.
+    libraries = ['lz4']
+else:
+    # we need to integrate the lz4 code in our build.
+    sources += ["lz4/lz4.c"]
+    libraries = []
+    include_dirs += ['lz4/include']
     
 setuptools.setup(
     name="dbdreader",
@@ -43,9 +56,7 @@ setuptools.setup(
     install_requires = install_requires,
     ext_modules = [
            setuptools.Extension("_dbdreader",
-                                ["extension/py_dbdreader.c",
-                                 "extension/dbdreader.c",
-                                 "extension/decompress.c"],
+                                sources = sources,
                                 libraries = libraries,
                                 include_dirs = include_dirs, 
                                 library_dirs = library_dirs)
