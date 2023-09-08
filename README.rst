@@ -122,15 +122,27 @@ their sensors collect, are stored in binary data files. The python
 module *dbdreader* provides the utilities to extract the data from the
 binary files, so that they can be further analysed.
 
-Installation
-------------
+Installation (linux)
+--------------------
+
 The python module *dbdreader* can be installed from source, using the
 standard method to install python code. Note that this method requires
 an C-extension to be build. (The actual reading from files is done in
 C for speed.) In order to build the extension successfully, you would
 need a C-compiler. On Linux, this can be gcc, with supporting
 development/header files for python. On Fedora you would do ``sudo dnf
-install python3-devel``.
+install python3-devel``, or ``sudo apt-get install python3-dev`` on
+Ubuntu.
+
+Furthermore, as of version 0.5, which adds support for reading
+compressed files, a dependency on the lz4 library is introduced. If
+available, the system-wide library will be used (recommended
+approach). Alternatively, the lz4.[ch] files from the original source
+(https://github.com/lz4/lz4), and included in this package, will be
+compiled into the C-extension. To install the system-wide lz4 library
+on Fedora you would do ``sudo dnf install lz4-devel lz4-libs``. On
+Ubuntu this can be achieved by ``sudo apt-get install liblz4-dev
+liblz4-1``.
 
 Alternatively, dbdreader can also be installed from PyPi, using ``pip3
 install dbdreader``.
