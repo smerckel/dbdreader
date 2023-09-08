@@ -1,6 +1,8 @@
-import setuptools
 import sys
 import os
+
+import setuptools
+import packaging.version
 
 with open("dbdreader/__init__.py", "r") as fh:
     VERSION = fh.readline().strip().split("=")[1].replace('"', '')
@@ -19,13 +21,69 @@ sources = ["extension/py_dbdreader.c",
 include_dirs = ['extension/include']
 library_dirs = []
 
-if sys.platform == 'linux':
-    # we can check for a system-wide installed library of lz4
-    liblz4_found = os.system('./checkliblz4.sh')==0
+
+def check_header_file_version(p):
+    version=dict(MAJOR=0, MINOR=0, RELEASE=0)
+    counter=0
+    with open(p) as fp:
+        for line in fp:
+            if line.startswith("#define LZ4_VERSION"):
+                fields = line.strip().split()
+                for k in version.keys():
+                    if k in fields[1]:
+                        version[k] = fields[2]
+                        counter+=1
+            if counter==3:
+                break
+    if counter==3:
+        v = ".".join((version["MAJOR"],
+                      version["MINOR"],
+                      version["RELEASE"]))
+    else:
+        v=""
+    return v
+            
+def has_header_file(header_file='lz4.h',required_version=None):
+    include_dirs = ['/usr/include',
+                    '/usr/local/include']
+    found = False
+    for d in include_dirs:
+        p = os.path.join(d, header_file)
+        if os.path.exists(p):
+            found = True
+            break
+    if found:
+        version = check_header_file_version(p)
+        if version and required_version is None:
+            return True
+        else:
+            V = packaging.version.parse(version)
+            Vreq = packaging.version.parse(required_version)
+            return V>=Vreq
+    else:
+        return False
+
+
+if sys.platform.startswith('linux'):
+    # we're on linux, so check for a system-wide installed library of
+    # lz4 and use that if available.
+    import ctypes
+    try:
+        # Try to load the lz4 library
+        ctypes.CDLL("liblz4.so.1")
+    except OSError:
+        liblz4_found = False
+    else:
+        # Library found, what about the include file?
+        if has_header_file('lz4.h', required_version='1.7.5'):
+            liblz4_found = True
+        else:
+            liblz4_found = False
 elif sys.platform.startswith("win"):
     liblz4_found=False
 else:
     liblz4_found=False
+
 
 if liblz4_found:
     # We are on a linux platform, and have access to system-wide

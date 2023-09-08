@@ -1,3 +1,5 @@
 numpy >= 1.10.0
 pytest
 lz4
+packaging
+setuptools

@@ -6,6 +6,11 @@ DBDREADER
 Change log
 ----------
 
+Version 0.5.2
+
+* Adds support for reading compressed data files for windows platform.
+* Improved building environment
+
 Version 0.5.1
 
 * Adds support for reading compressed data files
@@ -140,6 +145,7 @@ Compiler. The community edition will do. When installing MVSC, make sure
 you tick the box *python development* during the setup. Once installed
 dbdreader can be installed, and the C-extension should be compiled
 automatically.
+
 
 Installiation using pip, for example as in ``py -m pip install
 dbdreader`` also requires the C compiler. For Python version 3.9,
