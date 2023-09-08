@@ -2,17 +2,15 @@ import sys
 import os
 
 import setuptools
-import packaging.version
 
 with open("dbdreader/__init__.py", "r") as fh:
     VERSION = fh.readline().strip().split("=")[1].replace('"', '')
 
 with open("README.rst", "r") as fh:
     long_description = fh.read()
-    
+
 with open('requirements.txt') as fh:
     install_requires = [line.strip() for line in fh]
-
 
 # Now determine what we need to build ourselves.    
 sources = ["extension/py_dbdreader.c",
@@ -42,7 +40,11 @@ def check_header_file_version(p):
     else:
         v=""
     return v
-            
+
+def version_as_int(s):
+    major, minor, release = map(int, s.split('.'))
+    return release + minor*1000 + major*1000000
+
 def has_header_file(header_file='lz4.h',required_version=None):
     include_dirs = ['/usr/include',
                     '/usr/local/include']
@@ -57,8 +59,8 @@ def has_header_file(header_file='lz4.h',required_version=None):
         if version and required_version is None:
             return True
         else:
-            V = packaging.version.parse(version)
-            Vreq = packaging.version.parse(required_version)
+            V = version_as_int(version)
+            Vreq = version_as_int(required_version)
             return V>=Vreq
     else:
         return False
@@ -83,7 +85,6 @@ elif sys.platform.startswith("win"):
     liblz4_found=False
 else:
     liblz4_found=False
-
 
 if liblz4_found:
     # We are on a linux platform, and have access to system-wide
