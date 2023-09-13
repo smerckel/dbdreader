@@ -22,7 +22,7 @@ from dbdreader.decompress import *
 @fixture
 def load_verification_data():
     filename_verify = '../data/01600000.mlg'
-    with open(filename_verify, 'rb') as fp:
+    with open(filename_verify, 'r') as fp:
         data = fp.read()
     return data
         
@@ -36,7 +36,7 @@ def test_read_file(load_verification_data):
     with Decompressor(filename) as d:
         for block in d.decompressed_blocks():
             data += block
-    assert data == verification_data
+    assert data.decode('ascii') == verification_data
 
 # Open a file and decompress whole file. Compares with 
 # uncompressed file
@@ -46,7 +46,7 @@ def test_read_file_in_memory(load_verification_data):
     filename = '../data/01600000.mcg'
     with Decompressor(filename) as d:
         data = d.decompress()
-    assert data == verification_data
+    assert data.decode('ascii') == verification_data
 
 # Open a file and decompress first block only. 
 # 
@@ -68,7 +68,7 @@ def test_read_file_explicit_file_opener(load_verification_data):
     with open(filename, 'rb') as fp:
         for block in d.decompressed_blocks(fp=fp):
             data += block
-    assert data == verification_data
+    assert data.decode('ascii') == verification_data
 
 # Open a file and decompress whole file. Compares with 
 # uncompressed file. Instead of using with statement, open file
@@ -79,7 +79,7 @@ def test_read_file_in_memory_explicit_file_opener(load_verification_data):
     d = Decompressor()
     with open(filename, 'rb') as fp:
         data = d.decompress(fp=fp)
-    assert data == verification_data
+    assert data.decode('ascii') == verification_data
 
 # using the convenience function decompress_file
 def test_convenience_function():
@@ -137,14 +137,14 @@ def test_extension_generator_with_invalid_extension():
 # uncompressed file
 #
 def test_read_ccc_file():
-    with open('../data/cac/06a36d4e.cac', 'rb') as fp:
+    with open('../data/cac/06a36d4e.cac', 'r') as fp:
         verification_data = fp.read()
     filename = '../data/cac/06a36d4e.ccc'
     data = b''
     with Decompressor(filename) as d:
         for block in d.decompressed_blocks():
             data += block
-    assert data == verification_data
+    assert data.decode('ascii') == verification_data
 
 # Using the CompressedFile object to read a compressed text file
 def test_CompressedFile(load_verification_data):
@@ -158,7 +158,7 @@ def test_CompressedFile(load_verification_data):
                 break
             lines.append(line)
         data = b"".join(lines)
-    assert data == verification_data
+    assert data.decode('ascii') == verification_data
 
 # Using the CompressedFile object to read a compressed text file, using readlines() method.
 def test_CompressedFileReadlines(load_verification_data):
@@ -167,7 +167,7 @@ def test_CompressedFileReadlines(load_verification_data):
     with CompressedFile(filename) as fd:
         lines = fd.readlines()
         data = b"".join(lines)
-    assert data == verification_data
+    assert data.decode('ascii') == verification_data
 
     
     
