@@ -2,7 +2,8 @@ include README.rst COPYING COPYRIGHT MANIFEST.in INSTALL.rst LICENSE
 include requirements.txt
 include extension/*.c
 include extension/include/*.h
-include lz4/*
+include lz4/*.c
+include lz4/include/*.h
 include tests/*.py
 include data/*.[stdem][bcl][dg]
 include data/cac/*.c[ac]c
