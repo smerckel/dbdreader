@@ -6,7 +6,7 @@ DBDREADER
 Change log
 ----------
 
-Version 0.5.3
+Version 0.5.4
 
 * Adds support for reading compressed data files for windows platform.
 * Improved building environment
