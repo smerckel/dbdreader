@@ -30,7 +30,8 @@ static void get_by_read_per_byte(int ti,
 				 int return_nans,
 				 double ***data,
 				 int *ndata,
-				 int skip_initial_line);
+				 int skip_initial_line,
+				 int max_values_to_read);
 
 static double read_sensor_value(FILE *fd,
 				int bs, unsigned char flip);
@@ -74,7 +75,8 @@ double ***get_variable(int ti,
 		       file_info_t FileInfo,
 		       int return_nans,
 		       int *ndata,
-		       int skip_initial_line)
+		       int skip_initial_line,
+		       int max_values_to_read)
 {
   int i,j;
   double ***data;
@@ -112,7 +114,7 @@ double ***get_variable(int ti,
   for(i=i;i<nv+1;i++){
     vit[i]=vi[i-1];
   }
-  get_by_read_per_byte(nti,vit,nvt,FileInfo,return_nans,data,ndata, skip_initial_line);
+  get_by_read_per_byte(nti,vit,nvt,FileInfo,return_nans,data,ndata, skip_initial_line, max_values_to_read);
   free(vit);
   return(data);
 }
@@ -192,7 +194,8 @@ static void get_by_read_per_byte(int nti,
 				 int return_nans,
 				 double ***result,
 				 int *ndata,
-				 int skip_initial_line)
+				 int skip_initial_line,
+				 int max_values_to_read)
 {
 
   unsigned chunksize;
@@ -209,7 +212,7 @@ static void get_by_read_per_byte(int nti,
 
   int min_offset_value;
   int write_data = !skip_initial_line; // 0: only first line is not output; 1: all lines are output
-
+  
   if (return_nans==1)
     min_offset_value=-2; // include the notfound/samevalue/update
   else
@@ -289,6 +292,8 @@ static void get_by_read_per_byte(int nti,
     if (fp_current >= fp_end){
       break; /* reached end of the file */
     }
+    if ((max_values_to_read>0) && (ndata[0] >= max_values_to_read)) // we check the first value only and rely on checks upstream.
+    	break;
     fseek(FileInfo.fd,fp_current,0);
   }
   free(byteSizes);

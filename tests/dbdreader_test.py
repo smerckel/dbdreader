@@ -7,6 +7,8 @@ import os
 import hashlib
 import unittest
 
+RUNLONGTESTS = False
+
 class Dbdreader_DBD_test(unittest.TestCase):
     
     def test_open(self):
@@ -155,6 +157,18 @@ class Dbdreader_DBD_test(unittest.TestCase):
         t1, v1 = dbd.get("m_depth")
         assert len(v0) == len(v1) - 1
         
+
+    def test_get_reading_limited_values(self):
+        print("Test whether we can read in only 10 depth values from a file.")
+        dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd")
+        t0, v0 = dbd.get("m_depth", max_values_to_read=10)
+        assert len(t0)==len(v0) and len(t0)==10
+        
+    def test_get_reading_limited_values_requesting_multiple_parameters(self):
+        print("Test whether reading a limited number of values from multiple values fails.")
+        with self.assertRaises(ValueError):
+            dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd")
+            result = dbd.get("m_depth", "m_pitch", max_values_to_read=10)
         
     def get(self,fn,x):
         try:
@@ -267,6 +281,13 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         pattern="../data/amadeus-2014-*.[de]bd"
         dbd=dbdreader.MultiDBD(pattern = pattern, cacheDir='../data/cac')
         tctd, C, T, P, depth = dbd.get_CTD_sync("m_depth")
+
+    def test_get_ctd_sync_rbrCTD(self):
+        print("get_ctd_sync for RBR CTDs")
+        pattern="../data/electa-2023-143-00-050.[st]bd"
+        dbd=dbdreader.MultiDBD(pattern = pattern, cacheDir='../data/cac')
+        tctd, C, T, P, pressure = dbd.get_CTD_sync("m_pressure")
+
         
     def test_missing_cache_files(self):
         print("Throw an error when cache file is missing...")
@@ -296,7 +317,7 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
     def test_problem_causing_segfault(self):
         # this test caused a segfault as a result of a bug introduced in commit eeb64d8e8c20345dafcacebf074f098fa945fd46
         # Run this test only when this script has access to the data files.
-        if True and os.path.exists("/home/lucas/gliderdata/helgoland201407/hd"):
+        if RUNLONGTESTS and os.path.exists("/home/lucas/gliderdata/helgoland201407/hd"):
             print("Running (long test) that caused in segfault in the past.")
             dbd = dbdreader.MultiDBD("/home/lucas/gliderdata/helgoland201407/hd/amadeus-2014-*.[de]bd")
             data = dbd.get_CTD_sync("sci_flntu_turb_units")
@@ -370,6 +391,28 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         t2, v2 = dbd.get("m_depth")
 
         assert (len(v0) == len(v1) - len(dbd.dbds['eng'])) and (len(v1)==len(v2))
+
+
+    def test_get_reading_limited_values(self):
+        print("Test whether we can read in only 10 depth values when reading multiple files.")
+        dbd = dbdreader.MultiDBD("../data/sebastian-2014-204-05-00?.dbd")
+        t0, v0 = dbd.get("m_depth", max_values_to_read=10)
+        assert len(t0)==len(v0) and len(t0)==10
+
+    def test_get_reading_limited_values_mixed_files(self):
+        print("Test whether we can read in only 10 depth values when reading multiple dbd and ebd files.")
+        dbd = dbdreader.MultiDBD("../data/sebastian-2014-204-05-00?.?bd")
+        t0, v0 = dbd.get("sci_water_pressure", max_values_to_read=10)
+        assert len(t0)==len(v0) and len(t0)==10
+
+        
+    def test_get_reading_limited_values_requesting_multiple_parameters(self):
+        print("Test whether reading a limited number of values from multiple values fails.")
+        with self.assertRaises(ValueError):
+            dbd = dbdreader.MultiDBD("../data/sebastian-2014-204-05-00?.dbd")
+            result = dbd.get("m_depth", "m_pitch", max_values_to_read=10)
+
+        
             
     def get_method(self,method,fn,x,y):
         dbd=dbdreader.MultiDBD(pattern=fn)

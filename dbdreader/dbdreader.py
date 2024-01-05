@@ -634,7 +634,7 @@ class DBD(object):
         ''' Closes a DBD file '''
         return self.fp.close()
 
-    def get(self,*parameters,decimalLatLon=True,discardBadLatLon=True, return_nans=False):
+    def get(self,*parameters,decimalLatLon=True,discardBadLatLon=True, return_nans=False, max_values_to_read=-1):
         '''Returns time and parameter data for requested parameter
 
         This method reads the requested parameter, and convert it
@@ -656,6 +656,9 @@ class DBD(object):
         return_nans : bool, optional
             if True, nans are returned for timestamps the variable was not updated or changed.
 
+        max_values_to_read : int, optional
+            if > 0, reading is stopped after this many values have been read.
+
         Returns
         -------
         tuple of (ndarray, ndarray) for each parameter requested.
@@ -666,10 +669,16 @@ class DBD(object):
              DbdError when the requested parameter(s) cannot be read.
 
         .. versionchanged:: 0.4.0 Multi parameters can be passed, giving a time,value tuple for each parameter.
+        .. versionchanged:: 0.5.5 For a single parameter request, the number of values to be read can be limited.
 
         '''
+        # It only makes sense to limit the number of parameters read when a single parameter is requested. Check for this.
+        if max_values_to_read>0 and len(parameters)!=1:
+            raise ValueError("Limiting the values to be read for multiple parameters potentially yields undefined behaviour.\n")
+        
         timestamps, values =  self._get(*parameters, decimalLatLon=decimalLatLon,
-                                        discardBadLatLon=discardBadLatLon, return_nans=return_nans)
+                                        discardBadLatLon=discardBadLatLon, return_nans=return_nans,
+                                        max_values_to_read=max_values_to_read)
         r = [(t,v) for t, v in zip(timestamps, values)]
 
         if len(parameters)==1:
@@ -824,7 +833,7 @@ class DBD(object):
             return 'sci_m_present_time'
 
 
-    def _get(self,*parameters,decimalLatLon=True,discardBadLatLon=False, return_nans=False):
+    def _get(self,*parameters,decimalLatLon=True,discardBadLatLon=False, return_nans=False, max_values_to_read=-1):
         ''' returns time and parameter data for requested parameter '''
         invalid_parameters = self._get_valid_parameters(parameters, invert=True, global_scope=True)
         if invalid_parameters:
@@ -855,7 +864,8 @@ class DBD(object):
                          ti,
                          vi,
                          int(return_nans),
-                         int(self.skip_initial_line))
+                         int(self.skip_initial_line),
+                         max_values_to_read)
         # map the contents of vi on timestamps and values, preserving the original order:
         idx_reorderd = [vi.index(i) for i in idx]
         # these are for good_parameters:
@@ -1214,7 +1224,8 @@ class MultiDBD(object):
         self.set_time_limits()
 
 ##### public methods
-    def get(self, *parameters, decimalLatLon=True, discardBadLatLon=True, return_nans=False, include_source=False):
+    def get(self, *parameters, decimalLatLon=True, discardBadLatLon=True, return_nans=False, include_source=False,
+            max_values_to_read=-1):
         ''' Returns time and value tuple(s) for requested parameter(s)
 
         This method returns time and values tuples for a list of parameters.
@@ -1245,6 +1256,10 @@ class MultiDBD(object):
         
             Default value: False
 
+        max_values_to_read : int, optional
+            if > 1, then reading is stopped after this many values have been read.
+            Default value : -1
+
         Returns
         -------
         (ndarray, ndarray) or
@@ -1253,7 +1268,13 @@ class MultiDBD(object):
         [((ndarray, ndarray), list), ((ndarray, ndarray), list), ...]
             for a single parameter, for a single parameter, including source file list, for multiple parameters,
             for multiple parameters, including source file list, respectively.
+
+        .. versionchanged:: 0.5.5 For a single parameter request, the number of values to be read can be limited.
         '''
+        # It only makes sense to limit the number of parameters read when a single parameter is requested. Check for this.
+        if max_values_to_read>0 and len(parameters)!=1:
+            raise ValueError("Limiting the values to be read for multiple parameters potentially yields undefined behaviour.\n")
+
         eng_variables = []
         sci_variables = []
         positions = []
@@ -1264,7 +1285,8 @@ class MultiDBD(object):
             else:
                 positions.append(("eng", len(eng_variables)))
                 eng_variables.append(p)
-        kwds=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=return_nans, include_source=include_source)
+        kwds=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
+                  return_nans=return_nans, include_source=include_source, max_values_to_read=max_values_to_read)
 
         if len(sci_variables)>=1:
             r_sci = self._worker("get", "sci", *sci_variables, **kwds)
@@ -1399,7 +1421,8 @@ class MultiDBD(object):
         .. versionadded:: 0.4.0
 
         '''
-        CTDparameters = ["sci_ctd41cp_timestamp", "sci_water_cond",
+        CTD_type = self.determine_ctd_type()
+        CTDparameters = [f"sci_{CTD_type}_timestamp", "sci_water_cond",
                          "sci_water_temp", "sci_water_pressure"]
         offset = len(CTDparameters) + 1 # because of m_present_time is
                                         # also returned.
@@ -1423,6 +1446,62 @@ class MultiDBD(object):
         _, tctd, C, T, P, *v = numpy.compress(condition, tmp, axis=1)
         return tuple([tctd, C, T, P] + v)
 
+    def determine_ctd_type(self):
+        '''
+        Notes
+        -----
+        .. versionadded:: 0.5.5
+        '''
+        # Gliders can be equipped with a Seabird CTD or an RBR
+        # CTD. The sensor sci_ctd_is_installed or
+        # sci_rbrctd_is_installed is set accordingly. However, we may
+        # read a file for which either parameter is not updated, so it
+        # is not available. Therefore we look at whether the ctd's timestamp is available.
+        ctd_types = ["ctd41cp", "rbrctd"]
+        for ctd_type in ctd_types:
+            is_installed = self._has_ctd_installed(ctd_type)
+            if is_installed:
+                break
+        if is_installed:
+            return ctd_type
+        # Fallback in case neither could be determined, assume seabird
+        # ctd. An exception will be thrown elsewhere.
+        return ctd_types[0]
+            
+    def _has_ctd_installed(self, ctd_type):
+        '''
+        Parameters
+        ----------
+        ctd_type: string
+            identifier for ctd make.
+
+        Current possible options: "ctd41cp" for Seabird CTD and "ctdrbr" for RBR CTD"
+
+        Returns
+        -------
+        bool
+            Boolean value indicating the ctd type is installed.
+        '''
+        loggerLevel=logger.getEffectiveLevel()
+        if loggerLevel < logging.ERROR:
+            logger.setLevel(logging.ERROR)
+        try:
+            t, tctd = self.get(f"sci_{ctd_type}_timestamp")
+        except DbdError as e:
+            logger.setLevel(loggerLevel)
+            if e.value == DBD_ERROR_NO_VALID_PARAMETERS: # If an error is raised, we expect this one
+                result = False
+            else: # else reraise the error.
+                raise(e)
+        else:
+            logger.setLevel(loggerLevel)
+            if len(tctd)==0:
+                result = False
+            else:
+                result = True
+        return result
+        
+        
     def set_skip_initial_line(self, skip_initial_line):
         '''Sets the reading mode of the binary reader to skip the initial data entry or not.
 
@@ -1627,7 +1706,7 @@ class MultiDBD(object):
         time_limits[1]=min(time_limits[1],time_limits_dataset[1])
 
     def _format_time(self,t,fmt):
-        tmp=datetime.datetime.utcfromtimestamp(t)
+        tmp = datetime.datetime.fromtimestamp(t, datetime.UTC)
         return tmp.strftime(fmt)
 
     def _get_time_range(self,time_limits,fmt):
@@ -1757,6 +1836,7 @@ class MultiDBD(object):
         data = dict([(k,[]) for k in p])
         srcs = dict([(k,[]) for k in p])
         error_mesgs = []
+        time_values_read_sofar=0
         for i in self.dbds[ft]:
             if i in self._ignore_cache:
                 continue
@@ -1778,7 +1858,16 @@ class MultiDBD(object):
                     data[_p].append( (_t, _v) )
                     if include_source:
                         srcs[_p] += [i] * len(_t)
-                    #data[_p].append((_t, _v, [i] * len(_t)) if include_source else (_t, _v))
+                # Check if we request only a limited number of
+                # values. Note that the sanity check for not
+                # requesting more than one parameter is made in DBD's
+                # get() method.
+                time_values_read_sofar+=len(t[0])
+                if method=="get" and kwds["max_values_to_read"]>0:
+                    print(f"time values read so far: {time_values_read_sofar}. Parameters {p}")
+                    if time_values_read_sofar>=kwds["max_values_to_read"]:
+                        break
+
         if not all(data.values()):
             # nothing has been added, so all files should have returned nothing:
             raise(DbdError(DBD_ERROR_NO_VALID_PARAMETERS,

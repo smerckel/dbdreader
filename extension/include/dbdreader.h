@@ -44,7 +44,8 @@ double ***get_variable(int ti,
 		       file_info_t FileInfo,
 		       int return_nans,
 		       int *n_data,
-		       int skip_initial_line);
+		       int skip_initial_line,
+		       int max_values_to_read);
 
 
 #endif
