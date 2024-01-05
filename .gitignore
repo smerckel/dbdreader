@@ -14,3 +14,6 @@ dist/
 MANIFEST
 # emacs backup files
 *~
+*.so
+# this cac file gets created anyway.
+data/cac/daad1b20.cac

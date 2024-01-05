@@ -25,7 +25,8 @@ py_get(PyObject *self, PyObject *args)
   int i,j,k;
   int return_nans;       /* int flagging to return nans in the array or not.*/
   int skip_initial_line; /* int flagging to read or not the initial data line. Default should be not -> skip_initial_line=1 */
-  if (!PyArg_ParseTuple(args,"iilOsiOii:get",
+  int max_values_to_read;
+  if (!PyArg_ParseTuple(args,"iilOsiOiii:get",
 			&n_state_bytes,
 			&n_sensors,
 			&bin_offset,
@@ -34,11 +35,11 @@ py_get(PyObject *self, PyObject *args)
 			&ti,
 			&viTuple,
 			&return_nans,
-			&skip_initial_line))
+			&skip_initial_line,
+			&max_values_to_read))
     {
       return NULL;
     }
-
   FileInfo.byteSizes=(int*)malloc(n_sensors*sizeof(int));
 
   for(i=0;i<n_sensors;i++){
@@ -56,7 +57,7 @@ py_get(PyObject *self, PyObject *args)
   FileInfo.n_sensors=n_sensors;
   FileInfo.fd=open_dbd_file(filename);
 
-  data=get_variable(ti,vi,nv,FileInfo,return_nans,ndata, skip_initial_line);
+  data=get_variable(ti,vi,nv,FileInfo,return_nans,ndata, skip_initial_line, max_values_to_read);
   close_dbd_file(FileInfo.fd);
   /* good, got the data, now populate the lists */
   containerList=PyList_New(2*nv);/* exclude time */

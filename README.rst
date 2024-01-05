@@ -5,6 +5,9 @@ DBDREADER
 
 Change log
 ----------
+Version 0.5.5
+
+* Makes MultiDBD's get_CTD_sync method compatible with RBR CTD data.
 
 Version 0.5.4
 
