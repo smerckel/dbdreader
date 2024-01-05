@@ -1448,6 +1448,16 @@ class MultiDBD(object):
 
     def determine_ctd_type(self):
         '''
+        Determines CTD type installed from the presence of CTD specific name for the time stamp.
+
+        Returns
+        -------
+        string
+            {"ctd41cp", "rbrctd"}
+
+        If unable to get a positive CTD identification, it is assumed the CTD installed is a Seabird
+        CTD, returning "ctd41cp".
+        
         Notes
         -----
         .. versionadded:: 0.5.5
@@ -1482,11 +1492,13 @@ class MultiDBD(object):
         bool
             Boolean value indicating the ctd type is installed.
         '''
+        MAX_VALUES_TO_READ=15
+        
         loggerLevel=logger.getEffectiveLevel()
         if loggerLevel < logging.ERROR:
             logger.setLevel(logging.ERROR)
         try:
-            t, tctd = self.get(f"sci_{ctd_type}_timestamp")
+            t, tctd = self.get(f"sci_{ctd_type}_timestamp", max_values_to_read=MAX_VALUES_TO_READ)
         except DbdError as e:
             logger.setLevel(loggerLevel)
             if e.value == DBD_ERROR_NO_VALID_PARAMETERS: # If an error is raised, we expect this one
@@ -1495,10 +1507,11 @@ class MultiDBD(object):
                 raise(e)
         else:
             logger.setLevel(loggerLevel)
-            if len(tctd)==0:
-                result = False
-            else:
+            number_of_timestamps = len(tctd)
+            if number_of_timestamps>=MAX_VALUES_TO_READ:
                 result = True
+            else:
+                result = False
         return result
         
         
