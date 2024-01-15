@@ -3,8 +3,22 @@
 DBDREADER
 =========
 
+Synopsis
+--------
+Slocum ocean gliders are autonomous underwater vehicles, used for
+making oceanographic measurements. The data that these devices and
+their sensors collect, are stored in binary data files. The python
+module *dbdreader* provides the utilities to extract the data from the
+binary files, so that they can be further analysed.
+
 Change log
 ----------
+
+Version 0.5.6
+
+* Moves data directory under dbdreader, making these files accessible
+  after an pip install
+
 Version 0.5.5
 
 * Makes MultiDBD's get_CTD_sync method compatible with RBR CTD data.
@@ -117,13 +131,6 @@ Version 0.4.5
 * dbdreader checks whether the value of the parameters read are finite, ignoring them if they are not.
 
 
-Synopsis
---------
-Slocum ocean gliders are autonomous underwater vehicles, used for
-making oceanographic measurements. The data that these devices and
-their sensors collect, are stored in binary data files. The python
-module *dbdreader* provides the utilities to extract the data from the
-binary files, so that they can be further analysed.
 
 Installation (linux)
 --------------------
