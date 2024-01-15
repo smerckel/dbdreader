@@ -1,6 +1,8 @@
 import sys
 import os
 
+import glob
+
 import setuptools
 
 with open("dbdreader/__init__.py", "r") as fh:
@@ -95,7 +97,7 @@ else:
     sources += ["lz4/lz4.c"]
     libraries = []
     include_dirs += ['lz4/include']
-    
+
 setuptools.setup(
     name="dbdreader",
     version=VERSION,
@@ -106,7 +108,8 @@ setuptools.setup(
     long_description_content_type="text/x-rst",
     url='https://dbdreader.readthedocs.io/en/latest/',
     packages=['dbdreader'],
-    package_data = {'dbdreader':['data/amadeus-2014-204-05-002.sbd']},
+    package_data = {'dbdreader': glob.glob("dbdreader/data/*", root_dir='.')},
+    include_package_data=True,
     py_modules=[],
     entry_points = {'console_scripts':['dbdrename=dbdreader.scripts:dbdrename',
                                         'cac_gen=dbdreader.scripts:cac_gen'],
