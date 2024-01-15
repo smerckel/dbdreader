@@ -5,7 +5,7 @@ include extension/include/*.h
 include lz4/*.c
 include lz4/include/*.h
 include tests/*.py
-include data/*.[stdem][bcl][dg]
-include data/cac/*.c[ac]c
-include data/cac_missing/*.cac
+include dbdreader/data/*.[stdem][bcl][dg]
+include dbdreader/data/cac/*.c[ac]c
+include dbdreader/data/cac_missing/*.cac
 include examples/*.py

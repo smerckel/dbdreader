@@ -4,8 +4,8 @@ import dbdreader
 # open a given file
 # Note that the default location for cache files ($HOME/.dbdreader) is
 # overriden.
-dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd",
-                  cacheDir='../data/cac')
+dbd=dbdreader.DBD("../dbdreader/data/amadeus-2014-204-05-000.sbd",
+                  cacheDir='../dbdreader/data/cac')
 
 # print what parameters are available:
 

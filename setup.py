@@ -106,6 +106,7 @@ setuptools.setup(
     long_description_content_type="text/x-rst",
     url='https://dbdreader.readthedocs.io/en/latest/',
     packages=['dbdreader'],
+    package_data = {'dbdreader':['data/amadeus-2014-204-05-002.sbd']},
     py_modules=[],
     entry_points = {'console_scripts':['dbdrename=dbdreader.scripts:dbdrename',
                                         'cac_gen=dbdreader.scripts:cac_gen'],

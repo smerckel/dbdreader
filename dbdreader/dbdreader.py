@@ -1877,7 +1877,6 @@ class MultiDBD(object):
                 # get() method.
                 time_values_read_sofar+=len(t[0])
                 if method=="get" and kwds["max_values_to_read"]>0:
-                    print(f"time values read so far: {time_values_read_sofar}. Parameters {p}")
                     if time_values_read_sofar>=kwds["max_values_to_read"]:
                         break
 

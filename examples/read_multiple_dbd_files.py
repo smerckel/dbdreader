@@ -36,8 +36,8 @@ import dbdreader
 # open some files, using a pattern
 # Note that the default location for cache files ($HOME/.dbdreader) is
 # overriden.
-dbd=dbdreader.MultiDBD(pattern="../data/amadeus*.[st]bd",
-                       cacheDir='../data/cac')
+dbd=dbdreader.MultiDBD(pattern="../dbdreader/data/amadeus*.[st]bd",
+                       cacheDir='../dbdreader/data/cac')
 
 # print what parameters are available:
 print("we the following science parameters:")
@@ -87,7 +87,7 @@ dbd.close()
 
 pattern_selector=dbdreader.DBDPatternSelect()
 pattern_selector.set_date_format("%d %b %Y %H")
-selection=pattern_selector.select(pattern="../data/amadeus*.[st]bd",from_date="24 Jul 2014 18")
+selection=pattern_selector.select(pattern="../dbdreader/data/amadeus*.[st]bd",from_date="24 Jul 2014 18")
 
 print("full list of sbd files:")
 for i,n in enumerate(dbd.filenames):

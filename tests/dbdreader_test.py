@@ -13,25 +13,25 @@ class Dbdreader_DBD_test(unittest.TestCase):
     
     def test_open(self):
         print("Open")
-        v=self.get("../data/amadeus-2014-204-05-000.sbd","m_depth")
+        v=self.get("../dbdreader/data/amadeus-2014-204-05-000.sbd","m_depth")
         self.assertTrue(len(v)==2 and len(v[0])>0)
     
     def test_get_non_existing_variable(self):
         print("get_non_existing_variable")
-        v=self.get("../data/amadeus-2014-204-05-000.sbd","sci_water_pressure")
+        v=self.get("../dbdreader/data/amadeus-2014-204-05-000.sbd","sci_water_pressure")
         self.assertTrue(len(v)==2 and len(v[0])==0 and len(v[1])==0)
 
     def test_get_sync_non_existing_variable(self):
         print("get_sync_non_existing_variable")
         v = self.get_method("sync",
-                          "../data/amadeus-2014-204-05-000.sbd",
+                          "../dbdreader/data/amadeus-2014-204-05-000.sbd",
                             "m_depth",'sci_water_pressure','m_lon')
         self.assertTrue(len(v)==4 and len(v[2])==len(v[1]) and np.all(np.isnan(v[2])))
 
     def test_get_non_valid_variable(self):
         print("get_non_valid_variable")
         with self.assertRaises(dbdreader.DbdError) as e:
-            v=self.get("../data/amadeus-2014-204-05-000.sbd","M_LON")
+            v=self.get("../dbdreader/data/amadeus-2014-204-05-000.sbd","M_LON")
         # We expect an exception when an non-existing parameter is being requested.
         self.assertTrue(e.exception.value==dbdreader.DBD_ERROR_NO_VALID_PARAMETERS)
 
@@ -39,41 +39,41 @@ class Dbdreader_DBD_test(unittest.TestCase):
     def test_get_sync(self):
         print("get_sync")
         self.get_method("sync",
-                        "../data/amadeus-2014-204-05-000.sbd",
+                        "../dbdreader/data/amadeus-2014-204-05-000.sbd",
                         "m_depth",'m_lat','m_lon')
 
     def test_get_sync_obselete(self):
         print("get_sync_obselete")
-        dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd")
+        dbd=dbdreader.DBD("../dbdreader/data/amadeus-2014-204-05-000.sbd")
         x = dbd.get_sync("m_depth", ['m_lat','m_lon'])
 
     def test_get_xy(self):
         print("get_xy")
         self.get_method("xy",
-                        "../data/amadeus-2014-204-05-000.sbd",
+                        "../dbdreader/data/amadeus-2014-204-05-000.sbd",
                         'm_lat','m_lon')
 
     def test_get_list(self):
         print("get_list")
-        dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd")
+        dbd=dbdreader.DBD("../dbdreader/data/amadeus-2014-204-05-000.sbd")
         x, y = dbd.get_list("m_lat", "m_lon")
 
 
     def test_file_open_time(self):
         print("file_open_time")
-        dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd")
+        dbd=dbdreader.DBD("../dbdreader/data/amadeus-2014-204-05-000.sbd")
         t=dbd.get_fileopen_time()
         self.assertEqual(t,1406221414)
 
     def test_get_mission_name(self):
         print("get_mission_name")
-        dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd")
+        dbd=dbdreader.DBD("../dbdreader/data/amadeus-2014-204-05-000.sbd")
         t=dbd.get_mission_name()
         self.assertEqual(t,"micro.mi")
 
     def test_non_standard_cache_dir(self):
         print("non_standard_cache_dir")
-        dbd=dbdreader.DBD("../data/amadeus-2014-204-05-000.sbd", cacheDir='../data/cac')
+        dbd=dbdreader.DBD("../dbdreader/data/amadeus-2014-204-05-000.sbd", cacheDir='../dbdreader/data/cac')
         depth = dbd.get("m_depth")
         self.assertEqual(len(depth), 2)
 
@@ -82,50 +82,50 @@ class Dbdreader_DBD_test(unittest.TestCase):
         print("non_standard_cache_dir_generated_cachefile")
         # this should create a cache file. Remove it if already present.
         try:
-            os.unlink('../data/cac/(813b137d.cac')
+            os.unlink('../dbdreader/data/cac/(813b137d.cac')
         except FileNotFoundError:
             pass
-        dbd=dbdreader.DBD("../data/ammonite-2008-028-01-000.mbd", cacheDir='../data/cac')
+        dbd=dbdreader.DBD("../dbdreader/data/ammonite-2008-028-01-000.mbd", cacheDir='../dbdreader/data/cac')
         depth = dbd.get("m_depth")
         self.assertEqual(len(depth), 2)
 
     def test_G3S_data_file(self):
         print("Reading a G3S data file for which the byte order needs to be swapped.")
-        dbd = dbdreader.DBD("../data/unit_887-2021-321-3-0.sbd",
-                            cacheDir='../data/cac')
+        dbd = dbdreader.DBD("../dbdreader/data/unit_887-2021-321-3-0.sbd",
+                            cacheDir='../dbdreader/data/cac')
         tm, depth = dbd.get("m_depth")
         self.assertAlmostEqual(depth.max(),34.5, delta=0.1)
         
     def test_missing_cache_file(self):
         print("Throw an error when cache file is missing...")
         with self.assertRaises(dbdreader.DbdError) as e:
-            dbd = dbdreader.DBD("../data/unit_887-2021-321-3-0.sbd")
+            dbd = dbdreader.DBD("../dbdreader/data/unit_887-2021-321-3-0.sbd")
             #tm, depth = dbd.get("m_depth")
 
     def test_donottest_non_standard_cache_dir_fail(self):
         print("non_standard_cache_dir_fail")
-        kwds = dict(cacheDir='../data/not_there')
-        self.assertRaises(dbdreader.DbdError, dbdreader.DBD, "../data/amadeus-2014-204-05-000.sbd", **kwds)
+        kwds = dict(cacheDir='../dbdreader/data/not_there')
+        self.assertRaises(dbdreader.DbdError, dbdreader.DBD, "../dbdreader/data/amadeus-2014-204-05-000.sbd", **kwds)
 
     def test_missing_cache_file_data_feature(self):
         print("Throw an error when cache file is missing, and check who is missing.")
         try:
-            dbd = dbdreader.DBD("../data/unit_887-2021-321-3-0.sbd")
+            dbd = dbdreader.DBD("../dbdreader/data/unit_887-2021-321-3-0.sbd")
         except dbdreader.DbdError as e:
             data = e.data
             for k,v in data.missing_cache_files.items():
-                assert k == 'd6f44165' and v[0] == "../data/unit_887-2021-321-3-0.sbd"
+                assert k == 'd6f44165' and v[0] == "../dbdreader/data/unit_887-2021-321-3-0.sbd"
 
 
     def test_handling_inf(self):
-        dbd = dbdreader.DBD("../data/amadeus-2014-204-05-000.dbd",
-                            cacheDir="../data/cac")
+        dbd = dbdreader.DBD("../dbdreader/data/amadeus-2014-204-05-000.dbd",
+                            cacheDir="../dbdreader/data/cac")
 
         t, v = dbd.get("m_time_til_wpt", return_nans =True)
         t = t[:24]
         v = v[:24]
         # Now read the output by dbd2asc
-        with open("../data/dbd2asc_output.txt") as fp:
+        with open("../dbdreader/data/dbd2asc_output.txt") as fp:
             lines = fp.readlines()
         lines.pop(0) # remark
         tp = np.zeros_like(t)
@@ -143,7 +143,7 @@ class Dbdreader_DBD_test(unittest.TestCase):
 
     def test_get_sync_on_parameter_without_values(self):
         print("Reads in a parameter to sync that has no values.")
-        dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd")
+        dbd = dbdreader.DBD("../dbdreader/data/sebastian-2014-204-05-001.dbd")
         _, _, x = dbd.get_sync("m_depth", "u_dbd_sensor_list_xmit_control")
         assert np.all(np.isfinite(x)==False)
 
@@ -151,23 +151,23 @@ class Dbdreader_DBD_test(unittest.TestCase):
     def test_get_reading_initial_data_line(self):
         print("Tests whether initial data line can be read if requested.")
         
-        dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd")
+        dbd = dbdreader.DBD("../dbdreader/data/sebastian-2014-204-05-001.dbd")
         t0, v0 = dbd.get("m_depth")
-        dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd", skip_initial_line=False)
+        dbd = dbdreader.DBD("../dbdreader/data/sebastian-2014-204-05-001.dbd", skip_initial_line=False)
         t1, v1 = dbd.get("m_depth")
         assert len(v0) == len(v1) - 1
         
 
     def test_get_reading_limited_values(self):
         print("Test whether we can read in only 10 depth values from a file.")
-        dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd")
+        dbd = dbdreader.DBD("../dbdreader/data/sebastian-2014-204-05-001.dbd")
         t0, v0 = dbd.get("m_depth", max_values_to_read=10)
         assert len(t0)==len(v0) and len(t0)==10
         
     def test_get_reading_limited_values_requesting_multiple_parameters(self):
         print("Test whether reading a limited number of values from multiple values fails.")
         with self.assertRaises(ValueError):
-            dbd = dbdreader.DBD("../data/sebastian-2014-204-05-001.dbd")
+            dbd = dbdreader.DBD("../dbdreader/data/sebastian-2014-204-05-001.dbd")
             result = dbd.get("m_depth", "m_pitch", max_values_to_read=10)
         
     def get(self,fn,x):
@@ -196,7 +196,7 @@ class Dbdreader_DBD_test(unittest.TestCase):
 class Dbdreader_MultiDBD_test(unittest.TestCase):
 
     def setUp(self):
-        self.pattern="../data/amadeus-2014-*.[st]bd"
+        self.pattern="../dbdreader/data/amadeus-2014-*.[st]bd"
 
     def test_open(self):
         print("Open")
@@ -268,24 +268,24 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
 
     def test_non_standard_cache_dir(self):
         print("non_standard_cache_dir")
-        dbd=dbdreader.MultiDBD(pattern = self.pattern, cacheDir='../data/cac')
+        dbd=dbdreader.MultiDBD(pattern = self.pattern, cacheDir='../dbdreader/data/cac')
         depth = dbd.get("m_depth")
         self.assertEqual(len(depth), 2)
 
     def test_donottest_non_standard_cache_dir_fail(self):
-        kwds = dict(pattern=self.pattern, cacheDir='../data/not_there')
+        kwds = dict(pattern=self.pattern, cacheDir='../dbdreader/data/not_there')
         self.assertRaises(dbdreader.DbdError, dbdreader.MultiDBD, **kwds)
 
     def test_get_ctd_sync(self):
         print("get_ctd_sync")
-        pattern="../data/amadeus-2014-*.[de]bd"
-        dbd=dbdreader.MultiDBD(pattern = pattern, cacheDir='../data/cac')
+        pattern="../dbdreader/data/amadeus-2014-*.[de]bd"
+        dbd=dbdreader.MultiDBD(pattern = pattern, cacheDir='../dbdreader/data/cac')
         tctd, C, T, P, depth = dbd.get_CTD_sync("m_depth")
 
     def test_get_ctd_sync_rbrCTD(self):
         print("get_ctd_sync for RBR CTDs")
-        pattern="../data/electa-2023-143-00-050.[st]bd"
-        dbd=dbdreader.MultiDBD(pattern = pattern, cacheDir='../data/cac')
+        pattern="../dbdreader/data/electa-2023-143-00-050.[st]bd"
+        dbd=dbdreader.MultiDBD(pattern = pattern, cacheDir='../dbdreader/data/cac')
         tctd, C, T, P, pressure = dbd.get_CTD_sync("m_pressure")
 
         
@@ -293,26 +293,26 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
         print("Throw an error when cache file is missing...")
         # read in a sbd and tbd file. Only the sbd's cac file is in cac_missing.
         with self.assertRaises(dbdreader.DbdError) as e:
-            dbd = dbdreader.MultiDBD(pattern="../data/unit_887-2021-321-3-0.?bd",
-                                     cacheDir='../data/cac_missing')
+            dbd = dbdreader.MultiDBD(pattern="../dbdreader/data/unit_887-2021-321-3-0.?bd",
+                                     cacheDir='../dbdreader/data/cac_missing')
         
 
     def test_open_file_with_pattern_str_as_first_argument(self):
         print("Open multidbd with just a string as first argument. Should be interpreted as a pattern")
-        dbd = dbdreader.MultiDBD("../data/amadeus-2014-*.*bd")
+        dbd = dbdreader.MultiDBD("../dbdreader/data/amadeus-2014-*.*bd")
 
     def test_open_file_with_pattern_str_as_first_argument_and_pattern(self):
         print("Open multidbd with just a string as first argument and a pattern, which should fail.")
         with self.assertRaises(dbdreader.DbdError) as e:
-            dbd = dbdreader.MultiDBD("../data/amadeus-2014-*.*bd", pattern="../data/amadeus-2014-204-05-000.?bd")
+            dbd = dbdreader.MultiDBD("../dbdreader/data/amadeus-2014-*.*bd", pattern="../dbdreader/data/amadeus-2014-204-05-000.?bd")
 
     def test_opening_empty_file(self):
         print("Ignore empty files and files with wrong encodings...")
-        dbd = dbdreader.MultiDBD(pattern = "../data/*-2014-204-05-000.dbd")
+        dbd = dbdreader.MultiDBD(pattern = "../dbdreader/data/*-2014-204-05-000.dbd")
 
     def test_opening_capitalised_files(self):
         print("Allow opening of files with capitalised extensions.")
-        dbd = dbdreader.MultiDBD(pattern = "../data/amadeus-2014-203-00-000.[ST]BD")
+        dbd = dbdreader.MultiDBD(pattern = "../dbdreader/data/amadeus-2014-203-00-000.[ST]BD")
 
     def test_problem_causing_segfault(self):
         # this test caused a segfault as a result of a bug introduced in commit eeb64d8e8c20345dafcacebf074f098fa945fd46
@@ -325,21 +325,21 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
     def test_missing_cache_file_data_feature(self):
         print("Throw an error when cache file is missing, and check who is missing.")
         try:
-            dbd = dbdreader.MultiDBD("../data/unit_887-2021-321-3-0.?bd")
+            dbd = dbdreader.MultiDBD("../dbdreader/data/unit_887-2021-321-3-0.?bd")
         except dbdreader.DbdError as e:
             data = e.data
-            assert data.missing_cache_files['c4ec741e'][0] =="../data/unit_887-2021-321-3-0.tbd"
+            assert data.missing_cache_files['c4ec741e'][0] =="../dbdreader/data/unit_887-2021-321-3-0.tbd"
 
     def test_get_sync_on_parameter_without_values(self):
         print("Reads in a parameter to sync that has no values.")
-        dbd = dbdreader.MultiDBD("../data/sebastian-2014-204-05-00?.dbd")
+        dbd = dbdreader.MultiDBD("../dbdreader/data/sebastian-2014-204-05-00?.dbd")
         _, _, x = dbd.get_sync("m_depth", "u_dbd_sensor_list_xmit_control")
         # x has a 2.0 as first value, but then all nans.
         assert np.all(np.isfinite(x[1:])==False) and x[0]==2.
 
     def test_get_CTD_sync_on_parameter_without_values(self):
         print("Reads in a parameter to get_CTD_sync that has no values; Assert error.")
-        dbd = dbdreader.MultiDBD("../data/sebastian-2014-204-05-00?.dbd",
+        dbd = dbdreader.MultiDBD("../dbdreader/data/sebastian-2014-204-05-00?.dbd",
                                  complement_files=True)
         try:
             x = dbd.get_CTD_sync("m_depth", "u_dbd_sensor_list_xmit_control")
@@ -348,7 +348,7 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
 
     def test_get_CTD_sync_removes_empty_timestamps(self):
         print("Reads data using get_CTD_sync and empty timestamps should be removed.")
-        dbd = dbdreader.MultiDBD("../data/sebastian-2014-204-05-00?.dbd",
+        dbd = dbdreader.MultiDBD("../dbdreader/data/sebastian-2014-204-05-00?.dbd",
                                  complement_files=True)
         tctd, T, C, P = dbd.get_CTD_sync()
         t, tctdp = dbd.get("sci_ctd41cp_timestamp")
@@ -395,13 +395,13 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
 
     def test_get_reading_limited_values(self):
         print("Test whether we can read in only 10 depth values when reading multiple files.")
-        dbd = dbdreader.MultiDBD("../data/sebastian-2014-204-05-00?.dbd")
+        dbd = dbdreader.MultiDBD("../dbdreader/data/sebastian-2014-204-05-00?.dbd")
         t0, v0 = dbd.get("m_depth", max_values_to_read=10)
         assert len(t0)==len(v0) and len(t0)==10
 
     def test_get_reading_limited_values_mixed_files(self):
         print("Test whether we can read in only 10 depth values when reading multiple dbd and ebd files.")
-        dbd = dbdreader.MultiDBD("../data/sebastian-2014-204-05-00?.?bd")
+        dbd = dbdreader.MultiDBD("../dbdreader/data/sebastian-2014-204-05-00?.?bd")
         t0, v0 = dbd.get("sci_water_pressure", max_values_to_read=10)
         assert len(t0)==len(v0) and len(t0)==10
 
@@ -409,7 +409,7 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
     def test_get_reading_limited_values_requesting_multiple_parameters(self):
         print("Test whether reading a limited number of values from multiple values fails.")
         with self.assertRaises(ValueError):
-            dbd = dbdreader.MultiDBD("../data/sebastian-2014-204-05-00?.dbd")
+            dbd = dbdreader.MultiDBD("../dbdreader/data/sebastian-2014-204-05-00?.dbd")
             result = dbd.get("m_depth", "m_pitch", max_values_to_read=10)
 
         
@@ -434,22 +434,22 @@ class DBDPatternSelect_test(unittest.TestCase):
     def test_select_from_pattern(self):
         print("select from pattern")
         PS=dbdreader.DBDPatternSelect(date_format="%d %m %Y %H:%M")
-        fns=PS.select(pattern="../data/ama*.sbd",from_date="24 7 2014 00:00")
+        fns=PS.select(pattern="../dbdreader/data/ama*.sbd",from_date="24 7 2014 00:00")
         fns.sort()
-        self.assertEqual(fns[0],"../data/amadeus-2014-204-05-000.sbd")
-        fns=PS.select(pattern="../data/ama*.sbd",from_date="24 7 2014 18:00")
+        self.assertEqual(fns[0],"../dbdreader/data/amadeus-2014-204-05-000.sbd")
+        fns=PS.select(pattern="../dbdreader/data/ama*.sbd",from_date="24 7 2014 18:00")
         fns.sort()
-        self.assertEqual(fns[0],"../data/amadeus-2014-204-05-001.sbd")
-        fns=PS.select(pattern="../data/ama*.sbd",until_date="24 7 2014 18:00")
+        self.assertEqual(fns[0],"../dbdreader/data/amadeus-2014-204-05-001.sbd")
+        fns=PS.select(pattern="../dbdreader/data/ama*.sbd",until_date="24 7 2014 18:00")
         self.assertEqual(len(fns),1)
 
     def test_select_from_pattern_non_standard_cache_dir(self):
         print("select from pattern non standard cache dir")
         dbdreader.DBDPatternSelect.cache.clear()
-        PS=dbdreader.DBDPatternSelect(date_format="%d %m %Y %H:%M", cacheDir='../data/cac')
-        fns=PS.select(pattern="../data/ama*.sbd",from_date="24 7 2014 00:00")
+        PS=dbdreader.DBDPatternSelect(date_format="%d %m %Y %H:%M", cacheDir='../dbdreader/data/cac')
+        fns=PS.select(pattern="../dbdreader/data/ama*.sbd",from_date="24 7 2014 00:00")
         fns.sort()
-        self.assertEqual(fns[0],"../data/amadeus-2014-204-05-000.sbd")
+        self.assertEqual(fns[0],"../dbdreader/data/amadeus-2014-204-05-000.sbd")
 
 
 class DBDList_test(unittest.TestCase):
