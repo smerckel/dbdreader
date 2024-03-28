@@ -108,7 +108,7 @@ setuptools.setup(
     long_description_content_type="text/x-rst",
     url='https://dbdreader.readthedocs.io/en/latest/',
     packages=['dbdreader'],
-    package_data = {'dbdreader': glob.glob("dbdreader/data/*", root_dir='.')},
+    package_data = {'dbdreader': glob.glob("dbdreader/data/*")},
     include_package_data=True,
     py_modules=[],
     entry_points = {'console_scripts':['dbdrename=dbdreader.scripts:dbdrename',

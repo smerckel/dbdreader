@@ -14,6 +14,11 @@ binary files, so that they can be further analysed.
 Change log
 ----------
 
+Version 0.5.7
+
+* Drops dependency on python 3.10+, introduced in 0.5.6, and should
+  work still with python 3.9.
+
 Version 0.5.6
 
 * Moves data directory under dbdreader, making these files accessible
