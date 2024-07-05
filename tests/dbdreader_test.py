@@ -456,22 +456,27 @@ class DBDList_test(unittest.TestCase):
 
     def test_sorting(self):
         print("Test file name sorting...")
-        fns = [['amadeus-2019-3-1.sbd', 'amadeus-2019-3-12.sbd', 'amadeus-2019-3-9.sbd', 'amadeus-2019-3-5.sbd', 'amadeus-2019-3-11.sbd', 'amadeus-2019-3-2.sbd', 'amadeus-2019-3-6.sbd', 'amadeus-2019-3-8.sbd', 'amadeus-2019-3-3.sbd', 'amadeus-2019-3-10.sbd', 'amadeus-2019-3-14.sbd', 'amadeus-2019-3-4.sbd', 'amadeus-2019-3-0.sbd', 'amadeus-2019-3-13.sbd', 'amadeus-2019-3-7.sbd'],
-               ['amadeus-2019-03-012.sbd', 'amadeus-2019-03-014.sbd', 'amadeus-2019-03-005.sbd', 'amadeus-2019-03-011.sbd', 'amadeus-2019-03-000.sbd', 'amadeus-2019-03-010.sbd', 'amadeus-2019-03-002.sbd', 'amadeus-2019-03-003.sbd', 'amadeus-2019-03-004.sbd', 'amadeus-2019-03-001.sbd', 'amadeus-2019-03-009.sbd', 'amadeus-2019-03-013.sbd', 'amadeus-2019-03-006.sbd', 'amadeus-2019-03-007.sbd', 'amadeus-2019-03-008.sbd'],
-               ['amadeus-2008-11-9.sbd', 'amadeus-2000-3-3.sbd', 'amadeus-2014-16-10.sbd', 'amadeus-2019-12-0.sbd', 'amadeus-2018-22-11.sbd', 'amadeus-2013-17-2.sbd', 'amadeus-2009-9-12.sbd', 'amadeus-2004-22-4.sbd', 'amadeus-2000-9-8.sbd', 'amadeus-2015-17-5.sbd', 'amadeus-2014-1-1.sbd', 'amadeus-2006-24-13.sbd', 'amadeus-2015-0-6.sbd', 'amadeus-2011-4-14.sbd', 'amadeus-2012-0-7.sbd'],
-               ['amadeus-2011-01-009.sbd', 'amadeus-2016-14-012.sbd', 'amadeus-2003-07-002.sbd', 'amadeus-2009-06-006.sbd', 'amadeus-2005-22-000.sbd', 'amadeus-2018-12-004.sbd', 'amadeus-2017-09-003.sbd', 'amadeus-2010-16-008.sbd', 'amadeus-2012-13-007.sbd', 'amadeus-2000-09-005.sbd', 'amadeus-2004-22-013.sbd', 'amadeus-2004-03-011.sbd', 'amadeus-2017-01-010.sbd', 'amadeus-2007-01-014.sbd', 'amadeus-2007-05-001.sbd'],
-               ['hereon-amadeus-2019-3-14.sbd', 'hereon-amadeus-2019-3-11.sbd', 'hereon-amadeus-2019-3-12.sbd', 'hereon-amadeus-2019-3-10.sbd', 'hereon-amadeus-2019-3-6.sbd', 'hereon-amadeus-2019-3-2.sbd', 'hereon-amadeus-2019-3-0.sbd', 'hereon-amadeus-2019-3-4.sbd', 'hereon-amadeus-2019-3-9.sbd', 'hereon-amadeus-2019-3-1.sbd', 'hereon-amadeus-2019-3-7.sbd', 'hereon-amadeus-2019-3-8.sbd', 'hereon-amadeus-2019-3-3.sbd', 'hereon-amadeus-2019-3-5.sbd', 'hereon-amadeus-2019-3-13.sbd'],
-               ['hereon-amadeus-2019-03-002.sbd', 'hereon-amadeus-2019-03-012.sbd', 'hereon-amadeus-2019-03-006.sbd', 'hereon-amadeus-2019-03-007.sbd', 'hereon-amadeus-2019-03-000.sbd', 'hereon-amadeus-2019-03-004.sbd', 'hereon-amadeus-2019-03-013.sbd', 'hereon-amadeus-2019-03-005.sbd', 'hereon-amadeus-2019-03-011.sbd', 'hereon-amadeus-2019-03-010.sbd', 'hereon-amadeus-2019-03-009.sbd', 'hereon-amadeus-2019-03-003.sbd', 'hereon-amadeus-2019-03-014.sbd', 'hereon-amadeus-2019-03-008.sbd', 'hereon-amadeus-2019-03-001.sbd']
+        fns = [['amadeus-2019-227-3-1.sbd', 'amadeus-2019-227-3-12.sbd', 'amadeus-2019-227-3-9.sbd', 'amadeus-2019-227-3-5.sbd', 'amadeus-2019-227-3-11.sbd', 'amadeus-2019-227-3-2.sbd', 'amadeus-2019-227-3-6.sbd', 'amadeus-2019-227-3-8.sbd', 'amadeus-2019-227-3-3.sbd', 'amadeus-2019-227-3-10.sbd', 'amadeus-2019-227-3-14.sbd', 'amadeus-2019-227-3-4.sbd', 'amadeus-2019-227-3-0.sbd', 'amadeus-2019-227-3-13.sbd', 'amadeus-2019-227-3-7.sbd'],
+               ['amadeus-2019-227-03-012.sbd', 'amadeus-2019-227-03-014.sbd', 'amadeus-2019-227-03-005.sbd', 'amadeus-2019-227-03-011.sbd', 'amadeus-2019-227-03-000.sbd', 'amadeus-2019-227-03-010.sbd', 'amadeus-2019-227-03-002.sbd', 'amadeus-2019-227-03-003.sbd', 'amadeus-2019-227-03-004.sbd', 'amadeus-2019-227-03-001.sbd', 'amadeus-2019-227-03-009.sbd', 'amadeus-2019-227-03-013.sbd', 'amadeus-2019-227-03-006.sbd', 'amadeus-2019-227-03-007.sbd', 'amadeus-2019-227-03-008.sbd'],
+               ['amadeus-2008-103-11-9.sbd', 'amadeus-2000-5-3-3.sbd', 'amadeus-2014-269-16-10.sbd', 'amadeus-2019-364-12-0.sbd', 'amadeus-2018-365-22-11.sbd', 'amadeus-2013-220-17-2.sbd', 'amadeus-2009-130-9-12.sbd', 'amadeus-2004-12-22-4.sbd', 'amadeus-2000-1-9-8.sbd', 'amadeus-2015-20-17-5.sbd', 'amadeus-2014-5-1-1.sbd', 'amadeus-2006-60-24-13.sbd', 'amadeus-2015-70-0-6.sbd', 'amadeus-2011-80-4-14.sbd', 'amadeus-2012-90-0-7.sbd'],
+               ['amadeus-2011-360-01-009.sbd', 'amadeus-2016-360-14-012.sbd', 'amadeus-2003-360-07-002.sbd', 'amadeus-2009-360-06-006.sbd', 'amadeus-2005-360-22-000.sbd', 'amadeus-2018-360-12-004.sbd', 'amadeus-2017-201-09-003.sbd', 'amadeus-2010-201-16-008.sbd', 'amadeus-2012-201-13-007.sbd', 'amadeus-2000-010-09-005.sbd', 'amadeus-2004-201-22-013.sbd', 'amadeus-2004-002-03-011.sbd', 'amadeus-2017-201-01-010.sbd', 'amadeus-2007-201-01-014.sbd', 'amadeus-2007-201-05-001.sbd'],
+               ['hereon-amadeus-2019-321-3-14.sbd', 'hereon-amadeus-2019-321-3-11.sbd', 'hereon-amadeus-2019-321-3-12.sbd', 'hereon-amadeus-2019-321-3-10.sbd', 'hereon-amadeus-2019-321-3-6.sbd', 'hereon-amadeus-2019-321-3-2.sbd', 'hereon-amadeus-2019-321-3-0.sbd', 'hereon-amadeus-2019-321-3-4.sbd', 'hereon-amadeus-2019-321-3-9.sbd', 'hereon-amadeus-2019-321-3-1.sbd', 'hereon-amadeus-2019-321-3-7.sbd', 'hereon-amadeus-2019-321-3-8.sbd', 'hereon-amadeus-2019-321-3-3.sbd', 'hereon-amadeus-2019-321-3-5.sbd', 'hereon-amadeus-2019-321-3-13.sbd'],
+               ['hereon-amadeus-2019-321-03-002.sbd', 'hereon-amadeus-2019-321-03-012.sbd', 'hereon-amadeus-2019-321-03-006.sbd', 'hereon-amadeus-2019-321-03-007.sbd', 'hereon-amadeus-2019-321-03-000.sbd', 'hereon-amadeus-2019-321-03-004.sbd', 'hereon-amadeus-2019-321-03-013.sbd', 'hereon-amadeus-2019-321-03-005.sbd', 'hereon-amadeus-2019-321-03-011.sbd', 'hereon-amadeus-2019-321-03-010.sbd', 'hereon-amadeus-2019-321-03-009.sbd', 'hereon-amadeus-2019-321-03-003.sbd', 'hereon-amadeus-2019-321-03-014.sbd', 'hereon-amadeus-2019-321-03-008.sbd', 'hereon-amadeus-2019-321-03-001.sbd']
                ]
-        md5s = ["d0a6f1ca054cbbd1d88c5277aba6321f",
-                "9b8647386c7aac9aa0d6ceecb4163989",
-                "29974804932aabf064a2a3479e36963c",
-                "40d8973e1b050faa7ba0c7560c021c39",
-                "2cf354d5918879ef2f26a73350b64814"]
+        md5s = ["4471b1d6ea7c26a4fbd2ffa0e2d67740",
+                "4e308e28762ed82fbc0f0de23ea5cadc",
+                "65fa79234ff642a551a4a28857b5fae5",
+                "171332b7228e91d45b6bf9579a62abe9",
+                "a73e8910a49d232e2762d5ccdc51f2c9",
+                "3d6bb3c813395d618e2c1e7c34515e83"]
         for l, md5 in zip(fns, md5s):
             fn = dbdreader.DBDList(l)
             fn.sort()
+            for i in fn:
+                print(i)
+            print()
             x=hashlib.md5("".join(fn).encode('ascii'))
+            print(x.hexdigest())
             assert x.hexdigest() == md5
          
         
