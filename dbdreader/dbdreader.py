@@ -256,7 +256,7 @@ class DBDList(list):
     *p : variable length list of str
         filenames
     '''
-    REGEX = re.compile(r"-[0-9]*-[0-9]*-[0-9]*\.[demnstDEMNST][bB][dD]")
+    REGEX = re.compile(r"-[0-9]*-[0-9]*-[0-9]*-[0-9]*\.[demnstDEMNST][bB][dD]")
     
     def __init__(self,*p):
         list.__init__(self,*p)
@@ -266,7 +266,7 @@ class DBDList(list):
         if match and len(match.group())>=13: # minimal format: -xxxx-x-x.yyy
             s, extension = os.path.splitext(match.group())
             number_fields = s.split("-")
-            n=sum([int(i)*10**j for i,j in zip(number_fields[1:],[5,3,0])]) # first field is '', so skip over
+            n=sum([int(i)*10**j for i,j in zip(number_fields[1:],[8,5,3,0])]) # first field is '', so skip over
             r = f"{key[:match.span()[0]]}-{n}{extension.lower()}"
         else:
             r = key.lower()
