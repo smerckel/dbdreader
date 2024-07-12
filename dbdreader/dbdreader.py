@@ -5,6 +5,7 @@ import struct
 import time
 import numpy
 import glob
+import sys
 import re
 import datetime
 from calendar import timegm
@@ -242,7 +243,10 @@ class DBDCache(object):
         if cachedir is None:
             if  DBDCache.CACHEDIR is None:
                 HOME = os.path.expanduser("~") # <- multiplatform proof
-                cachedir=os.path.join(HOME,'.dbdreader')
+                if sys.platform=='linux':
+                    cachedir=os.path.join(HOME,'.local/share/dbdreader')
+                else:
+                    cachedir=os.path.join(HOME,'.dbdreader')
                 DBDCache.set_cachedir(cachedir, force_makedirs=True)
             # else default value is set and used.
         else:
