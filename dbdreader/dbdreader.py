@@ -142,16 +142,6 @@ def toDec(x,y=None):
 ENCODING_VER=5
 
 
-#HOME = os.environ['HOME'] # this works on Linux only it seems
-HOME = os.path.expanduser("~") # <- multiplatform proof
-
-CACHEDIR=os.path.join(HOME,'.dbdreader')
-
-if not os.path.exists(CACHEDIR):
-    os.makedirs(CACHEDIR)
-
-
-
 DBD_ERROR_CACHE_NOT_FOUND=1
 DBD_ERROR_NO_VALID_PARAMETERS=2
 DBD_ERROR_NO_TIME_VARIABLE=3
@@ -243,6 +233,33 @@ class DBD:
         write_sensor_list
 
 '''
+
+class DBDCache(object):
+
+    CACHEDIR = None
+
+    def __init__(self, cachedir=None):
+        if cachedir is None:
+            if  DBDCache.CACHEDIR is None:
+                HOME = os.path.expanduser("~") # <- multiplatform proof
+                cachedir=os.path.join(HOME,'.dbdreader')
+                DBDCache.set_cachedir(cachedir, force_makedirs=True)
+            # else default value is set and used.
+        else:
+            # user path set. Let it fail if it does not exists.
+            DBDCache.set_cachedir(cachedir, force_makedirs=False)
+            
+    @classmethod
+    def set_cachedir(cls, path, force_makedirs=False):
+        if not os.path.exists(path):
+            if force_makedirs:
+                os.makedirs(path)
+            else:
+                raise DBDError(DBD_ERROR_CACHEDIR_NOT_FOUND)
+        DBDCache.CACHEDIR = path
+        
+        
+    
 
 
 class DBDList(list):
@@ -600,7 +617,7 @@ class DBD(object):
         self.skip_initial_line = skip_initial_line
         logger.debug('Opening %s', filename)
         if cacheDir==None:
-            self.cacheDir=CACHEDIR
+            self.cacheDir=DBDCache.CACHEDIR
         else:
             self.cacheDir=cacheDir
         if dbdreader.decompress.is_compressed(filename):
@@ -1179,7 +1196,7 @@ class MultiDBD(object):
 
         self._ignore_cache=[]
         if cacheDir is None:
-            cacheDir=CACHEDIR
+            cacheDir=DBDCache.CACHEDIR
         self.banned_missions=banned_missions
         self.missions=missions
         self.mission_list=[]
@@ -1796,7 +1813,7 @@ class MultiDBD(object):
                 self.dbds['sci'].append(dbd)
             else:
                 self.dbds['eng'].append(dbd)
-
+                
         self.filenames=filenames
         # At this stage we may have zero or more files, and some could have been removed.
         # We will raise an error when cache files are missing and when there are no files at all.
@@ -1890,3 +1907,6 @@ class MultiDBD(object):
             data_arrays = [((numpy.hstack([_d[0] for _d in data[_p]]), numpy.hstack([_d[1] for _d in data[_p]])), srcs[_p]) for _p in p]
         return data_arrays
 
+# Initialises the class
+DBDCache()
+    
