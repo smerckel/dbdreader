@@ -1,0 +1,569 @@
+receiving file list ... done
+bumblebee_998/gliderState.xml
+bumblebee_998/from-glider/
+bumblebee_998/from-glider/01530143.scd
+bumblebee_998/from-glider/01530165.scd
+bumblebee_998/from-glider/01530165.tcd
+bumblebee_998/from-glider/01530166.scd
+bumblebee_998/from-glider/01530166.tcd
+bumblebee_998/from-glider/bumblebee_998-2024-145-1-143.sbd
+bumblebee_998/from-glider/bumblebee_998-2024-145-1-165.sbd
+bumblebee_998/from-glider/bumblebee_998-2024-145-1-165.tbd
+bumblebee_998/from-glider/bumblebee_998-2024-145-1-166.sbd
+bumblebee_998/from-glider/bumblebee_998-2024-145-1-166.tbd
+bumblebee_998/logs/
+bumblebee_998/logs/bumblebee_998_20240703T135129_network_net_2.log
+hal_1002/gliderState.xml
+hal_1002/from-glider/
+hal_1002/from-glider/01750013.scd
+hal_1002/from-glider/01750013.tcd
+hal_1002/from-glider/01750014.scd
+hal_1002/from-glider/01750014.tcd
+hal_1002/from-glider/01750015.scd
+hal_1002/from-glider/01750015.tcd
+hal_1002/from-glider/hal_1002-2024-183-4-13.sbd
+hal_1002/from-glider/hal_1002-2024-183-4-13.tbd
+hal_1002/from-glider/hal_1002-2024-183-4-14.sbd
+hal_1002/from-glider/hal_1002-2024-183-4-14.tbd
+hal_1002/from-glider/hal_1002-2024-183-4-15.sbd
+hal_1002/from-glider/hal_1002-2024-183-4-15.tbd
+hal_1002/logs/
+hal_1002/logs/hal_1002_20240703T142231_modem_tty_dgrp_pt_0.log
+marvin_1003/gliderState.xml
+marvin_1003/from-glider/
+marvin_1003/from-glider/01740297.scd
+marvin_1003/from-glider/01740297.tcd
+marvin_1003/from-glider/01740298.scd
+marvin_1003/from-glider/01740298.tcd
+marvin_1003/from-glider/marvin_1003-2024-136-5-297.sbd
+marvin_1003/from-glider/marvin_1003-2024-136-5-297.tbd
+marvin_1003/from-glider/marvin_1003-2024-136-5-298.sbd
+marvin_1003/from-glider/marvin_1003-2024-136-5-298.tbd
+marvin_1003/logs/
+marvin_1003/logs/marvin_1003_20240703T134949_network_net_0.log
+marvin_1003/to-glider/
+marvin_1003/to-glider/yo20.ma
+rosie_713/gliderState.xml
+
+sent 9984 bytes  received 541686 bytes  157620.00 bytes/sec
+total size is 765573770  speedup is 1387.74
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 115 bytes  received 20 bytes  270.00 bytes/sec
+total size is 14740  speedup is 109.19
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 107 bytes  received 20 bytes  254.00 bytes/sec
+total size is 1172  speedup is 9.23
+building file list ... done
+
+sent 161 bytes  received 20 bytes  362.00 bytes/sec
+total size is 6801  speedup is 37.57
+building file list ... done
+hal_1002-2024-183-0-0.sbd
+hal_1002-2024-183-0-0.tbd
+hal_1002-2024-183-1-0.sbd
+hal_1002-2024-183-1-0.tbd
+hal_1002-2024-183-2-0.sbd
+hal_1002-2024-183-2-0.tbd
+hal_1002-2024-183-3-0.sbd
+hal_1002-2024-183-3-0.tbd
+hal_1002-2024-183-4-0.sbd
+hal_1002-2024-183-4-0.tbd
+hal_1002-2024-183-4-1.sbd
+hal_1002-2024-183-4-1.tbd
+hal_1002-2024-183-4-11.sbd
+hal_1002-2024-183-4-11.tbd
+hal_1002-2024-183-4-12.sbd
+hal_1002-2024-183-4-12.tbd
+hal_1002-2024-183-4-13.sbd
+hal_1002-2024-183-4-13.tbd
+hal_1002-2024-183-4-14.sbd
+hal_1002-2024-183-4-14.tbd
+hal_1002-2024-183-4-15.sbd
+hal_1002-2024-183-4-15.tbd
+hal_1002-2024-183-4-2.sbd
+hal_1002-2024-183-4-2.tbd
+hal_1002-2024-183-4-3.sbd
+hal_1002-2024-183-4-3.tbd
+hal_1002-2024-183-4-4.sbd
+hal_1002-2024-183-4-4.tbd
+
+sent 157070 bytes  received 636 bytes  315412.00 bytes/sec
+total size is 165284  speedup is 1.05
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 29 bytes  received 20 bytes  98.00 bytes/sec
+total size is 0  speedup is 0.00
+building file list ... done
+
+sent 106 bytes  received 20 bytes  252.00 bytes/sec
+total size is 8074  speedup is 64.08
+building file list ... done
+gliderState.xml
+
+sent 264387 bytes  received 42 bytes  528858.00 bytes/sec
+total size is 264222  speedup is 1.00
+building file list ... done
+
+sent 17447 bytes  received 20 bytes  34934.00 bytes/sec
+total size is 6683655  speedup is 382.64
+building file list ... done
+
+sent 5185 bytes  received 20 bytes  10410.00 bytes/sec
+total size is 2285384  speedup is 439.07
+tbd
+sci_water_temp m_lat m_lon m_heading m_pitch m_roll c_wpt_lat c_wpt_lon sci_water_cond sci_water_pressure sci_flbbcd_chlor_units sci_flbbcd_cdom_units sci_flbbcd_bb_units sci_oxy4_oxygen
+Booo <xarray.DataArray 'time' (time: 216)> Size: 2kB
+array(['2024-07-02T20:03:23.000000000', '2024-07-02T20:08:24.000000000',
+       '2024-07-02T20:13:25.000000000', ..., '2024-07-03T14:11:54.000000000',
+       '2024-07-03T14:16:55.000000000', '2024-07-03T14:21:56.000000000'],
+      dtype='datetime64[ns]')
+Coordinates:
+  * time       (time) datetime64[ns] 2kB 2024-07-02T20:03:23 ... 2024-07-03T1...
+    latitude   (time) float64 2kB 51.68 51.68 51.68 51.68 ... nan nan nan nan
+    longitude  (time) float64 2kB -130.8 -130.8 -130.8 -130.8 ... nan nan nan
+    depth      (time) float64 2kB 35.14 101.2 154.1 219.6 ... 82.74 27.12 0.1604
+Attributes:
+    source:            sci_m_present_time
+    long_name:         Time
+    standard_name:     time
+    axis:              T
+    observation_type:  measured <xarray.DataArray 'temperature' (time: 216)> Size: 2kB
+array([ 9.58640003,  7.46920013,  6.74980021,  6.03529978,  5.51709986,
+        5.76090002,  6.22009993,  6.97310019,  7.87080002,  9.83969975,
+       12.62469959,  9.63259983,  7.30009985,  6.55560017,  6.08640003,
+        5.71579981,  5.85010004,  6.47949982,  6.97700024,  8.53359985,
+       12.58230019, 12.74950027,  8.87199974,  7.13070011,  6.6255002 ,
+        6.06230021,  5.44659996,  5.954     ,  6.55719995,  7.42299986,
+        9.4598999 , 12.82979965,  8.90170002,  7.02229977,  6.55950022,
+        6.04460001,  5.4691    ,  5.16309977,  4.91610003,  4.75089979,
+        4.68970013,  4.44869995,  4.24870014,  4.08449984,  3.87890005,
+        3.75219989,  3.46760011,  3.28290009,  3.45869994,  3.69460011,
+        3.90310001,  4.11829996,  4.33419991,  4.49329996,  4.62519979,
+        4.79510021,  4.95069981,  5.15679979,  5.60050011,  6.22959995,
+        7.09130001,  7.97200012, 10.7840004 ,  7.95429993,  6.80100012,
+        5.96120024,  5.57140017,  5.1782999 ,  4.9625001 ,  4.77419996,
+        4.5309    ,  4.37389994,  4.18359995,  4.00990009,  3.81839991,
+        3.6795001 ,  3.52970004,  3.50099993,  3.62890005,  3.76149988,
+        3.94059992,  4.12820005,  4.28980017,  4.52829981,  4.69399977,
+        4.85090017,  5.18079996,  5.49289989,  6.11119986,  6.79390001,
+        8.08139992, 10.77070045, 11.00699997, 11.01099968,  8.93319988,
+        7.19460011,  6.48110008,  5.58179998,  5.27820015,  4.98140001,
+...
+        6.72469997,  7.51569986,  9.52190018, 11.14690018,  7.90180016,
+        6.95900011,  5.76009989,  5.33640003,  5.09870005,  4.82019997,
+        4.37809992,  4.4064002 ,  4.27549982,  4.11409998,  3.91810012,
+        3.81089997,  3.69000006,  3.5316999 ,  3.50760007,  3.66659999,
+        3.78069997,  3.89989996,  4.03070021,  4.29759979,  4.4454999 ,
+        4.59140015,  4.84950018,  5.04580021,  5.32929993,  5.82250023,
+        6.52460003,  7.84950018,  9.51490021, 11.32429981, 11.32530022,
+       10.41779995,  8.26819992,  6.50509977,  5.82980013,  5.2347002 ,
+        5.06379986,  4.87109995,  4.50360012,  4.34800005,  4.18419981,
+        4.10080004,  4.01259995,  3.83509994,  3.6408999 ,  3.50469995,
+        3.51799989,  3.67989993,  3.8915    ,  4.08409977,  4.21750021,
+        4.26219988,  4.37069988,  4.85300016,  5.05569983,  5.29320002,
+        5.57200003,  6.30200005,  7.28879976,  8.67549992, 10.66530037,
+       10.2887001 ,  7.77750015,  6.42070007,  5.64139986,  5.29209995,
+        5.0394001 ,  4.81750011,  4.45769978,  4.40859985,  4.23579979,
+        4.09049988,  3.91030002,  3.75390005,  3.6171999 ,  3.46169996,
+        3.50079989,  3.66109991,  3.8204999 ,  4.03569984,  4.20590019,
+        4.41690016,  4.39389992,  4.83830023,  4.97419977,  5.18499994,
+        5.5855999 ,  6.1104002 ,  6.97650003,  8.34780025, 11.58049965,
+       12.36789989])
+Coordinates:
+  * time       (time) datetime64[ns] 2kB 2024-07-02T20:03:23 ... 2024-07-03T1...
+    latitude   (time) float64 2kB 51.68 51.68 51.68 51.68 ... nan nan nan nan
+    longitude  (time) float64 2kB -130.8 -130.8 -130.8 -130.8 ... nan nan nan
+    depth      (time) float64 2kB 35.14 101.2 154.1 219.6 ... 82.74 27.12 0.1604
+Attributes: (12/14)
+    source:               sci_water_temp
+    long_name:            water temperature
+    standard_name:        sea_water_temperature
+    units:                Celsius
+    instrument:           instrument_ctd
+    valid_min:            -5
+    ...                   ...
+    accuracy:             0.002
+    precision:            0.00005
+    resolution:           0.00005
+    comment:               
+    platform:             platform
+    ancillary_variables:   
+TIME <xarray.DataArray 'time' (time: 16)> Size: 128B
+array(['2024-07-02T21:26:14.749999744', '2024-07-02T21:48:08.416667136',
+       '2024-07-02T22:15:25.000000128', '2024-07-02T22:40:55.333332864',
+       '2024-07-03T00:02:40.000000000', '2024-07-03T01:32:59.333333376',
+       '2024-07-03T02:37:42.178571264', '2024-07-03T03:55:26.607142528',
+       '2024-07-03T05:24:27.562499840', '2024-07-03T06:35:32.312499712',
+       '2024-07-03T07:50:38.999999744', '2024-07-03T09:13:25.499999744',
+       '2024-07-03T10:33:40.093750272', '2024-07-03T11:46:24.968749184',
+       '2024-07-03T13:01:39.999999872', '2024-07-03T14:20:40.749999744'],
+      dtype='datetime64[ns]')
+Coordinates:
+    profile  (time) float64 128B 2.0 3.0 4.0 5.0 6.0 ... 14.0 15.0 16.0 17.0
+  * time     (time) datetime64[ns] 128B 2024-07-02T21:09:29.666666496 ... 202...
+TIME <xarray.DataArray 'time' (time: 16)> Size: 128B
+array(['2024-07-02T21:26:14.749999744', '2024-07-02T21:48:08.416667136',
+       '2024-07-02T22:15:25.000000128', '2024-07-02T22:40:55.333332864',
+       '2024-07-03T00:02:40.000000000', '2024-07-03T01:32:59.333333376',
+       '2024-07-03T02:37:42.178571264', '2024-07-03T03:55:26.607142528',
+       '2024-07-03T05:24:27.562499840', '2024-07-03T06:35:32.312499712',
+       '2024-07-03T07:50:38.999999744', '2024-07-03T09:13:25.499999744',
+       '2024-07-03T10:33:40.093750272', '2024-07-03T11:46:24.968749184',
+       '2024-07-03T13:01:39.999999872', '2024-07-03T14:20:40.749999744'],
+      dtype='datetime64[ns]')
+Coordinates:
+    profile  (time) float64 128B 2.0 3.0 4.0 5.0 6.0 ... 14.0 15.0 16.0 17.0
+  * time     (time) datetime64[ns] 128B 2024-07-02T21:09:29.666666496 ... 202...
+TIME <xarray.DataArray 'time' (time: 16)> Size: 128B
+array(['2024-07-02T21:26:14.749999744', '2024-07-02T21:48:08.416667136',
+       '2024-07-02T22:15:25.000000128', '2024-07-02T22:40:55.333332864',
+       '2024-07-03T00:02:40.000000000', '2024-07-03T01:32:59.333333376',
+       '2024-07-03T02:37:42.178571264', '2024-07-03T03:55:26.607142528',
+       '2024-07-03T05:24:27.562499840', '2024-07-03T06:35:32.312499712',
+       '2024-07-03T07:50:38.999999744', '2024-07-03T09:13:25.499999744',
+       '2024-07-03T10:33:40.093750272', '2024-07-03T11:46:24.968749184',
+       '2024-07-03T13:01:39.999999872', '2024-07-03T14:20:40.749999744'],
+      dtype='datetime64[ns]')
+Coordinates:
+    profile  (time) float64 128B 2.0 3.0 4.0 5.0 6.0 ... 14.0 15.0 16.0 17.0
+  * time     (time) datetime64[ns] 128B 2024-07-02T21:09:29.666666496 ... 202...
+TIME <xarray.DataArray 'time' (time: 3)> Size: 24B
+array(['2024-07-02T22:28:17.916667008', '2024-07-03T00:15:37.833333120',
+       '2024-07-03T07:17:49.395833088'], dtype='datetime64[ns]')
+Coordinates:
+    profile  (time) float64 24B 4.0 6.0 10.0
+  * time     (time) datetime64[ns] 24B 2024-07-02T22:02:01.833333504 ... 2024...
+TIME <xarray.DataArray 'time' (time: 3)> Size: 24B
+array(['2024-07-02T22:28:17.916667008', '2024-07-03T00:15:37.833333120',
+       '2024-07-03T07:17:49.395833088'], dtype='datetime64[ns]')
+Coordinates:
+    profile  (time) float64 24B 4.0 6.0 10.0
+  * time     (time) datetime64[ns] 24B 2024-07-02T22:02:01.833333504 ... 2024...
+TIME <xarray.DataArray 'time' (time: 3)> Size: 24B
+array(['2024-07-02T22:28:17.916667008', '2024-07-03T00:15:37.833333120',
+       '2024-07-03T07:17:49.395833088'], dtype='datetime64[ns]')
+Coordinates:
+    profile  (time) float64 24B 4.0 6.0 10.0
+  * time     (time) datetime64[ns] 24B 2024-07-02T22:02:01.833333504 ... 2024...
+key temperature
+key salinity
+key oxygen_concentration
+key backscatter_700
+key chlorophyll
+key cdom
+['#Koeye', '-12753.3', '', '5145.5']
+['#QCS01', '-12814.3000', '', '', '5142.3300']
+['#MPA4', '-12839.6300', '', '', '5124.5600']
+['#XSM', '-12907.5200', '', '', '5118.8100']
+['#Shelf', '-12951.3300', '', '', '5104.8700']
+['#Turn', '-13303.578', '', '', '4956.457']
+['#P16', '-13440.0', '', '', '', '', '', '', '4917.0']
+['./logs/hal_1002_20220901T011834_network_net_0.log', './logs/hal_1002_20220901T024006_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220901T042635_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220901T042812_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220901T061055_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220901T075136_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220901T092810_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220901T110307_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220901T110910_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220901T124051_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220901T141625_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220901T154854_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220901T172003_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220901T184941_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220901T201957_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220901T202157_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220901T215134_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220901T232200_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T004927_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T021801_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T034531_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T051259_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T064210_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T081148_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T094208_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220902T111230_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T111503_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T124031_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T140640_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T153702_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T170725_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220902T183405_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T200029_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T211216_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T223805_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220902T233521_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T002314_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T014859_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T031432_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220903T043619_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T055859_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T072127_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T084525_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T100500_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T112254_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T124126_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T140018_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220903T151306_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T162527_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T173748_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T200206_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T211331_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T222347_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220903T233351_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T004022_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T014603_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T025210_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T035605_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T045812_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T060125_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T070319_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T080356_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T090449_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T100308_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T101813_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T104359_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T105301_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T112400_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T114927_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T115054_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T115751_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T120209_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T120525_network_net_2.log', './logs/hal_1002_20220904T120641_network_net_0.log', './logs/hal_1002_20220904T121018_network_net_2.log', './logs/hal_1002_20220904T141350_network_net_0.log', './logs/hal_1002_20220904T150020_network_net_0.log', './logs/hal_1002_20220904T151101_network_net_0.log', './logs/hal_1002_20220904T151803_network_net_2.log', './logs/hal_1002_20220904T152747_network_net_2.log', './logs/hal_1002_20220904T153345_network_net_0.log', './logs/hal_1002_20220904T154012_network_net_0.log', './logs/hal_1002_20220904T154611_network_net_0.log', './logs/hal_1002_20220904T154912_network_net_0.log', './logs/hal_1002_20220904T164804_network_net_0.log', './logs/hal_1002_20220904T175549_network_net_0.log', './logs/hal_1002_20220904T190301_network_net_1.log', './logs/hal_1002_20220904T192958_network_net_1.log', './logs/hal_1002_20220904T201121_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T202343_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T203002_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T203617_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T204229_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T204835_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T205446_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T210059_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T210710_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T211321_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T211935_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T212757_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T213407_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T214852_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T215558_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T220547_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T221711_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T222322_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T222932_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T223334_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T225010_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T230622_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T232232_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T233841_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220904T235459_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T001112_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T002817_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T004425_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T010044_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T013152_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T020317_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T023431_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T030543_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T033659_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T040808_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T043918_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T051028_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T054141_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T061252_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T064402_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T071525_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T074633_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220905T081749_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220905T084900_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T092015_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T095135_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T102252_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T105402_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T112529_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T115646_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T122755_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T125911_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T133025_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220905T140141_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220905T143253_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220905T150450_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T153601_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T160730_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220905T163841_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T171001_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T174116_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T181233_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T184343_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T191452_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T194615_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220905T201730_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T204844_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T211951_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220905T215103_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T222212_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220905T225333_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T232441_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T233055_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T233706_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T234609_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T235233_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220905T235844_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220906T000430_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220906T001235_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220906T001358_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220906T001824_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220906T002114_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220906T002634_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220906T003007_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220908T224654_network_net_0.log', './logs/hal_1002_20220908T230144_network_net_0.log', './logs/hal_1002_20220908T230741_network_net_0.log', './logs/hal_1002_20220908T231338_network_net_0.log', './logs/hal_1002_20220908T231947_network_net_0.log', './logs/hal_1002_20220908T232925_network_net_0.log', './logs/hal_1002_20220908T233907_network_net_0.log', './logs/hal_1002_20220912T201114_network_net_1.log', './logs/hal_1002_20220912T201618_network_net_1.log', './logs/hal_1002_20220912T202158_network_net_0.log', './logs/hal_1002_20220912T205552_network_net_0.log', './logs/hal_1002_20220912T212913_network_net_0.log', './logs/hal_1002_20220912T215743_network_net_1.log', './logs/hal_1002_20220912T220221_network_net_0.log', './logs/hal_1002_20220913T155936_network_net_0.log', './logs/hal_1002_20220913T160437_network_net_0.log', './logs/hal_1002_20220913T161015_network_net_1.log', './logs/hal_1002_20220913T161412_network_net_1.log', './logs/hal_1002_20220913T162018_network_net_0.log', './logs/hal_1002_20220913T162243_network_net_0.log', './logs/hal_1002_20220913T162535_network_net_0.log', './logs/hal_1002_20220913T204245_network_net_1.log', './logs/hal_1002_20220913T204625_network_net_0.log', './logs/hal_1002_20220913T205018_network_net_0.log', './logs/hal_1002_20220913T205423_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220913T210633_network_net_1.log', './logs/hal_1002_20220913T211028_network_net_2.log', './logs/hal_1002_20220913T211648_network_net_2.log', './logs/hal_1002_20220913T211943_network_net_2.log', './logs/hal_1002_20220913T212814_network_net_0.log', './logs/hal_1002_20220913T213723_network_net_0.log', './logs/hal_1002_20220913T214746_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220913T220101_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220913T222705_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220913T231704_network_net_0.log', './logs/hal_1002_20220914T143434_network_net_0.log', './logs/hal_1002_20220914T144039_network_net_0.log', './logs/hal_1002_20220914T144238_network_net_0.log', './logs/hal_1002_20220914T150743_network_net_1.log', './logs/hal_1002_20220914T151337_network_net_0.log', './logs/hal_1002_20220914T153021_network_net_0.log', './logs/hal_1002_20220914T153733_network_net_2.log', './logs/hal_1002_20220914T154417_network_net_2.log', './logs/hal_1002_20220914T155018_network_net_0.log', './logs/hal_1002_20220914T155616_network_net_1.log', './logs/hal_1002_20220914T160216_network_net_1.log', './logs/hal_1002_20220914T161040_network_net_1.log', './logs/hal_1002_20220914T161809_network_net_0.log', './logs/hal_1002_20220914T162405_network_net_0.log', './logs/hal_1002_20220914T163420_network_net_0.log', './logs/hal_1002_20220914T164657_network_net_0.log', './logs/hal_1002_20220914T170958_network_net_0.log', './logs/hal_1002_20220914T173012_network_net_1.log', './logs/hal_1002_20220914T174853_network_net_1.log', './logs/hal_1002_20220914T181649_network_net_1.log', './logs/hal_1002_20220914T185515_network_net_0.log', './logs/hal_1002_20220914T193028_network_net_0.log', './logs/hal_1002_20220914T195609_network_net_2.log', './logs/hal_1002_20220914T202737_network_net_1.log', './logs/hal_1002_20220914T204852_network_net_1.log', './logs/hal_1002_20220914T212022_network_net_1.log', './logs/hal_1002_20220914T215231_network_net_0.log', './logs/hal_1002_20220914T222639_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220914T225803_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220914T232452_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220914T234742_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220915T002626_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220915T014219_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220915T022428_network_net_0.log', './logs/hal_1002_20220915T025410_network_net_1.log', './logs/hal_1002_20220915T032148_network_net_1.log', './logs/hal_1002_20220915T035916_network_net_0.log', './logs/hal_1002_20220915T042730_network_net_0.log', './logs/hal_1002_20220915T045120_network_net_0.log', './logs/hal_1002_20220915T051423_network_net_0.log', './logs/hal_1002_20220915T054558_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220915T061215_network_net_1.log', './logs/hal_1002_20220915T063247_network_net_0.log', './logs/hal_1002_20220915T071737_network_net_0.log', './logs/hal_1002_20220915T073234_network_net_0.log', './logs/hal_1002_20220915T074607_network_net_0.log', './logs/hal_1002_20220915T080014_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220915T084210_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220915T090141_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220915T092216_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220915T093809_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220915T095325_network_net_0.log', './logs/hal_1002_20220915T101035_network_net_0.log', './logs/hal_1002_20220915T110157_network_net_0.log', './logs/hal_1002_20220915T114918_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220915T120722_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220915T122448_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220915T123924_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220915T125318_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220915T131637_network_net_1.log', './logs/hal_1002_20220915T132945_network_net_0.log', './logs/hal_1002_20220915T134409_network_net_2.log', './logs/hal_1002_20220915T141720_network_net_2.log', './logs/hal_1002_20220915T145417_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220915T151451_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220915T153432_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220915T160136_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220915T162830_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220915T165130_network_net_2.log', './logs/hal_1002_20220915T171535_network_net_1.log', './logs/hal_1002_20220915T180304_network_net_0.log', './logs/hal_1002_20220915T184455_network_net_0.log', './logs/hal_1002_20220915T192911_network_net_2.log', './logs/hal_1002_20220915T201116_network_net_0.log', './logs/hal_1002_20220915T205620_network_net_1.log', './logs/hal_1002_20220915T213840_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220915T222232_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220915T230826_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220915T235544_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220916T004127_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220916T012625_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220916T021136_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220916T025749_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220916T034439_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220916T043528_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220916T052719_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220916T062208_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220916T071803_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220916T082221_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220916T091248_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220916T101648_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220916T101808_network_net_0.log', './logs/hal_1002_20220916T111927_network_net_0.log', './logs/hal_1002_20220916T122249_network_net_0.log', './logs/hal_1002_20220916T132938_network_net_0.log', './logs/hal_1002_20220916T143603_network_net_0.log', './logs/hal_1002_20220916T154421_network_net_0.log', './logs/hal_1002_20220916T165343_network_net_0.log', './logs/hal_1002_20220916T180421_network_net_0.log', './logs/hal_1002_20220916T191505_network_net_0.log', './logs/hal_1002_20220916T202702_network_net_0.log', './logs/hal_1002_20220916T214036_network_net_2.log', './logs/hal_1002_20220916T225525_network_net_0.log', './logs/hal_1002_20220917T001025_network_net_0.log', './logs/hal_1002_20220917T012558_network_net_0.log', './logs/hal_1002_20220917T024239_network_net_0.log', './logs/hal_1002_20220917T035850_network_net_0.log', './logs/hal_1002_20220917T051749_network_net_0.log', './logs/hal_1002_20220917T063749_network_net_0.log', './logs/hal_1002_20220917T075818_network_net_0.log', './logs/hal_1002_20220917T092013_network_net_0.log', './logs/hal_1002_20220917T104131_network_net_0.log', './logs/hal_1002_20220917T105050_network_net_2.log', './logs/hal_1002_20220917T120943_network_net_0.log', './logs/hal_1002_20220917T133309_network_net_0.log', './logs/hal_1002_20220917T145640_network_net_0.log', './logs/hal_1002_20220917T161050_network_net_0.log', './logs/hal_1002_20220917T172454_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T173119_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T173500_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T174111_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T174312_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T174801_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T175053_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T175217_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T180118_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T180507_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T180910_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T181443_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T181946_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T182925_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T183352_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T184314_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T185118_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T190557_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T190740_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T191125_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T203230_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T215324_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220917T231614_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T003742_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T020157_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T020309_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T032440_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T032801_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T044404_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T060200_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T072137_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T084031_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T100152_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T112724_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T125257_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T141928_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T155136_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T171556_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T184623_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T194519_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T201043_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T201404_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T214537_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T214835_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T221239_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220918T231826_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220919T005302_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220919T015030_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220919T032919_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220919T043752_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220919T051104_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220919T054312_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220919T061347_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220919T061640_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220919T062046_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220919T065133_network_net_0.log', './logs/hal_1002_20220919T072144_network_net_0.log', './logs/hal_1002_20220919T075012_network_net_0.log', './logs/hal_1002_20220919T082140_network_net_0.log', './logs/hal_1002_20220919T085517_network_net_1.log', './logs/hal_1002_20220919T092629_network_net_1.log', './logs/hal_1002_20220919T095742_network_net_0.log', './logs/hal_1002_20220919T103108_network_net_0.log', './logs/hal_1002_20220919T110420_network_net_2.log', './logs/hal_1002_20220919T113741_network_net_0.log', './logs/hal_1002_20220919T113849_network_net_0.log', './logs/hal_1002_20220919T121054_network_net_0.log', './logs/hal_1002_20220919T124409_network_net_0.log', './logs/hal_1002_20220919T131650_network_net_1.log', './logs/hal_1002_20220919T135129_network_net_0.log', './logs/hal_1002_20220919T135329_network_net_0.log', './logs/hal_1002_20220919T142501_network_net_0.log', './logs/hal_1002_20220919T145810_network_net_0.log', './logs/hal_1002_20220919T150003_network_net_0.log', './logs/hal_1002_20220919T150603_network_net_0.log', './logs/hal_1002_20220919T153448_network_net_0.log', './logs/hal_1002_20220919T153713_network_net_0.log', './logs/hal_1002_20220919T160608_network_net_0.log', './logs/hal_1002_20220919T163844_network_net_2.log', './logs/hal_1002_20220919T182734_network_net_0.log', './logs/hal_1002_20220919T195124_network_net_2.log', './logs/hal_1002_20220919T214146_network_net_0.log', './logs/hal_1002_20220919T233413_network_net_0.log', './logs/hal_1002_20220920T012621_network_net_0.log', './logs/hal_1002_20220920T031913_network_net_0.log', './logs/hal_1002_20220920T051118_network_net_1.log', './logs/hal_1002_20220920T070308_network_net_0.log', './logs/hal_1002_20220920T070636_network_net_0.log', './logs/hal_1002_20220920T085552_network_net_0.log', './logs/hal_1002_20220920T085857_network_net_0.log', './logs/hal_1002_20220920T105226_network_net_0.log', './logs/hal_1002_20220920T124237_network_net_0.log', './logs/hal_1002_20220920T143724_network_net_1.log', './logs/hal_1002_20220920T144030_network_net_0.log', './logs/hal_1002_20220920T160839_network_net_0.log', './logs/hal_1002_20220920T180052_network_net_0.log', './logs/hal_1002_20220920T195236_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220920T200203_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220920T223116_network_net_0.log', './logs/hal_1002_20220921T010007_network_net_0.log', './logs/hal_1002_20220921T010415_network_net_0.log', './logs/hal_1002_20220921T024336_network_net_0.log', './logs/hal_1002_20220921T054251_network_net_0.log', './logs/hal_1002_20220921T081317_network_net_0.log', './logs/hal_1002_20220921T093946_network_net_0.log', './logs/hal_1002_20220921T094227_network_net_0.log', './logs/hal_1002_20220921T120027_network_net_0.log', './logs/hal_1002_20220921T134737_network_net_0.log', './logs/hal_1002_20220921T150433_network_net_0.log', './logs/hal_1002_20220921T150536_network_net_0.log', './logs/hal_1002_20220921T173238_network_net_0.log', './logs/hal_1002_20220921T173349_network_net_0.log', './logs/hal_1002_20220921T193713_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220921T210827_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220921T234427_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220922T014503_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220922T014648_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220922T014849_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220922T071300_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220922T175709_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220923T042501_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220923T150809_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220924T015802_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220924T020120_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220924T123526_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220924T230534_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220924T231249_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220925T094626_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220925T202633_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220926T070607_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220926T174408_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220927T042634_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220927T151104_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220928T015553_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220928T123659_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220928T232542_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220929T101055_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220929T205401_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220929T205802_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20220930T073927_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20220930T175803_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221001T035212_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221001T135236_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221001T235931_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221002T100024_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221002T173228_network_net_0.log', './logs/hal_1002_20221002T210433_network_net_0.log', './logs/hal_1002_20221002T210759_network_net_0.log', './logs/hal_1002_20221003T070242_network_net_0.log', './logs/hal_1002_20221003T165804_network_net_0.log', './logs/hal_1002_20221004T030523_network_net_0.log', './logs/hal_1002_20221004T130824_network_net_0.log', './logs/hal_1002_20221004T230250_network_net_1.log', './logs/hal_1002_20221004T231242_network_net_0.log', './logs/hal_1002_20221005T090133_network_net_1.log', './logs/hal_1002_20221005T165828_network_net_0.log', './logs/hal_1002_20221005T201001_network_net_1.log', './logs/hal_1002_20221005T214352_network_net_0.log', './logs/hal_1002_20221005T214754_network_net_0.log', './logs/hal_1002_20221005T233430_network_net_0.log', './logs/hal_1002_20221006T021225_network_net_0.log', './logs/hal_1002_20221006T021410_network_net_0.log', './logs/hal_1002_20221006T045206_network_net_0.log', './logs/hal_1002_20221006T074227_network_net_0.log', './logs/hal_1002_20221006T102638_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221006T131436_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20221006T131816_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20221006T160828_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221006T161237_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20221006T190112_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221006T220112_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221007T001129_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221007T021237_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221007T051837_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20221007T081608_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221007T110400_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221007T135600_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20221007T192053_network_net_2.log', './logs/hal_1002_20221007T193337_network_net_0.log', './logs/hal_1002_20221007T220956_network_net_0.log', './logs/hal_1002_20221008T052743_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221008T075604_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20221008T075845_network_net_0.log', './logs/hal_1002_20221008T101554_network_net_0.log', './logs/hal_1002_20221008T123219_network_net_0.log', './logs/hal_1002_20221008T123614_network_net_0.log', './logs/hal_1002_20221008T144156_network_net_0.log', './logs/hal_1002_20221008T164850_network_net_0.log', './logs/hal_1002_20221008T190244_network_net_0.log', './logs/hal_1002_20221008T211926_network_net_0.log', './logs/hal_1002_20221008T233848_network_net_0.log', './logs/hal_1002_20221009T015937_network_net_1.log', './logs/hal_1002_20221009T042134_network_net_0.log', './logs/hal_1002_20221009T042528_network_net_0.log', './logs/hal_1002_20221009T063916_network_net_1.log', './logs/hal_1002_20221009T085704_network_net_0.log', './logs/hal_1002_20221009T090031_network_net_0.log', './logs/hal_1002_20221009T111445_network_net_1.log', './logs/hal_1002_20221009T132939_network_net_1.log', './logs/hal_1002_20221009T133338_network_net_0.log', './logs/hal_1002_20221009T133505_network_net_0.log', './logs/hal_1002_20221009T154417_network_net_0.log', './logs/hal_1002_20221009T154612_network_net_0.log', './logs/hal_1002_20221009T175421_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221009T175712_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221009T200614_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221009T221230_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T002042_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T002404_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T023029_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T043637_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T063431_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T083542_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T102959_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T122739_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T142136_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T161954_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T181112_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T195712_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T200131_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T214553_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221010T232856_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T011448_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T043144_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T060922_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T073911_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20221011T090408_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20221011T103209_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T120023_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T132349_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T144612_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T144841_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T160648_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T172638_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T172812_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T185056_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T201657_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221011T214150_modem_tty_dgrp_pt_1.log', './logs/hal_1002_20221011T230745_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221012T002735_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221012T014546_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221012T042550_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221012T054446_network_net_0.log', './logs/hal_1002_20221012T070502_network_net_0.log', './logs/hal_1002_20221012T082944_network_net_1.log', './logs/hal_1002_20221012T083307_network_net_1.log', './logs/hal_1002_20221012T095145_network_net_1.log', './logs/hal_1002_20221012T111315_network_net_0.log', './logs/hal_1002_20221012T123414_network_net_0.log', './logs/hal_1002_20221012T123604_network_net_0.log', './logs/hal_1002_20221012T135055_network_net_1.log', './logs/hal_1002_20221012T135241_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221012T151129_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221012T161417_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221012T171501_modem_tty_dgrp_pt_0.log', './logs/hal_1002_20221012T183847_network_net_1.log', './logs/hal_1002_20221012T194433_network_net_0.log', './logs/hal_1002_20221012T210255_network_net_0.log', './logs/hal_1002_20221012T214015_network_net_0.log', './logs/hal_1002_20221012T214418_network_net_0.log', './logs/hal_1002_20221012T221738_network_net_0.log', './logs/hal_1002_20221012T225215_network_net_1.log', './logs/hal_1002_20221012T230950_network_net_0.log', './logs/hal_1002_20221012T232357_network_net_0.log', './logs/hal_1002_20221012T233712_network_net_0.log', './logs/hal_1002_20221012T235008_network_net_0.log', './logs/hal_1002_20221012T235436_network_net_0.log', './logs/hal_1002_20221012T235729_network_net_0.log', './logs/hal_1002_20221012T235838_network_net_0.log', './logs/hal_1002_20221013T000940_network_net_0.log', './logs/hal_1002_20221013T001614_network_net_0.log', './logs/hal_1002_20221013T001758_network_net_0.log', './logs/hal_1002_20221013T003021_network_net_0.log', './logs/hal_1002_20221013T004333_network_net_0.log', './logs/hal_1002_20221013T004556_network_net_0.log', './logs/hal_1002_20221013T005816_network_net_0.log', './logs/hal_1002_20221013T005935_network_net_0.log', './logs/hal_1002_20221013T011627_network_net_0.log', './logs/hal_1002_20221013T012241_network_net_0.log', './logs/hal_1002_20221013T212854_modem_tty_dgrp_pt_0.log']
+2022-10-13 21:28:48
+1112.1253785882577 538.9688023499343
+<xarray.DataArray 'distCalvert' ()> Size: 8B
+array(1.91272254)
+Coordinates:
+    time     datetime64[ns] 8B 2022-10-13T21:28:48

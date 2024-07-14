@@ -655,7 +655,8 @@ class DBD(object):
         ''' Closes a DBD file '''
         return self.fp.close()
 
-    def get(self,*parameters,decimalLatLon=True,discardBadLatLon=True, return_nans=False, max_values_to_read=-1):
+    def get(self,*parameters,decimalLatLon=True,discardBadLatLon=True, return_nans=False, max_values_to_read=-1,
+            insert_nans_for_missing_parameters=False):
         '''Returns time and parameter data for requested parameter
 
         This method reads the requested parameter, and convert it
@@ -680,6 +681,9 @@ class DBD(object):
         max_values_to_read : int, optional
             if > 0, reading is stopped after this many values have been read.
 
+        insert_nans_for_missing_parameters : bool, optional
+            if True inserts nan for the missing parameters.
+
         Returns
         -------
         tuple of (ndarray, ndarray) for each parameter requested.
@@ -699,7 +703,8 @@ class DBD(object):
         
         timestamps, values =  self._get(*parameters, decimalLatLon=decimalLatLon,
                                         discardBadLatLon=discardBadLatLon, return_nans=return_nans,
-                                        max_values_to_read=max_values_to_read)
+                                        max_values_to_read=max_values_to_read,
+                                        insert_nans_for_missing_parameters=insert_nans_for_missing_parameters)
         r = [(t,v) for t, v in zip(timestamps, values)]
 
         if len(parameters)==1:
@@ -854,10 +859,12 @@ class DBD(object):
             return 'sci_m_present_time'
 
 
-    def _get(self,*parameters,decimalLatLon=True,discardBadLatLon=False, return_nans=False, max_values_to_read=-1):
+    def _get(self,*parameters,decimalLatLon=True,discardBadLatLon=False, return_nans=False,
+             max_values_to_read=-1, insert_nans_for_missing_parameters=False):
         ''' returns time and parameter data for requested parameter '''
         invalid_parameters = self._get_valid_parameters(parameters, invert=True, global_scope=True)
-        if invalid_parameters:
+        if invalid_parameters and not insert_nans_for_missing_parameters:
+            # Do not trigger an exception if we are going to insert nans for mission parameters.
             if len(invalid_parameters)==1:
                 mesg = f"Parameter {invalid_parameters[0]} is an unknown glider sensor name. ({self.filename})"
             else:
@@ -866,11 +873,12 @@ class DBD(object):
 
         valid_parameters = self._get_valid_parameters(parameters)
         missing_parameters = self._get_valid_parameters(parameters, invert=True)
-        if missing_parameters:
+        if missing_parameters and not insert_nans_for_missing_parameters:
             logger.warning(f"Requested parameters not found: {','.join(missing_parameters)}.")
         number_valid_parameters = len(valid_parameters)
         if not self.timeVariable in self.parameterNames:
             raise DbdError(DBD_ERROR_NO_TIME_VARIABLE)
+
         # OK, we have some parameters to return:
         ti=self.parameterNames.index(self.timeVariable)
         idx = [self.parameterNames.index(p) for p in valid_parameters]
@@ -1246,8 +1254,8 @@ class MultiDBD(object):
 
 ##### public methods
     def get(self, *parameters, decimalLatLon=True, discardBadLatLon=True, return_nans=False, include_source=False,
-            max_values_to_read=-1):
-        ''' Returns time and value tuple(s) for requested parameter(s)
+            max_values_to_read=-1, insert_nans_for_missing_parameters=False):
+        '''Returns time and value tuple(s) for requested parameter(s)
 
         This method returns time and values tuples for a list of parameters.
 
@@ -1281,6 +1289,11 @@ class MultiDBD(object):
             if > 1, then reading is stopped after this many values have been read.
             Default value : -1
 
+        insert_nans_for_missing_parameters : bool, optional
+            If True, nan's are inserted for file segments that have
+            missing parameters (only if at least one other file has
+            the missing parameter)
+        
         Returns
         -------
         (ndarray, ndarray) or
@@ -1291,6 +1304,7 @@ class MultiDBD(object):
             for multiple parameters, including source file list, respectively.
 
         .. versionchanged:: 0.5.5 For a single parameter request, the number of values to be read can be limited.
+
         '''
         # It only makes sense to limit the number of parameters read when a single parameter is requested. Check for this.
         if max_values_to_read>0 and len(parameters)!=1:
@@ -1307,7 +1321,9 @@ class MultiDBD(object):
                 positions.append(("eng", len(eng_variables)))
                 eng_variables.append(p)
         kwds=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
-                  return_nans=return_nans, include_source=include_source, max_values_to_read=max_values_to_read)
+                  return_nans=return_nans, include_source=include_source,
+                  max_values_to_read=max_values_to_read,
+                  insert_nans_for_missing_parameters=insert_nans_for_missing_parameters)
 
         if len(sci_variables)>=1:
             r_sci = self._worker("get", "sci", *sci_variables, **kwds)
@@ -1324,7 +1340,8 @@ class MultiDBD(object):
         else:
             return r
 
-    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True):
+    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True,
+               insert_nans_for_missing_parameters=True):
         ''' Returns values of parameter_x and paramter_y
 
         For parameters parameter_x and parameter_y this method returns a tuple
@@ -1351,10 +1368,13 @@ class MultiDBD(object):
         (ndarray, ndarray)
             tuple of value vectors
         '''
-        _, x, y = self.get_sync(parameter_x, parameter_y, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+        _, x, y = self.get_sync(parameter_x, parameter_y, decimalLatLon=decimalLatLon,
+                                discardBadLatLon=discardBadLatLon,
+                                insert_nans_for_missing_parameters=insert_nans_for_missing_parameters)
         return x, y
 
-    def get_sync(self,*parameters,decimalLatLon=True, discardBadLatLon=True):
+    def get_sync(self,*parameters,decimalLatLon=True, discardBadLatLon=True,
+                 insert_nans_for_missing_parameters=True):
         ''' Returns a list of values from parameters, all interpolated to the
             time base of the first paremeter
 
@@ -1397,7 +1417,8 @@ class MultiDBD(object):
             logger.info("Calling signature of get_sync() has changed in version 0.4.0.")
             parameters = [parameters[0]] + parameters[1]
 
-        tv = self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=False)
+        tv = self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
+                      return_nans=False, insert_nans_for_missing_parameters=True)
         t = tv[0][0]
         r = []
         for i, (_t, _v) in enumerate(tv):
@@ -1861,7 +1882,6 @@ class MultiDBD(object):
         parameter_names.sort()
         return parameter_names
 
-
     def _worker(self,method,ft,*p,**kwds):
         try:
             include_source = kwds.pop("include_source")
@@ -1884,6 +1904,20 @@ class MultiDBD(object):
                 # as the file is probably (close to) empty
                 if e.value==DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO:
                     continue
+                elif e.value==DBD_ERROR_NO_VALID_PARAMETERS:
+                    # set1 is all known parameters:
+                    set1 = set([i for i in chain(*self.parameterNames.values())]) 
+                    set2 = set(e.data) # missing parmaeters
+                    if set2.intersection(set1) == set2:
+                        # all missing parameters in *this* file are
+                        # known from at least on other file read.
+                        if method!='get':
+                            raise NotImplementedError(f"Asking to use {method}. This should not happen...")
+                        kwds['insert_nans_for_missing_parameters']=True
+                        t, v = m[method](*p, **kwds)
+                    else:
+                        # at least one unknown parameter was aksed for. Reraise the error.    
+                        raise e
                 else:
                     # in all other cases reraise the error..
                     raise e
