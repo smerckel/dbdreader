@@ -9,6 +9,7 @@ import unittest
 
 RUNLONGTESTS = False
 
+dbdreader.DBDCache('../dbdreader/data/cac')
 class Dbdreader_DBD_test(unittest.TestCase):
     
     def test_open(self):
@@ -99,8 +100,7 @@ class Dbdreader_DBD_test(unittest.TestCase):
     def test_missing_cache_file(self):
         print("Throw an error when cache file is missing...")
         with self.assertRaises(dbdreader.DbdError) as e:
-            dbd = dbdreader.DBD("../dbdreader/data/unit_887-2021-321-3-0.sbd")
-            #tm, depth = dbd.get("m_depth")
+            dbd = dbdreader.DBD("../dbdreader/data/hal_1002-2024-183-4-4.sbd")
 
     def test_donottest_non_standard_cache_dir_fail(self):
         print("non_standard_cache_dir_fail")
@@ -412,8 +412,20 @@ class Dbdreader_MultiDBD_test(unittest.TestCase):
             dbd = dbdreader.MultiDBD("../dbdreader/data/sebastian-2014-204-05-00?.dbd")
             result = dbd.get("m_depth", "m_pitch", max_values_to_read=10)
 
+    def test_get_missing_parameter_in_some_files(self):
+        print("Test whether we can read multiple files and extract a parameter that is not available in all of them.")
+        dbd = dbdreader.MultiDBD("../dbdreader/data/hal_1002-2024-183-4-[46].tbd")
+        (t1, v1), (t2, v2) = dbd.get("sci_water_temp", "sci_oxy4_oxygen")
+        # we expect only data for oxygen from one of the two files, so get should return different lengths.
+        assert len(t1)==21 and len(t2)==11
         
-            
+    def test_get_sync_missing_parameter_in_some_files(self):
+        print("Test whether we can read multiple files and extract and interpolate a parameter that is not available in all of them.")
+        dbd = dbdreader.MultiDBD("../dbdreader/data/hal_1002-2024-183-4-[46].tbd")
+        t1, v1, v2 = dbd.get_sync("sci_water_temp", "sci_oxy4_oxygen")
+        # we expect the first 10 data points for oxygen to be nans.
+        assert len(t1)==21 and np.all(np.isnan(v2[:10]))
+        
     def get_method(self,method,fn,x,y):
         dbd=dbdreader.MultiDBD(pattern=fn)
         try:
@@ -476,3 +488,4 @@ class DBDList_test(unittest.TestCase):
          
         
 unittest.main()
+
