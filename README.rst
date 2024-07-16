@@ -14,6 +14,21 @@ binary files, so that they can be further analysed.
 Change log
 ----------
 
+version 0.5.8rc1
+
+* Changes default location for cache files on linux from
+  $HOME/.dbdreader to $HOME/.local/share/dbdreader
+
+* Introduces new class DBDCache to manage the location where cache
+  files are looked up. Constructing an object with an arguments (re-)sets a
+  default path, avoiding the need to use the keyword cacheDir when
+  creating objects of DBD and MultiDBD classes.
+
+* Fixes an issue with MultiDBD when a parameter is requested that is
+  not present in all files, but in at least one. The get() method
+  returns just those data that are present. In case of get_sync and
+  friends, data are interpolated if possible, or padded with nans.
+
 Version 0.5.7
 
 * Drops dependency on python 3.10+, introduced in 0.5.6, and should

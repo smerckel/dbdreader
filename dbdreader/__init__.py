@@ -1,4 +1,4 @@
-__version__="0.5.7"
+__version__="0.5.8rc1"
 
 __all__ = ['dbdreader']
 
