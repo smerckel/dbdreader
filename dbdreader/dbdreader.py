@@ -5,6 +5,7 @@ import struct
 import time
 import numpy
 import glob
+import sys
 import re
 import datetime
 from calendar import timegm
@@ -142,16 +143,6 @@ def toDec(x,y=None):
 ENCODING_VER=5
 
 
-#HOME = os.environ['HOME'] # this works on Linux only it seems
-HOME = os.path.expanduser("~") # <- multiplatform proof
-
-CACHEDIR=os.path.join(HOME,'.dbdreader')
-
-if not os.path.exists(CACHEDIR):
-    os.makedirs(CACHEDIR)
-
-
-
 DBD_ERROR_CACHE_NOT_FOUND=1
 DBD_ERROR_NO_VALID_PARAMETERS=2
 DBD_ERROR_NO_TIME_VARIABLE=3
@@ -164,6 +155,7 @@ DBD_ERROR_INVALID_DBD_FILE = 9
 DBD_ERROR_INVALID_ENCODING = 10
 DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED = 11
 DBD_ERROR_NO_DATA_TO_INTERPOLATE=12
+DBD_ERROR_NO_DATA=13
 
 
 class DbdError(Exception):
@@ -199,6 +191,8 @@ class DbdError(Exception):
             mesg='Invalid or conflicting file selection criterion/criteria specified.'
         elif self.value==DBD_ERROR_NO_DATA_TO_INTERPOLATE:
             mesg='One or more parameters that are to be interpolated, does/do not have any data.'
+        elif self.value==DBD_ERROR_NO_DATA:
+            mesg='One or more parameters do not have any data.'
         else:
             mesg=f'Undefined error. ({self.value})'
         if self.mesg:
@@ -243,6 +237,36 @@ class DBD:
         write_sensor_list
 
 '''
+
+class DBDCache(object):
+
+    CACHEDIR = None
+
+    def __init__(self, cachedir=None):
+        if cachedir is None:
+            if  DBDCache.CACHEDIR is None:
+                HOME = os.path.expanduser("~") # <- multiplatform proof
+                if sys.platform=='linux':
+                    cachedir=os.path.join(HOME,'.local/share/dbdreader')
+                else:
+                    cachedir=os.path.join(HOME,'.dbdreader')
+                DBDCache.set_cachedir(cachedir, force_makedirs=True)
+            # else default value is set and used.
+        else:
+            # user path set. Let it fail if it does not exists.
+            DBDCache.set_cachedir(cachedir, force_makedirs=False)
+            
+    @classmethod
+    def set_cachedir(cls, path, force_makedirs=False):
+        if not os.path.exists(path):
+            if force_makedirs:
+                os.makedirs(path)
+            else:
+                raise DbdError(DBD_ERROR_CACHEDIR_NOT_FOUND)
+        DBDCache.CACHEDIR = path
+        
+        
+    
 
 
 class DBDList(list):
@@ -600,7 +624,7 @@ class DBD(object):
         self.skip_initial_line = skip_initial_line
         logger.debug('Opening %s', filename)
         if cacheDir==None:
-            self.cacheDir=CACHEDIR
+            self.cacheDir=DBDCache.CACHEDIR
         else:
             self.cacheDir=cacheDir
         if dbdreader.decompress.is_compressed(filename):
@@ -634,7 +658,8 @@ class DBD(object):
         ''' Closes a DBD file '''
         return self.fp.close()
 
-    def get(self,*parameters,decimalLatLon=True,discardBadLatLon=True, return_nans=False, max_values_to_read=-1):
+    def get(self,*parameters,decimalLatLon=True,discardBadLatLon=True, return_nans=False, max_values_to_read=-1,
+            check_for_invalid_parameters=True):
         '''Returns time and parameter data for requested parameter
 
         This method reads the requested parameter, and convert it
@@ -659,6 +684,9 @@ class DBD(object):
         max_values_to_read : int, optional
             if > 0, reading is stopped after this many values have been read.
 
+        check_for_invalid_parameters : bool, optional
+            if True returns empty arrays for parameters that are marked as invalid, instead of triggering an exception.
+
         Returns
         -------
         tuple of (ndarray, ndarray) for each parameter requested.
@@ -678,7 +706,8 @@ class DBD(object):
         
         timestamps, values =  self._get(*parameters, decimalLatLon=decimalLatLon,
                                         discardBadLatLon=discardBadLatLon, return_nans=return_nans,
-                                        max_values_to_read=max_values_to_read)
+                                        max_values_to_read=max_values_to_read,
+                                        check_for_invalid_parameters=check_for_invalid_parameters)
         r = [(t,v) for t, v in zip(timestamps, values)]
 
         if len(parameters)==1:
@@ -794,7 +823,6 @@ class DBD(object):
             Calling signature has changed from the sync parameters
             passed on as a list, to passed on as parameters.
         '''
-
         if len(sync_parameters)<2:
             raise ValueError('Expect at least two parameters.')
         if len(sync_parameters)==2 and (isinstance(sync_parameters[1], list) or isinstance(sync_parameters[1], tuple)):
@@ -833,10 +861,12 @@ class DBD(object):
             return 'sci_m_present_time'
 
 
-    def _get(self,*parameters,decimalLatLon=True,discardBadLatLon=False, return_nans=False, max_values_to_read=-1):
+    def _get(self,*parameters,decimalLatLon=True,discardBadLatLon=False, return_nans=False,
+             max_values_to_read=-1, check_for_invalid_parameters=True):
         ''' returns time and parameter data for requested parameter '''
         invalid_parameters = self._get_valid_parameters(parameters, invert=True, global_scope=True)
-        if invalid_parameters:
+        if invalid_parameters and check_for_invalid_parameters:
+            # Do not trigger an exception if we allow parameters without data to return empty arrays.
             if len(invalid_parameters)==1:
                 mesg = f"Parameter {invalid_parameters[0]} is an unknown glider sensor name. ({self.filename})"
             else:
@@ -845,12 +875,14 @@ class DBD(object):
 
         valid_parameters = self._get_valid_parameters(parameters)
         missing_parameters = self._get_valid_parameters(parameters, invert=True)
-        if missing_parameters:
-            logger.warning(f"Requested parameters not found: {','.join(missing_parameters)}.")
         number_valid_parameters = len(valid_parameters)
         if not self.timeVariable in self.parameterNames:
             raise DbdError(DBD_ERROR_NO_TIME_VARIABLE)
-        # OK, we have some parameters to return:
+        
+        # OK, we have some parameters to return:        
+        if missing_parameters:
+            logger.warning(f"Requested parameters not found: {','.join(missing_parameters)}.")
+            
         ti=self.parameterNames.index(self.timeVariable)
         idx = [self.parameterNames.index(p) for p in valid_parameters]
         idx_sorted=numpy.sort(idx)
@@ -895,7 +927,6 @@ class DBD(object):
         else:
             def get_empty_array():
                 return numpy.array([])
-                
         for missing_parameter in missing_parameters:
             idx = parameters.index(missing_parameter)
             timestamps.insert(idx, get_empty_array())
@@ -1177,9 +1208,11 @@ class MultiDBD(object):
                  complement_files=False,banned_missions=[],missions=[],
                  max_files=None, skip_initial_line=True):
 
-        self._ignore_cache=[]
+        self._ignore_cache=[] # list of files that should be ignored because out of set time limits
+        self._accept_cache=[] # list of files that have data within set time limits
+        self._parameter_names=dict(globally=set(), locally=set())
         if cacheDir is None:
-            cacheDir=CACHEDIR
+            cacheDir=DBDCache.CACHEDIR
         self.banned_missions=banned_missions
         self.missions=missions
         self.mission_list=[]
@@ -1226,7 +1259,7 @@ class MultiDBD(object):
 ##### public methods
     def get(self, *parameters, decimalLatLon=True, discardBadLatLon=True, return_nans=False, include_source=False,
             max_values_to_read=-1):
-        ''' Returns time and value tuple(s) for requested parameter(s)
+        '''Returns time and value tuple(s) for requested parameter(s)
 
         This method returns time and values tuples for a list of parameters.
 
@@ -1270,6 +1303,7 @@ class MultiDBD(object):
             for multiple parameters, including source file list, respectively.
 
         .. versionchanged:: 0.5.5 For a single parameter request, the number of values to be read can be limited.
+
         '''
         # It only makes sense to limit the number of parameters read when a single parameter is requested. Check for this.
         if max_values_to_read>0 and len(parameters)!=1:
@@ -1278,15 +1312,39 @@ class MultiDBD(object):
         eng_variables = []
         sci_variables = []
         positions = []
+        invalid_parameters = self._get_valid_parameters(parameters, invert=True, global_scope=True)
+        unavailable_parameters = self._get_valid_parameters(parameters, invert=True, global_scope=False)
+        # invalid parameters are parameters that don't exist in any cache file used by the opened files
+        # unavailable_parameters are parameters that are not stored in any of these files. They are marked F in the cache file.
+        
+        if invalid_parameters:
+            if len(invalid_parameters)==1:
+                mesg = f"Parameter {invalid_parameters[0]} is an unknown glider sensor name."
+            else:
+                mesg = f"Parameters {{{','.join(invalid_parameters)}}} are unknown glider sensor names."
+            raise DbdError(value=DBD_ERROR_NO_VALID_PARAMETERS, mesg=mesg, data=invalid_parameters)
+
+        # We don't want to trigger an abort if we ask for a parameter which has no data. Just return empty
+        # arrays. If not desired, uncomment block below:
+        #
+        # if unavailable_parameters:
+        #     if len(unavailable_parameters)==1:
+        #         mesg = f"Parameter {unavailable_parameters[0]} has no data."
+        #     else:
+        #         mesg = f"Parameters {{{','.join(unavailable_parameters)}}} hava no data."
+        #     raise DbdError(value=DBD_ERROR_NO_DATA, mesg=mesg, data=unavailable_parameters)
+
         for p in parameters:
             if p in self.parameterNames['sci']:
                 positions.append(("sci", len(sci_variables)))
                 sci_variables.append(p)
-            else:
+            elif p in self.parameterNames['eng']:
                 positions.append(("eng", len(eng_variables)))
                 eng_variables.append(p)
+
         kwds=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
-                  return_nans=return_nans, include_source=include_source, max_values_to_read=max_values_to_read)
+                  return_nans=return_nans, include_source=include_source,
+                  max_values_to_read=max_values_to_read)
 
         if len(sci_variables)>=1:
             r_sci = self._worker("get", "sci", *sci_variables, **kwds)
@@ -1298,11 +1356,27 @@ class MultiDBD(object):
                 r.append(r_sci[idx])
             else:
                 r.append(r_eng[idx])
+        for i,p in enumerate(parameters):
+            if p in unavailable_parameters:
+                r.insert(i, (numpy.array([]), numpy.array([])))
         if len(parameters)==1:
             return r[0]
         else:
             return r
 
+
+    def _get_valid_parameters(self,parameters, invert=False, global_scope=False):
+        parameters = set(parameters)
+        if global_scope:
+            p = self._parameter_names['globally']
+        else:
+            p = self._parameter_names['locally']
+        validParameters=p.intersection(parameters)
+        if invert:
+            validParameters=parameters.difference(p.intersection(parameters))
+        return list(validParameters)
+
+        
     def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True):
         ''' Returns values of parameter_x and paramter_y
 
@@ -1330,7 +1404,8 @@ class MultiDBD(object):
         (ndarray, ndarray)
             tuple of value vectors
         '''
-        _, x, y = self.get_sync(parameter_x, parameter_y, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+        _, x, y = self.get_sync(parameter_x, parameter_y, decimalLatLon=decimalLatLon,
+                                discardBadLatLon=discardBadLatLon)
         return x, y
 
     def get_sync(self,*parameters,decimalLatLon=True, discardBadLatLon=True):
@@ -1375,8 +1450,8 @@ class MultiDBD(object):
             # obsolete calling signature.
             logger.info("Calling signature of get_sync() has changed in version 0.4.0.")
             parameters = [parameters[0]] + parameters[1]
-
-        tv = self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon, return_nans=False)
+        tv = self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
+                      return_nans=False)
         t = tv[0][0]
         r = []
         for i, (_t, _v) in enumerate(tv):
@@ -1684,8 +1759,8 @@ class MultiDBD(object):
         ''' Internal. Sets global and selected time limits, and a cache with those files
             that matche the time selection criterion
         '''
-        self._ignore_cache=[]
-        self._accept_cache=[]
+        self._ignore_cache.clear()
+        self._accept_cache.clear()
         # min and max times of whole data set
         time_limits_dataset = [1e10, 0]
         # min and max times of selected data set (can be None)
@@ -1793,9 +1868,12 @@ class MultiDBD(object):
             if mission_name not in self.mission_list:
                 self.mission_list.append(mission_name)
             if self.isScienceDataFile(fn):
-                self.dbds['sci'].append(dbd)
+                ft = 'sci'
             else:
-                self.dbds['eng'].append(dbd)
+                ft = 'eng'
+            self.dbds[ft].append(dbd)
+            self._parameter_names['globally'].update(dbd.headerInfo['parameter_list'])
+            self._parameter_names['locally'].update(dbd.parameterNames)
 
         self.filenames=filenames
         # At this stage we may have zero or more files, and some could have been removed.
@@ -1840,7 +1918,6 @@ class MultiDBD(object):
         parameter_names.sort()
         return parameter_names
 
-
     def _worker(self,method,ft,*p,**kwds):
         try:
             include_source = kwds.pop("include_source")
@@ -1863,23 +1940,40 @@ class MultiDBD(object):
                 # as the file is probably (close to) empty
                 if e.value==DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO:
                     continue
+                elif e.value==DBD_ERROR_NO_VALID_PARAMETERS:
+                    logger.debug("get() call returned an error on invalid parameters.")
+                    # set1 is all known parameters:
+                    set1 = set([i for i in chain(*self.parameterNames.values())]) 
+                    set2 = set(e.data) # missing parmaeters
+                    if set2.intersection(set1) == set2:
+                        # all missing parameters in *this* file are
+                        # known from at least on other file read.
+                        if method!='get':
+                            raise NotImplementedError(f"Asking to use {method}. This should not happen...")
+                        kwds['check_for_invalid_parameters']=False
+                        logger.debug("calling get again without checking for invalid parameters")
+                        t, v = m[method](*p, **kwds)
+                    else:
+                        # at least one unknown parameter was aksed for. Reraise the error.    
+                        raise e
                 else:
                     # in all other cases reraise the error..
                     raise e
-            else:
-                for _p, _t, _v in zip(p, t, v):
-                    data[_p].append( (_t, _v) )
-                    if include_source:
-                        srcs[_p] += [i] * len(_t)
-                # Check if we request only a limited number of
-                # values. Note that the sanity check for not
-                # requesting more than one parameter is made in DBD's
-                # get() method.
+                
+            # add the data read to the data dictionary.    
+            for _p, _t, _v in zip(p, t, v):
+                data[_p].append( (_t, _v) )
+                if include_source:
+                    srcs[_p] += [i] * len(_t)
+            # Check if we request only a limited number of
+            # values. Note that the sanity check for not
+            # requesting more than one parameter is made in DBD's
+            # get() method.
+            if method=="get" and kwds["max_values_to_read"]>0:
                 time_values_read_sofar+=len(t[0])
-                if method=="get" and kwds["max_values_to_read"]>0:
-                    if time_values_read_sofar>=kwds["max_values_to_read"]:
-                        break
-
+                if time_values_read_sofar>=kwds["max_values_to_read"]:
+                    break
+                    
         if not all(data.values()):
             # nothing has been added, so all files should have returned nothing:
             raise(DbdError(DBD_ERROR_NO_VALID_PARAMETERS,
@@ -1890,3 +1984,6 @@ class MultiDBD(object):
             data_arrays = [((numpy.hstack([_d[0] for _d in data[_p]]), numpy.hstack([_d[1] for _d in data[_p]])), srcs[_p]) for _p in p]
         return data_arrays
 
+# Initialises the class
+DBDCache()
+    
