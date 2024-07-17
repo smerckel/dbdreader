@@ -1347,9 +1347,9 @@ class MultiDBD(object):
                   max_values_to_read=max_values_to_read)
 
         if len(sci_variables)>=1:
-            r_sci = self._worker("get", "sci", *sci_variables, **kwds)
+            r_sci = self._worker("sci", *sci_variables, **kwds)
         if len(eng_variables)>=1:
-            r_eng = self._worker("get", "eng", *eng_variables, **kwds)
+            r_eng = self._worker("eng", *eng_variables, **kwds)
         r = []
         for target, idx in positions:
             if target=='sci':
@@ -1918,7 +1918,7 @@ class MultiDBD(object):
         parameter_names.sort()
         return parameter_names
 
-    def _worker(self,method,ft,*p,**kwds):
+    def _worker(self, ft, *p, **kwds):
         try:
             include_source = kwds.pop("include_source")
         except KeyError:
@@ -1930,11 +1930,8 @@ class MultiDBD(object):
         for i in self.dbds[ft]:
             if i in self._ignore_cache:
                 continue
-            m = dict(get=i._get, get_sync=i.get_sync, get_xy=i.get_xy)
-            if method in "get_sync get_xy".split(): # these methods don't support the return nans option.
-                kwds.pop("return_nans")
             try:
-                t, v = m[method](*p, **kwds)
+                t, v = i._get(*p, **kwds)
             except DbdError as e:
                 # ignore only the no_data_to_interpolate_to error
                 # as the file is probably (close to) empty
@@ -1948,11 +1945,8 @@ class MultiDBD(object):
                     if set2.intersection(set1) == set2:
                         # all missing parameters in *this* file are
                         # known from at least on other file read.
-                        if method!='get':
-                            raise NotImplementedError(f"Asking to use {method}. This should not happen...")
                         kwds['check_for_invalid_parameters']=False
-                        logger.debug("calling get again without checking for invalid parameters")
-                        t, v = m[method](*p, **kwds)
+                        t, v = i._get(*p, **kwds)
                     else:
                         # at least one unknown parameter was aksed for. Reraise the error.    
                         raise e
@@ -1969,7 +1963,7 @@ class MultiDBD(object):
             # values. Note that the sanity check for not
             # requesting more than one parameter is made in DBD's
             # get() method.
-            if method=="get" and kwds["max_values_to_read"]>0:
+            if kwds["max_values_to_read"]>0:
                 time_values_read_sofar+=len(t[0])
                 if time_values_read_sofar>=kwds["max_values_to_read"]:
                     break
