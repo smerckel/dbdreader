@@ -255,6 +255,10 @@ def heading_interpolating_function_factory(t, v):
     v : array-like of float
         base value vector
 
+    Returns
+    -------
+        interpolating function of time
+
     '''
     x = numpy.cos(v)
     y = numpy.sin(v)
