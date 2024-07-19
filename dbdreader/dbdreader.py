@@ -1449,7 +1449,8 @@ class MultiDBD(object):
         return list(validParameters)
 
         
-    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True):
+    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True,
+               interpolating_function_factory=None):
         ''' Returns values of parameter_x and paramter_y
 
         For parameters parameter_x and parameter_y this method returns a tuple
@@ -1471,13 +1472,25 @@ class MultiDBD(object):
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
 
+        interpolating_function_factory : function factory, dictionary of function factories, None, optional
+            Specification of a function factory to interpolate data. A dictionary of interpolating_function_factories
+            allows the specification of specific functions for specific parameters. If none is defined, linear interpolation
+            is used.
+
+
         Returns
         -------
         (ndarray, ndarray)
             tuple of value vectors
+
+
+        .. versionadded:: 0.5.8
+           keyword option interpolating_function_factory
+     
+
         '''
         _, x, y = self.get_sync(parameter_x, parameter_y, decimalLatLon=decimalLatLon,
-                                discardBadLatLon=discardBadLatLon)
+                                discardBadLatLon=discardBadLatLon, interpolating_function_factory=interpolating_function_factory)
         return x, y
 
     def get_sync(self,*parameters,decimalLatLon=True, discardBadLatLon=True, interpolating_function_factory=None):
@@ -1505,6 +1518,7 @@ class MultiDBD(object):
             allows the specification of specific functions for specific parameters. If none is defined, linear interpolation
             is used.
 
+        
         Returns
         -------
         (ndarray, ndarray, ...)
@@ -1520,6 +1534,10 @@ class MultiDBD(object):
         .. versionchanged:: 0.4.0
             Calling signature has changed from the sync parameters
             passed on as a list, to passed on as parameters.
+
+        .. versionadded:: 0.5.8
+           keyword option interpolating_function_factory
+     
         '''
         if len(parameters)<2:
             raise ValueError('Expect at least two parameters.')
@@ -1540,16 +1558,20 @@ class MultiDBD(object):
                 r.append(_v)
             else:
                 # Create an interpolation function factory
-                logger.debug("Checking for ifun factory parameter {i}: {p}")
+                logger.debug(f"Checking for ifun factory parameter {i}: {p}")
                 if interpolating_function_factory is None:
                     ifun_factory = default_interpolating_function_factory
+                    logger.debug("using default")
                 else:
                     try:
                         ifun_factory = interpolating_function_factory[p]
+                        logger.debug(f"Using specific for parameter {p}")
                     except KeyError:
                         ifun_factory = default_interpolating_function_factory
+                        logger.debug(f"Using default")
                     except TypeError:
                         ifun_factory = interpolating_function_factory
+                        logger.debug(f"custom for all")
                 try:
                     ifun = ifun_factory(_t, _v)
                 except ValueError:
@@ -1561,7 +1583,8 @@ class MultiDBD(object):
 
 
 
-    def get_CTD_sync(self, *parameters, decimalLatLon=True, discardBadLatLon=True):
+    def get_CTD_sync(self, *parameters, decimalLatLon=True, discardBadLatLon=True,
+                     interpolating_function_factory=None):
         '''Returns a list of values from CTD and optionally other parameters,
         all interpolated to the time base of the CTD timestamp.
 
@@ -1577,6 +1600,12 @@ class MultiDBD(object):
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
 
+        interpolating_function_factory : function factory, dictionary of function factories, None, optional
+            Specification of a function factory to interpolate data. A dictionary of interpolating_function_factories
+            allows the specification of specific functions for specific parameters. If none is defined, linear interpolation
+            is used.
+
+
         Returns
         -------
         (ndarray, ndarray, ...)
@@ -1588,13 +1617,17 @@ class MultiDBD(object):
         -----
         .. versionadded:: 0.4.0
 
+        .. versionadded:: 0.5.8
+            keyword interpolating_function_factory
+
         '''
         CTD_type = self.determine_ctd_type()
         CTDparameters = [f"sci_{CTD_type}_timestamp", "sci_water_cond",
                          "sci_water_temp", "sci_water_pressure"]
         offset = len(CTDparameters) + 1 # because of m_present_time is
                                         # also returned.
-        tmp = self.get_sync(*CTDparameters, *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+        tmp = self.get_sync(*CTDparameters, *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
+                            interpolating_function_factory=interpolating_function_factory)
         # remove all time<=1 timestamps, as there can be nans here too.
         tmp = numpy.compress(tmp[1]>1, tmp, axis=1)
         condition = tmp[2]>0 # conductivity > 0

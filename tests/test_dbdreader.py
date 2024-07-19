@@ -36,13 +36,39 @@ def test_multidbd_get_sync_heading():
     assert np.isclose(x.mean(), 16.568510801834467)
 
 def test_multidbd_get_sync_specific_iff_handling():
-    ''' Test using interp1d and interpolate heading properly'''
+    ''' Test using interpolating function for specific parameter'''
     dbd = dbdreader.MultiDBD('../dbdreader/data/sebastian*.?bd')
     sensors=['sci_water_temp', 'sci_bb3slo_b470_scaled', 'm_heading']
     interpolating_function_factory = dict(m_heading=dbdreader.heading_interpolating_function_factory)
     t, x, y, z = dbd.get_sync(*sensors, interpolating_function_factory=interpolating_function_factory)
+    print(len(x))
     assert len(z.compress(np.logical_and(z>3, z<5)))==0 # there should be no values in this range
     assert np.isclose(x.mean(), 16.568510801834467)
     assert np.isclose(y.mean(), 0.0019145932901356323)
 
 
+def test_multidbd_get_xy_heading():
+    ''' Test whether custom interpolation works for get_xy() method.'''
+    dbd = dbdreader.MultiDBD('../dbdreader/data/sebastian*.?bd')
+    sensors=['sci_water_temp', 'm_heading']
+    x, y = dbd.get_xy(*sensors, interpolating_function_factory=dbdreader.heading_interpolating_function_factory)
+    assert len(y.compress(np.logical_and(y>3, y<5)))==0 # there should be no values in this range
+    assert np.isclose(x.mean(), 16.568510801834467)
+
+def test_multidbd_get_CTD_sync_heading_all_parameters():
+    ''' Test the implementation of a custom interpolation scheme for get_CTD, using heading interpolation for all parameters'''
+    dbd = dbdreader.MultiDBD('../dbdreader/data/sebastian*.?bd')
+    sensors=['m_heading']
+    tctd, C, T, D, y = dbd.get_CTD_sync(*sensors, interpolating_function_factory=dbdreader.heading_interpolating_function_factory)
+    assert len(y.compress(np.logical_and(y>3, y<5)))==0 # there should be no values in this range
+    assert np.all(T<2*np.pi) # all T values should be clipped below 2 pi.
+
+def test_multidbd_get_CTD_sync_heading():
+    ''' Test the implementation of a custom interpolation scheme for get_CTD, using heading interpolation for all parameters'''
+    dbd = dbdreader.MultiDBD('../dbdreader/data/sebastian*.?bd')
+    sensors=['m_heading']
+    iff_dict = dict(m_heading=dbdreader.heading_interpolating_function_factory)
+    tctd, C, T, D, y = dbd.get_CTD_sync(*sensors, interpolating_function_factory=iff_dict)
+    assert len(y.compress(np.logical_and(y>3, y<5)))==0 # there should be no values in this range
+    assert np.isclose(T.mean(), 16.572957188641585) # this is slightly different from other tests, because some values are dropped in get_CTD_sync.
+        
