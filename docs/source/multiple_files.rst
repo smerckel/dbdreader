@@ -15,6 +15,7 @@ keyword to the constructor. See also :ref:`Class DBD : reading single files`.
 .. autoclass:: dbdreader.MultiDBD
    :members:
 
+      
 MultiDBD Example
 ================
 ::
@@ -114,3 +115,69 @@ MultiDBD Example
         for i,n in enumerate(selection):
             if n.endswith("sbd"):
                 print("%d: %s"%(int(i/2),n))
+
+		
+Custom interpolating function factories
+=======================================
+The methods :func:`dbdreader.MultiDBD.get_sync`,
+:func:`dbdreader.MultiDBD.get_CTD_sync` and
+:func:`dbdreader.MultiDBD.get_xy`
+apply an interpolation algorithm to the second and any following
+parameter requrested. The keyword `interpolating_function_factor` can
+be used to specify the interpolating function to be used for this. If
+the keyword is not set (default value `None`), then
+:func:`numpy.interp` is used with keywords `left=numpy.nan` and
+`right=numpy.nan`.
+
+For a parameter such as `m_heading` this is not entirely correct when
+the glider changes course passing the direction North. For this
+purpose an adapted interpolation function can be used :func:`dbdreader.heading_interpolating_function_factory`, which
+interpolates according this algorithm:
+
+::
+   
+  input ti, t and v
+  
+  x = cos(v)
+  y = sin(v)
+  xi = interp(ti, t, x)
+  yi = interp(ti, t, y)
+  vi = numpy.arctan2(yi, xi)
+
+The actual implementation looks like:
+
+::
+
+   def heading_interpolating_function_factory(t, v):
+    '''Interpolating function factory for heading
+
+    This function returns a function that is to be called with one
+    argument, time, (float or array of floats) and returns the
+    interpolated heading, taking into account proper cross-overs from
+    0 to 2π.
+
+    Parameters
+    ----------
+    t : array-like of float
+        base time vector
+    v : array-like of float
+        base value vector
+
+    Returns
+    -------
+        interpolating function of time
+
+    '''
+    x = numpy.cos(v)
+    y = numpy.sin(v)
+    xi = partial(numpy.interp, xp=t, fp=x, left=numpy.nan, right=numpy.nan)
+    yi = partial(numpy.interp, xp=t, fp=y, left=numpy.nan, right=numpy.nan)
+    return  lambda _t: numpy.arctan2(yi(_t), xi(_t))%(2*numpy.pi)
+
+
+This implementation can be used as a template for user interpolating
+schemes. The implementation might appear unnecessarily complicated. It
+is important to notice that the function does *do* the interpolation,
+but it is an interpolation function factory, that is, it creates a
+function that can perform the interpolation. The reason for this is
+that the function can only be created from the moment the input data are know. 
