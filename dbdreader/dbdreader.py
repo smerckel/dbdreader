@@ -1,9 +1,11 @@
+from functools import partial
 from itertools import chain
 import warnings
 import os
 import struct
 import time
 import numpy
+from scipy.interpolate import interp1d as si_interp1d
 import glob
 import sys
 import re
@@ -238,8 +240,70 @@ class DBD:
 
 '''
 
+def heading_interpolating_function_factory(t, v):
+    '''Interpolating function factory for heading
+
+    This function returns a function that is to be called with one
+    argument, time, (float or array of floats) and returns the
+    interpolated heading, taking into account proper cross-overs from
+    0 to 2π.
+
+    Parameters
+    ----------
+    t : array-like of float
+        base time vector
+    v : array-like of float
+        base value vector
+
+    Returns
+    -------
+        interpolating function of time
+
+    '''
+    x = numpy.cos(v)
+    y = numpy.sin(v)
+    xi = partial(numpy.interp, xp=t, fp=x, left=numpy.nan, right=numpy.nan)
+    yi = partial(numpy.interp, xp=t, fp=y, left=numpy.nan, right=numpy.nan)
+    return  lambda _t: numpy.arctan2(yi(_t), xi(_t))%(2*numpy.pi)
+        
+
+
 class DBDCache(object):
 
+    '''DBDCache manager
+
+    This class provides a convenient way to set the default path to the cache file
+    directory. 
+
+    On linux   : $HOME/.local/share/dbdreader
+    On windows : $HOME/.dbdreader
+
+    The class method set_cachedir() can be used to change the path during the script.
+
+    The purpose is to remove the need to specify a non-default path
+    for every DBD or MultiDBD object construction.
+
+    Examples
+    --------
+
+    >>> DBDCache() # sets default. This is typically called at the end of the dbdreader module file.
+
+    >>> DBDCache.set_cachedir("/tmp") # overrides the default.
+
+    Note
+    ----
+
+    DBDCache can be called with an argument, and it sets the default
+    path to this string. The difference between DBDCache("/tmp") and
+    DBDCache.set_cachedir("/tmp") is that when set_cachedir() is
+    called and the target directory does not exist, an error is
+    raised, whereas a call using the class constructor will create the
+    directory if necessary.
+
+    '''
+
+    
+    
     CACHEDIR = None
 
     def __init__(self, cachedir=None):
@@ -258,6 +322,17 @@ class DBDCache(object):
             
     @classmethod
     def set_cachedir(cls, path, force_makedirs=False):
+        '''Set the cache directory path
+
+        Parameters
+        ----------
+        path : string
+            path to cache directory
+
+        force_makedirs : bool
+            if True, forces the creation of subdirectories if needed.
+            if False, an Exception will be thrown if the directory does not exist.
+        '''
         if not os.path.exists(path):
             if force_makedirs:
                 os.makedirs(path)
@@ -270,6 +345,7 @@ class DBDCache(object):
 
 
 class DBDList(list):
+
     ''' List that properly sorts dbd files.
 
     Object subclassed from list. The sort method defaults to sorting dbd
@@ -1347,9 +1423,9 @@ class MultiDBD(object):
                   max_values_to_read=max_values_to_read)
 
         if len(sci_variables)>=1:
-            r_sci = self._worker("get", "sci", *sci_variables, **kwds)
+            r_sci = self._worker("sci", *sci_variables, **kwds)
         if len(eng_variables)>=1:
-            r_eng = self._worker("get", "eng", *eng_variables, **kwds)
+            r_eng = self._worker("eng", *eng_variables, **kwds)
         r = []
         for target, idx in positions:
             if target=='sci':
@@ -1377,7 +1453,8 @@ class MultiDBD(object):
         return list(validParameters)
 
         
-    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True):
+    def get_xy(self,parameter_x,parameter_y,decimalLatLon=True, discardBadLatLon=True,
+               interpolating_function_factory=None):
         ''' Returns values of parameter_x and paramter_y
 
         For parameters parameter_x and parameter_y this method returns a tuple
@@ -1399,16 +1476,28 @@ class MultiDBD(object):
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
 
+        interpolating_function_factory : function factory, dictionary of function factories, None, optional
+            Specification of a function factory to interpolate data. A dictionary of interpolating_function_factories
+            allows the specification of specific functions for specific parameters. If none is defined, linear interpolation
+            is used.
+
+
         Returns
         -------
         (ndarray, ndarray)
             tuple of value vectors
+
+
+        .. versionadded:: 0.5.8
+           keyword option interpolating_function_factory
+     
+
         '''
         _, x, y = self.get_sync(parameter_x, parameter_y, decimalLatLon=decimalLatLon,
-                                discardBadLatLon=discardBadLatLon)
+                                discardBadLatLon=discardBadLatLon, interpolating_function_factory=interpolating_function_factory)
         return x, y
 
-    def get_sync(self,*parameters,decimalLatLon=True, discardBadLatLon=True):
+    def get_sync(self,*parameters,decimalLatLon=True, discardBadLatLon=True, interpolating_function_factory=None):
         ''' Returns a list of values from parameters, all interpolated to the
             time base of the first paremeter
 
@@ -1428,6 +1517,12 @@ class MultiDBD(object):
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
 
+        interpolating_function_factory : function factory, dictionary of function factories, None, optional
+            Specification of a function factory to interpolate data. A dictionary of interpolating_function_factories
+            allows the specification of specific functions for specific parameters. If none is defined, linear interpolation
+            is used.
+
+        
         Returns
         -------
         (ndarray, ndarray, ...)
@@ -1443,6 +1538,10 @@ class MultiDBD(object):
         .. versionchanged:: 0.4.0
             Calling signature has changed from the sync parameters
             passed on as a list, to passed on as parameters.
+
+        .. versionadded:: 0.5.8
+           keyword option interpolating_function_factory
+     
         '''
         if len(parameters)<2:
             raise ValueError('Expect at least two parameters.')
@@ -1452,23 +1551,44 @@ class MultiDBD(object):
             parameters = [parameters[0]] + parameters[1]
         tv = self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
                       return_nans=False)
+        
+        default_interpolating_function_factory = partial(si_interp1d, bounds_error=False, fill_value=numpy.nan)
+        
         t = tv[0][0]
         r = []
-        for i, (_t, _v) in enumerate(tv):
+        for i, (p,(_t, _v)) in enumerate(zip(parameters, tv)):
             if i==0:
                 r.append(_t)
                 r.append(_v)
             else:
+                # Create an interpolation function factory
+                logger.debug(f"Checking for ifun factory parameter {i}: {p}")
+                if interpolating_function_factory is None:
+                    ifun_factory = default_interpolating_function_factory
+                    logger.debug("using default")
+                else:
+                    try:
+                        ifun_factory = interpolating_function_factory[p]
+                        logger.debug(f"Using specific for parameter {p}")
+                    except KeyError:
+                        ifun_factory = default_interpolating_function_factory
+                        logger.debug(f"Using default")
+                    except TypeError:
+                        ifun_factory = interpolating_function_factory
+                        logger.debug(f"custom for all")
                 try:
-                    r.append(numpy.interp(t, _t, _v, left=numpy.nan, right=numpy.nan))
+                    ifun = ifun_factory(_t, _v)
                 except ValueError:
                     r.append(t * numpy.nan)
                     logger.info(f"No valid data to interpolate for '{parameters[i]}'.")
+                else:
+                    r.append(ifun(t))
         return tuple(r)
 
 
 
-    def get_CTD_sync(self, *parameters, decimalLatLon=True, discardBadLatLon=True):
+    def get_CTD_sync(self, *parameters, decimalLatLon=True, discardBadLatLon=True,
+                     interpolating_function_factory=None):
         '''Returns a list of values from CTD and optionally other parameters,
         all interpolated to the time base of the CTD timestamp.
 
@@ -1484,6 +1604,12 @@ class MultiDBD(object):
         discardBadLatLon : bool, optional
             If True (default), bogus latitiude and longitude values are ignored.
 
+        interpolating_function_factory : function factory, dictionary of function factories, None, optional
+            Specification of a function factory to interpolate data. A dictionary of interpolating_function_factories
+            allows the specification of specific functions for specific parameters. If none is defined, linear interpolation
+            is used.
+
+
         Returns
         -------
         (ndarray, ndarray, ...)
@@ -1495,13 +1621,17 @@ class MultiDBD(object):
         -----
         .. versionadded:: 0.4.0
 
+        .. versionadded:: 0.5.8
+            keyword interpolating_function_factory
+
         '''
         CTD_type = self.determine_ctd_type()
         CTDparameters = [f"sci_{CTD_type}_timestamp", "sci_water_cond",
                          "sci_water_temp", "sci_water_pressure"]
         offset = len(CTDparameters) + 1 # because of m_present_time is
                                         # also returned.
-        tmp = self.get_sync(*CTDparameters, *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon)
+        tmp = self.get_sync(*CTDparameters, *parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
+                            interpolating_function_factory=interpolating_function_factory)
         # remove all time<=1 timestamps, as there can be nans here too.
         tmp = numpy.compress(tmp[1]>1, tmp, axis=1)
         condition = tmp[2]>0 # conductivity > 0
@@ -1918,7 +2048,7 @@ class MultiDBD(object):
         parameter_names.sort()
         return parameter_names
 
-    def _worker(self,method,ft,*p,**kwds):
+    def _worker(self, ft, *p, **kwds):
         try:
             include_source = kwds.pop("include_source")
         except KeyError:
@@ -1930,11 +2060,8 @@ class MultiDBD(object):
         for i in self.dbds[ft]:
             if i in self._ignore_cache:
                 continue
-            m = dict(get=i._get, get_sync=i.get_sync, get_xy=i.get_xy)
-            if method in "get_sync get_xy".split(): # these methods don't support the return nans option.
-                kwds.pop("return_nans")
             try:
-                t, v = m[method](*p, **kwds)
+                t, v = i._get(*p, **kwds)
             except DbdError as e:
                 # ignore only the no_data_to_interpolate_to error
                 # as the file is probably (close to) empty
@@ -1948,11 +2075,8 @@ class MultiDBD(object):
                     if set2.intersection(set1) == set2:
                         # all missing parameters in *this* file are
                         # known from at least on other file read.
-                        if method!='get':
-                            raise NotImplementedError(f"Asking to use {method}. This should not happen...")
                         kwds['check_for_invalid_parameters']=False
-                        logger.debug("calling get again without checking for invalid parameters")
-                        t, v = m[method](*p, **kwds)
+                        t, v = i._get(*p, **kwds)
                     else:
                         # at least one unknown parameter was aksed for. Reraise the error.    
                         raise e
@@ -1969,7 +2093,7 @@ class MultiDBD(object):
             # values. Note that the sanity check for not
             # requesting more than one parameter is made in DBD's
             # get() method.
-            if method=="get" and kwds["max_values_to_read"]>0:
+            if kwds["max_values_to_read"]>0:
                 time_values_read_sofar+=len(t[0])
                 if time_values_read_sofar>=kwds["max_values_to_read"]:
                     break

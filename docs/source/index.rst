@@ -15,6 +15,7 @@ Contents:
    single_file
    multiple_files
    ctd
+   interpolating_function_factory
    selecting_files
    selecting_timerange
    modules

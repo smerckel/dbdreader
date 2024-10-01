@@ -15,6 +15,7 @@ keyword to the constructor. See also :ref:`Class DBD : reading single files`.
 .. autoclass:: dbdreader.MultiDBD
    :members:
 
+      
 MultiDBD Example
 ================
 ::
@@ -114,3 +115,5 @@ MultiDBD Example
         for i,n in enumerate(selection):
             if n.endswith("sbd"):
                 print("%d: %s"%(int(i/2),n))
+
+		
