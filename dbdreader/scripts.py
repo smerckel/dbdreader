@@ -48,9 +48,9 @@ def _get_short_and_long_filenames(lines, filename):
     if ID=='dbd_label:    DBD(dinkum_binary_data)file':
         shortfilename=lines[4]
         longfilename=lines[5]
-        shortfilename=re.sub("^.* ","",shortfilename)
-        longfilename=re.sub("^.* ","",longfilename)
-        extension=re.sub("^.*\.","",filename)
+        shortfilename=re.sub(r"^.* ","",shortfilename)
+        longfilename=re.sub(r"^.* ","",longfilename)
+        extension=re.sub(r"^.*\.","",filename)
         shortfilename+="."+extension
         longfilename+="."+extension
     elif "the8x3_filename" in ID: # mlg file apparently...
@@ -59,9 +59,9 @@ def _get_short_and_long_filenames(lines, filename):
             extension='.mlg'
         else:
             extension='.nlg'
-        shortfilename=re.sub("^the8x3_filename: +","",ID+extension)
+        shortfilename=re.sub(r"^the8x3_filename: +","",ID+extension)
 
-        longfilename=re.sub("^full_filename: +","",longfilename)+extension
+        longfilename=re.sub(r"^full_filename: +","",longfilename)+extension
     else:
         sys.stderr.write("Ignoring %s\n"%(filename))
         ignoreIt=True
@@ -91,7 +91,8 @@ def dbdrename():
 
 
     args = parser.parse_args()
-
+    print(args)
+    
     # override the default value of -s if -d is specified
     if args.doNotChangeNameFormat:
         args.s=False
