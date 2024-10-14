@@ -1,6 +1,5 @@
 from functools import partial
 from itertools import chain
-import warnings
 import os
 import struct
 import time
@@ -58,7 +57,6 @@ LATLON_PARAMS = ["m_lat",
                  "s_ini_lon"]
 
 
-
 def strptimeToEpoch(datestr, fmt):
     ''' Converts datestr into seconds
 
@@ -80,11 +78,11 @@ def strptimeToEpoch(datestr, fmt):
     int
         time since epoch in seconds
     '''
-    ts = time.strptime(datestr , fmt)
+    ts = time.strptime(datestr, fmt)
     return timegm(ts)
 
 
-def epochToDateTimeStr(seconds,dateformat="%Y%m%d",timeformat="%H:%M"):
+def epochToDateTimeStr(seconds, dateformat="%Y%m%d", timeformat="%H:%M"):
     ''' Converts seconds since Epoch to date string
 
     This function converts seconds since Epoch to a datestr and timestr
@@ -104,22 +102,23 @@ def epochToDateTimeStr(seconds,dateformat="%Y%m%d",timeformat="%H:%M"):
     (str, str)
          datestring and timestring
     '''
-    d=datetime.datetime.utcfromtimestamp(seconds)
-    datestr=d.strftime(dateformat)
-    timestr=d.strftime(timeformat)
-    return datestr,timestr
+    d = datetime.datetime.utcfromtimestamp(seconds)
+    datestr = d.strftime(dateformat)
+    timestr = d.strftime(timeformat)
+    return datestr, timestr
 
 
 def _convertToDecimal(x):
     ''' Converts a latitiude or longitude in NMEA format to decimale degrees'''
-    sign=numpy.sign(x)
-    xAbs=numpy.abs(x)
-    degrees=numpy.floor(xAbs/100.)
-    minutes=xAbs-degrees*100
-    decimalFormat=degrees+minutes/60.
+    sign = numpy.sign(x)
+    xAbs = numpy.abs(x)
+    degrees = numpy.floor(xAbs/100.)
+    minutes = xAbs-degrees*100
+    decimalFormat = degrees+minutes/60.
     return decimalFormat*sign
 
-def toDec(x,y=None):
+
+def toDec(x, y=None):
     ''' NMEA style to decimal degree converter
 
     Parameters
@@ -134,69 +133,70 @@ def toDec(x,y=None):
     float or tuple of floats
          decimal latitude (longitude) or tuple of decimal latitude and longitude
     '''
-    if not y==None:
-        X=_convertToDecimal(x)
-        Y=_convertToDecimal(y)
-        return X,Y
+    if not y == None:
+        X = _convertToDecimal(x)
+        Y = _convertToDecimal(y)
+        return X, Y
     return _convertToDecimal(x)
 
 
 # required (and only tested) encoding version.
-ENCODING_VER=5
+ENCODING_VER = 5
 
 
-DBD_ERROR_CACHE_NOT_FOUND=1
-DBD_ERROR_NO_VALID_PARAMETERS=2
-DBD_ERROR_NO_TIME_VARIABLE=3
-DBD_ERROR_NO_FILE_CRITERIUM_SPECIFIED=4
-DBD_ERROR_NO_FILES_FOUND=5
-DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO=6
-DBD_ERROR_CACHEDIR_NOT_FOUND=7
-DBD_ERROR_ALL_FILES_BANNED=8
+DBD_ERROR_CACHE_NOT_FOUND = 1
+DBD_ERROR_NO_VALID_PARAMETERS = 2
+DBD_ERROR_NO_TIME_VARIABLE = 3
+DBD_ERROR_NO_FILE_CRITERIUM_SPECIFIED = 4
+DBD_ERROR_NO_FILES_FOUND = 5
+DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO = 6
+DBD_ERROR_CACHEDIR_NOT_FOUND = 7
+DBD_ERROR_ALL_FILES_BANNED = 8
 DBD_ERROR_INVALID_DBD_FILE = 9
 DBD_ERROR_INVALID_ENCODING = 10
 DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED = 11
-DBD_ERROR_NO_DATA_TO_INTERPOLATE=12
-DBD_ERROR_NO_DATA=13
+DBD_ERROR_NO_DATA_TO_INTERPOLATE = 12
+DBD_ERROR_NO_DATA = 13
 
 
 class DbdError(Exception):
-    MissingCacheFileData = namedtuple('MissingCacheFileData', 'missing_cache_files cache_dir')
+    MissingCacheFileData = namedtuple('MissingCacheFileData',
+                                      'missing_cache_files cache_dir')
 
-    def __init__(self,value=9,mesg=None,data=None):
-        self.value=value
-        self.mesg=mesg
-        self.data=data
+    def __init__(self, value=9, mesg=None, data=None):
+        self.value = value
+        self.mesg = mesg
+        self.data = data
 
     def __str__(self):
-        if self.value==DBD_ERROR_NO_VALID_PARAMETERS:
-            mesg='The requested parameter(s) was(were) not found.'
-        elif self.value==DBD_ERROR_NO_TIME_VARIABLE:
-            mesg='The time variable was not found.'
-        elif self.value==DBD_ERROR_CACHE_NOT_FOUND:
-            mesg='Cache file was not found.'
-        elif self.value==DBD_ERROR_NO_FILE_CRITERIUM_SPECIFIED:
-            mesg='No file specification supplied (list of filenames or pattern)'
-        elif self.value==DBD_ERROR_NO_FILES_FOUND:
-            mesg='No files were found.'
-        elif self.value==DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO:
-            mesg='No data to interpolate to.'
-        elif self.value==DBD_ERROR_CACHEDIR_NOT_FOUND:
-            mesg='Cache file directory does not exist.'
-        elif self.value==DBD_ERROR_ALL_FILES_BANNED:
-            mesg='All data files were banned.'
-        elif self.value==DBD_ERROR_INVALID_DBD_FILE:
-            mesg='Invalid DBD file.'
-        elif self.value==DBD_ERROR_INVALID_ENCODING:
-            mesg='Invalid encoding version encountered.'
-        elif self.value==DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED:
-            mesg='Invalid or conflicting file selection criterion/criteria specified.'
-        elif self.value==DBD_ERROR_NO_DATA_TO_INTERPOLATE:
-            mesg='One or more parameters that are to be interpolated, does/do not have any data.'
-        elif self.value==DBD_ERROR_NO_DATA:
-            mesg='One or more parameters do not have any data.'
+        if self.value == DBD_ERROR_NO_VALID_PARAMETERS:
+            mesg = 'The requested parameter(s) was(were) not found.'
+        elif self.value == DBD_ERROR_NO_TIME_VARIABLE:
+            mesg = 'The time variable was not found.'
+        elif self.value == DBD_ERROR_CACHE_NOT_FOUND:
+            mesg = 'Cache file was not found.'
+        elif self.value == DBD_ERROR_NO_FILE_CRITERIUM_SPECIFIED:
+            mesg = 'No file specification supplied (list of filenames or pattern)'
+        elif self.value == DBD_ERROR_NO_FILES_FOUND:
+            mesg = 'No files were found.'
+        elif self.value == DBD_ERROR_NO_DATA_TO_INTERPOLATE_TO:
+            mesg = 'No data to interpolate to.'
+        elif self.value == DBD_ERROR_CACHEDIR_NOT_FOUND:
+            mesg = 'Cache file directory does not exist.'
+        elif self.value == DBD_ERROR_ALL_FILES_BANNED:
+            mesg = 'All data files were banned.'
+        elif self.value == DBD_ERROR_INVALID_DBD_FILE:
+            mesg = 'Invalid DBD file.'
+        elif self.value == DBD_ERROR_INVALID_ENCODING:
+            mesg = 'Invalid encoding version encountered.'
+        elif self.value == DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED:
+            mesg = 'Invalid or conflicting file selection criterion/criteria specified.'
+        elif self.value == DBD_ERROR_NO_DATA_TO_INTERPOLATE:
+            mesg = 'One or more parameters that are to be interpolated, does/do not have any data.'
+        elif self.value == DBD_ERROR_NO_DATA:
+            mesg = 'One or more parameters do not have any data.'
         else:
-            mesg=f'Undefined error. ({self.value})'
+            mesg = f'Undefined error. ({self.value})'
         if self.mesg:
             mesg = " ".join((mesg, self.mesg))
         return mesg
@@ -264,8 +264,7 @@ def heading_interpolating_function_factory(t, v):
     y = numpy.sin(v)
     xi = partial(numpy.interp, xp=t, fp=x, left=numpy.nan, right=numpy.nan)
     yi = partial(numpy.interp, xp=t, fp=y, left=numpy.nan, right=numpy.nan)
-    return  lambda _t: numpy.arctan2(yi(_t), xi(_t))%(2*numpy.pi)
-        
+    return lambda _t: numpy.arctan2(yi(_t), xi(_t)) % (2*numpy.pi)
 
 
 class DBDCache(object):
@@ -273,7 +272,7 @@ class DBDCache(object):
     '''DBDCache manager
 
     This class provides a convenient way to set the default path to the cache file
-    directory. 
+    directory.
 
     On linux   : $HOME/.local/share/dbdreader
     On windows : $HOME/.dbdreader
@@ -301,25 +300,23 @@ class DBDCache(object):
     directory if necessary.
 
     '''
-
-    
-    
     CACHEDIR = None
 
     def __init__(self, cachedir=None):
         if cachedir is None:
-            if  DBDCache.CACHEDIR is None:
-                HOME = os.path.expanduser("~") # <- multiplatform proof
-                if sys.platform=='linux':
-                    cachedir=os.path.join(HOME,'.local/share/dbdreader')
+            if DBDCache.CACHEDIR is None:
+                HOME = os.path.expanduser("~")  # <- multiplatform proof
+                if sys.platform == 'linux':
+                    cachedir = os.path.join(HOME, '.local/share/dbdreader')
                 else:
-                    cachedir=os.path.join(HOME,'.dbdreader')
+                    cachedir = os.path.join(HOME, '.dbdreader')
                 DBDCache.set_cachedir(cachedir, force_makedirs=True)
             # else default value is set and used.
         else:
             # user path set. Let it fail if it does not exists.
             DBDCache.set_cachedir(cachedir, force_makedirs=False)
-            
+
+
     @classmethod
     def set_cachedir(cls, path, force_makedirs=False):
         '''Set the cache directory path
@@ -363,7 +360,7 @@ class DBDList(list):
 
     def _keyFilename(self, key):
         match = DBDList.REGEX.search(key)
-        if match and len(match.group())>=13: # minimal format: -xxxx-x-x.yyy
+        if match and len(match.group())>=15: # minimal format: -xxxx-x-x-x.yyy
             s, extension = os.path.splitext(match.group())
             number_fields = s.split("-")
             n=sum([int(i)*10**j for i,j in zip(number_fields[1:],[8,5,3,0])]) # first field is '', so skip over
