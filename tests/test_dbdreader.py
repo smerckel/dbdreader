@@ -110,6 +110,7 @@ def test_non_standard_cache_dir_generate_cachefile():
     depth = dbd.get("m_depth")
     assert len(depth) == 2
 
+    
 def test_G3S_data_file():
     #  Reading a G3S data file for which the byte order needs to be swapped
     dbd = dbdreader.DBD("dbdreader/data/unit_887-2021-321-3-0.sbd",
@@ -117,20 +118,21 @@ def test_G3S_data_file():
     tm, depth = dbd.get("m_depth")
     assert np.allclose(depth.max(), 34.45457458496094)
 
-  
+
 def test_missing_cache_file():
     #  Throw an error when cache file is missing...
     with pytest.raises(dbdreader.DbdError) as e:
         dbd = dbdreader.DBD("dbdreader/data/hal_1002-2024-183-4-4.sbd")
-    assert e.value.value == dbdreader.DBD_ERROR_CACHE_NOT_FOUND
-  
+    assert e.value.value == dbdreader.DBD_ERROR_CACHE_NOT_FOUND  
+
 
 def test_donottest_non_standard_cache_dir_fail():
     #  non_standard_cache_dir_fail
     kwds = dict(cacheDir='dbdreader/data/not_there')
-    with pytest.raises(dbdreader.DbdError) as e:
+    with pytest.raises(dbdreader.DbdError):
         dbd = dbdreader.DBD("dbdreader/data/amadeus-2014-204-05-000.sbd",
                             **kwds)
+
 
 def test_missing_cache_file_data_feature():
     # Throw an error when cache file is missing, and check who is missing.
@@ -186,140 +188,153 @@ def test_get_reading_limited_values():
     dbd = dbdreader.DBD("dbdreader/data/sebastian-2014-204-05-001.dbd")
     t0, v0 = dbd.get("m_depth", max_values_to_read=10)
     assert len(t0) == len(v0) and len(t0) == 10
-   
+  
 
 def test_get_reading_limited_values_requesting_multiple_parameters():
-    # Test whether reading a limited number of values from multiple values fails.
+    # Test whether reading a limited number of values from multiple
+    # values fails.
     with pytest.raises(ValueError):
         fn = "dbdreader/data/sebastian-2014-204-05-001.dbd"
         dbd = dbdreader.DBD(fn)
-        result = dbd.get("m_depth", "m_pitch", max_values_to_read=10)
+        dbd.get("m_depth", "m_pitch", max_values_to_read=10)
+
+        
+@pytest.fixture
+def multiSBDData(scope='class'):
+    pattern = "dbdreader/data/amadeus-2014-*.[st]bd"
+    dbd = dbdreader.MultiDBD(pattern)
+    return dbd
 
 
-
+@pytest.fixture
+def multiDBDData(scope='class'):
+    dbdreader.DBDCache.set_cachedir('dbdreader/data/cac')
+    pattern = "dbdreader/data/amadeus-2014-*.[de]bd"
+    dbd = dbdreader.MultiDBD(pattern)
+    return dbd
 
 
 class TestMultiDBD():
-
-    def __init__(self):
-        self.pattern="dbdreader/data/amadeus-2014-*.[st]bd"
-
-    # def test_open(self):
-    #     print("Open")
-    #     v=self.get_method("get",self.pattern,"m_depth",[])
-    #     self.assertTrue(len(v)==2 and len(v[0])>0)
+    pattern = "dbdreader/data/amadeus-2014-*.[st]bd"
     
-    # def test_get_non_existing_variable(self):
-    #     print("get_non_existing_variable")
-    #     v = self.get_method("get",self.pattern,"m_water_pressure",[])
-    #     condition = len(v)==2 and len(v[1])==0 and len(v[0])==0
-    #     self.assertTrue(condition)
-
-    # def test_get_sync_non_invalid_variable(self):
-    #     print("get_sync_non_invalid_variable")
-    #     with self.assertRaises(dbdreader.DbdError) as e:
-    #         v = self.get_method("sync",
-    #                             self.pattern,
-    #                             "m_depth",['m_lat','M_LON'])
-    #     # We expect an exception when an non-existing parameter is being requested.
-    #     self.assertTrue(e.exception.value==dbdreader.DBD_ERROR_NO_VALID_PARAMETERS)
-
-
-    # def test_get_sync_non_existing_variable(self):
-    #     print("get_sync_non_existing_variable")
-    #     v = self.get_method("sync",
-    #                         self.pattern,
-    #                         "m_depth",['m_lat','m_water_pressure'])
-
-    #     condition = len(v)==4 and len(v[2]==v[3]) and np.all(np.isnan(v[3]))
-    #     self.assertTrue(condition)
-
-        
-    # def test_get_sync(self):
-    #     print("get_sync")
-    #     dbd=dbdreader.MultiDBD(pattern=self.pattern)
-    #     t, d, lat, lon = dbd.get_sync("m_depth",'m_lat','m_lon')
-
-
-    # def test_get_sync_mixed_eng_sci_parameters(self):
-    #     print("get_sync_obselete")
-    #     self.get_method("sync",
-    #                     self.pattern,
-    #                     "m_depth",['sci_water_pressure','m_lon'])
-
-    # def test_get_xy(self):
-    #     print("get_xy")
-    #     self.get_method("xy",
-    #                     self.pattern,
-    #                     'm_lat','m_lon')
-        
-    # # def test_get_list(self):
-    # #     self.get_method("list",
-    # #                     self.pattern,
-    # #                     None,['m_lat','m_lon'])
-        
-    # def test_time_limits(self):
-    #     print("time_limits")
-    #     dbd=dbdreader.MultiDBD(pattern=self.pattern)
-    #     v0=dbd.get("m_depth")
-    #     t=dbd.get_global_time_range()
-    #     t1=dbd.get_time_range()
-    #     dbd.set_time_limits(minTimeUTC='24 Jul 2014 18:00')
-    #     v1=dbd.get("m_depth")
-    #     t2=dbd.get_time_range()
-    #     self.assertEqual(t,['24 Jul 2014 17:02', '24 Jul 2014 18:20'])
-    #     self.assertEqual(t,t1)
-    #     self.assertEqual(t2[0],'24 Jul 2014 18:00')
-    #     self.assertLess(len(v1[0]),len(v0[0]))
-
-    # def test_non_standard_cache_dir(self):
-    #     print("non_standard_cache_dir")
-    #     dbd=dbdreader.MultiDBD(pattern = self.pattern, cacheDir='dbdreader/data/cac')
-    #     depth = dbd.get("m_depth")
-    #     self.assertEqual(len(depth), 2)
-
-    # def test_donottest_non_standard_cache_dir_fail(self):
-    #     kwds = dict(pattern=self.pattern, cacheDir='dbdreader/data/not_there')
-    #     self.assertRaises(dbdreader.DbdError, dbdreader.MultiDBD, **kwds)
-
-    # def test_get_ctd_sync(self):
-    #     print("get_ctd_sync")
-    #     pattern="dbdreader/data/amadeus-2014-*.[de]bd"
-    #     dbd=dbdreader.MultiDBD(pattern = pattern, cacheDir='dbdreader/data/cac')
-    #     tctd, C, T, P, depth = dbd.get_CTD_sync("m_depth")
-
-    # def test_get_ctd_sync_rbrCTD(self):
-    #     print("get_ctd_sync for RBR CTDs")
-    #     pattern="dbdreader/data/electa-2023-143-00-050.[st]bd"
-    #     dbd=dbdreader.MultiDBD(pattern = pattern, cacheDir='dbdreader/data/cac')
-    #     tctd, C, T, P, pressure = dbd.get_CTD_sync("m_pressure")
-
-        
-    # def test_missing_cache_files(self):
-    #     print("Throw an error when cache file is missing...")
-    #     # read in a sbd and tbd file. Only the sbd's cac file is in cac_missing.
-    #     with self.assertRaises(dbdreader.DbdError) as e:
-    #         dbd = dbdreader.MultiDBD(pattern="dbdreader/data/unit_887-2021-321-3-0.?bd",
-    #                                  cacheDir='dbdreader/data/cac_missing')
+    def test_open(self, multiSBDData):
+        dbd = multiSBDData
+        v = dbd.get("m_depth")
+        assert len(v) == 2 and len(v[0] > 0)
         
 
-    # def test_open_file_with_pattern_str_as_first_argument(self):
-    #     print("Open multidbd with just a string as first argument. Should be interpreted as a pattern")
-    #     dbd = dbdreader.MultiDBD("dbdreader/data/amadeus-2014-*.*bd")
+    def test_get_non_existing_variable(self, multiSBDData):
+        dbd = multiSBDData
+        v = dbd.get("m_water_pressure")
+        condition = len(v) == 2
+        condition &= len(v[1]) == 0 and len(v[0]) == 0
+        assert condition
 
-    # def test_open_file_with_pattern_str_as_first_argument_and_pattern(self):
-    #     print("Open multidbd with just a string as first argument and a pattern, which should fail.")
-    #     with self.assertRaises(dbdreader.DbdError) as e:
-    #         dbd = dbdreader.MultiDBD("dbdreader/data/amadeus-2014-*.*bd", pattern="dbdreader/data/amadeus-2014-204-05-000.?bd")
+    def test_get_sync_non_invalid_variable(self, multiSBDData):
+        dbd = multiSBDData
+        with pytest.raises(dbdreader.DbdError) as e:
+            dbd.get_sync("m_lat", "M_LON")
+            assert e.exception.value == dbdreader.DBD_ERROR_NO_VALID_PARAMETERS
+          
 
-    # def test_opening_empty_file(self):
-    #     print("Ignore empty files and files with wrong encodings...")
-    #     dbd = dbdreader.MultiDBD(pattern = "dbdreader/data/*-2014-204-05-000.dbd")
+    def test_get_sync_non_existing_variable(self, multiSBDData):
+        dbd = multiSBDData
+        v = dbd.get_sync("m_depth", "m_lat", "m_water_pressure")
+        condition = len(v)==4 and len(v[2]==v[3]) and np.all(np.isnan(v[3]))
+        assert condition
 
-    # def test_opening_capitalised_files(self):
-    #     print("Allow opening of files with capitalised extensions.")
-    #     dbd = dbdreader.MultiDBD(pattern = "dbdreader/data/amadeus-2014-203-00-000.[ST]BD")
+    def test_get_sync(self, multiSBDData):
+        dbd = multiSBDData
+        t, d, lat, lon = dbd.get_sync("m_depth", "m_lat", "m_lon")
 
+
+    def test_get_sync_mixed_eng_sci_parameters(self, multiSBDData):
+        dbd = multiSBDData
+        dbd.get_sync("m_depth", 'sci_water_pressure', 'm_lon')
+
+
+    def test_get_xy(self, multiSBDData):
+        dbd = multiSBDData
+        dbd.get_xy('m_lat', 'm_lon')
+
+###
+    def test_time_limits(self, multiSBDData):
+        dbd = multiSBDData
+        v0 = dbd.get("m_depth")
+        t = dbd.get_global_time_range()
+        t1 = dbd.get_time_range()
+        dbd.set_time_limits(minTimeUTC='24 Jul 2014 18:00')
+        v1 = dbd.get("m_depth")
+        t2 = dbd.get_time_range()
+        assert t == ['24 Jul 2014 17:02', '24 Jul 2014 18:20']
+        assert t == t1
+        assert t2[0] == '24 Jul 2014 18:00'
+        assert len(v1[0]) < len(v0[0])
+
+
+    def test_non_standard_cache_dir(self):
+        dbd=dbdreader.MultiDBD(pattern = self.pattern,
+                               cacheDir='dbdreader/data/cac')
+        depth = dbd.get("m_depth")
+        assert len(depth) == 2
+
+    def test_non_standard_cache_dir_alternative(self):
+        dbdreader.DBDCache.set_cachedir('dbdreader/data/cac')
+        dbd=dbdreader.MultiDBD(pattern=self.pattern)
+        depth = dbd.get("m_depth")
+        assert len(depth) == 2
+ 
+    def test_donottest_non_standard_cache_dir_fail(self):
+        kwds = dict(pattern=self.pattern, cacheDir='dbdreader/data/not_there')
+        with pytest.raises(dbdreader.DbdError):
+            dbdreader.MultiDBD(self.pattern, **kwds)
+
+    def test_get_ctd_sync(self, multiDBDData):
+        dbd = multiDBDData
+        tctd, C, T, P, depth = dbd.get_CTD_sync("m_depth")
+
+    def test_get_ctd_sync_rbrCTD(self):
+        pattern="dbdreader/data/electa-2023-143-00-050.[st]bd"
+        dbd=dbdreader.MultiDBD(pattern = pattern, cacheDir='dbdreader/data/cac')
+        tctd, C, T, P, pressure = dbd.get_CTD_sync("m_pressure")
+        assert tctd.shape == (385,)
+        assert C.shape == (385,)
+
+    def test_missing_cache_files(self):
+        #     print("Throw an error when cache file is missing...")
+        #     read in a sbd and tbd file. Only the sbd's cac file is
+        #     in cac_missing.
+        with pytest.raises(dbdreader.DbdError):
+            pattern="dbdreader/data/unit_887-2021-321-3-0.?bd"
+            dbd = dbdreader.MultiDBD(pattern,
+                                     cacheDir='dbdreader/data/cac_missing')
+           
+
+    def test_open_file_with_pattern_str_as_first_argument(self):
+        #     Open multidbd with just a string as first argument. Should
+        #     be interpreted as a pattern dbd 
+        dbdreader.MultiDBD("dbdreader/data/amadeus-2014-*.*bd")
+
+    def test_open_file_with_pattern_str_as_first_argument_and_pattern(self):
+        #     Open multidbd with just a string as first argument and a
+        #     pattern, which should fail.")
+        with pytest.raises(dbdreader.DbdError):
+            pattern="dbdreader/data/amadeus-2014-204-05-000.?bd"
+            dbd = dbdreader.MultiDBD("dbdreader/data/amadeus-2014-*.*bd",
+                                     pattern=pattern)
+
+    def test_opening_empty_file(self):
+        # Ignore empty files and files with wrong encodings...
+        pattern = "dbdreader/data/*-2014-204-05-000.dbd"
+        dbd = dbdreader.MultiDBD(pattern)
+        dbd.get("m_depth")
+
+    def test_opening_capitalised_files(self):
+        # Allow opening of files with capitalised extensions.
+        pattern = "dbdreader/data/amadeus-2014-203-00-000.[ST]BD"
+        dbd = dbdreader.MultiDBD(pattern=pattern)
+        dbd.get("m_depth")
+     
     # def test_problem_causing_segfault(self):
     #     # this test caused a segfault as a result of a bug introduced in commit eeb64d8e8c20345dafcacebf074f098fa945fd46
     #     # Run this test only when this script has access to the data files.
@@ -327,39 +342,42 @@ class TestMultiDBD():
     #         print("Running (long test) that caused in segfault in the past.")
     #         dbd = dbdreader.MultiDBD("/home/lucas/gliderdata/helgoland201407/hd/amadeus-2014-*.[de]bd")
     #         data = dbd.get_CTD_sync("sci_flntu_turb_units")
-        
-    # def test_missing_cache_file_data_feature(self):
-    #     print("Throw an error when cache file is missing, and check who is missing.")
-    #     try:
-    #         dbd = dbdreader.MultiDBD("dbdreader/data/unit_887-2021-321-3-0.?bd")
-    #     except dbdreader.DbdError as e:
-    #         data = e.data
-    #         assert data.missing_cache_files['c4ec741e'][0] =="dbdreader/data/unit_887-2021-321-3-0.tbd"
+   
+    def test_missing_cache_file_data_feature(self):
+        #     Throw an error when cache file is missing, and check who
+        #     is missing.
+        with pytest.raises(dbdreader.DbdError) as e:
+            pattern = "dbdreader/data/unit_887-2021-321-3-0.?bd"
+            cacheDir = 'dbdreader/data/cac_missing'
+            dbdreader.MultiDBD(pattern=pattern, cacheDir=cacheDir)
+        fn = e.value.data.missing_cache_files['c4ec741e'][0]
+        assert fn == "dbdreader/data/unit_887-2021-321-3-0.tbd"
 
-    # def test_get_sync_on_parameter_without_values(self):
-    #     print("Reads in a parameter to sync that has no values.")
-    #     dbd = dbdreader.MultiDBD("dbdreader/data/sebastian-2014-204-05-00?.dbd")
-    #     _, _, x = dbd.get_sync("m_depth", "u_dbd_sensor_list_xmit_control")
-    #     # x has a 2.0 as first value, but then all nans.
-    #     assert np.all(np.isfinite(x[1:])==False) and x[0]==2.
+    def test_get_sync_on_parameter_without_values(self):
+        # Reads in a parameter to sync that has no values.
+        pattern = "dbdreader/data/sebastian-2014-204-05-00?.dbd"
+        dbd = dbdreader.MultiDBD(pattern)
+        _, _, x = dbd.get_sync("m_depth", "u_dbd_sensor_list_xmit_control")
+        # x has a 2.0 as first value, but then all nans.
+        assert not np.all(np.isfinite(x[1:])) and x[0] == 2.
 
-    # def test_get_CTD_sync_on_parameter_without_values(self):
-    #     print("Reads in a parameter to get_CTD_sync that has no values; Assert error.")
-    #     dbd = dbdreader.MultiDBD("dbdreader/data/sebastian-2014-204-05-00?.dbd",
-    #                              complement_files=True)
-    #     try:
-    #         x = dbd.get_CTD_sync("m_depth", "u_dbd_sensor_list_xmit_control")
-    #     except dbdreader.DbdError as e:
-    #         assert e.value == dbdreader.DBD_ERROR_NO_DATA_TO_INTERPOLATE
+    def test_get_CTD_sync_on_parameter_without_values(self, multiDBDData):
+        # Reads in a parameter to get_CTD_sync that has no values;
+        # Assert error.
+        dbd = multiDBDData
+        with pytest.raises(dbdreader.DbdError) as e:
+            dbd.get_CTD_sync("m_depth", "u_dbd_sensor_list_xmit_control")
+        assert e.value.value == dbdreader.DBD_ERROR_NO_DATA_TO_INTERPOLATE
 
-    # def test_get_CTD_sync_removes_empty_timestamps(self):
-    #     print("Reads data using get_CTD_sync and empty timestamps should be removed.")
-    #     dbd = dbdreader.MultiDBD("dbdreader/data/sebastian-2014-204-05-00?.dbd",
-    #                              complement_files=True)
-    #     tctd, T, C, P = dbd.get_CTD_sync()
-    #     t, tctdp = dbd.get("sci_ctd41cp_timestamp")
-    #     idx = np.where(tctdp<1)[0]
-    #     assert len(idx) and len(tctd) == len(tctdp) - len(idx)
+    def test_get_CTD_sync_removes_empty_timestamps(self, multiDBDData):
+        # Reads data using get_CTD_sync and empty timestamps should be
+        # removed.
+        dbd = multiDBDData
+        tctd, T, C, P = dbd.get_CTD_sync()
+        t, tctdp = dbd.get("sci_ctd41cp_timestamp")
+        # timestamps equal to 0 and dt==0 should be removed.
+        n_removed = (tctdp<1).sum() + (np.diff(tctdp) < 1e-9).sum()
+        assert n_removed and len(tctd) == len(tctdp) - n_removed
 
     # def test_include_source_data(self):
     #     print("Verify that source DBDs correctly map to data points.")
