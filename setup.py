@@ -1,12 +1,24 @@
 import sys
 import os
+import re
 
 import glob
 
 import setuptools
 
 with open("dbdreader/__init__.py", "r") as fh:
-    VERSION = fh.readline().strip().split("=")[1].replace('"', '')
+    while fh:
+        line = fh.readline().strip()
+        print(line)
+        if '__version__' in line:
+            break
+
+version_match = re.match(r'^__version__\s*=\s*(.*)$', line)
+if not version_match:
+    raise ValueError("Could not determine version")
+
+VERSION = version_match.group(1).replace('"', '').replace("'", "")
+
 
 with open("README.rst", "r") as fh:
     long_description = fh.read()
