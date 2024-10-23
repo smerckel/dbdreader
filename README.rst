@@ -14,7 +14,7 @@ binary files, so that they can be further analysed.
 Change log
 ----------
 
-version 0.5.8rc1
+version 0.5.8
 
 * Changes default location for cache files on linux from
   $HOME/.dbdreader to $HOME/.local/share/dbdreader
