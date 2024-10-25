@@ -1,4 +1,5 @@
-numpy 
+numpy
+scipy
 pytest
 lz4
 
