@@ -19,6 +19,7 @@ import sys, os, re
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../..'))
 
+import dbdreader
 
 autodoc_mock_imports = ["_dbdreader"]
 
