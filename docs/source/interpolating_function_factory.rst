@@ -59,16 +59,18 @@ The actual implementation looks like:
 
 This implementation can be used as a template for user interpolating
 schemes. The implementation might appear unnecessarily complicated. It
-is important to notice that the function does *do* the interpolation,
-but it is an interpolation function factory, that is, it creates a
-function that can perform the interpolation. The reason for this is
-that the function can only be created from the moment the input data are know. 
+is important to notice that the function does not *do* the
+interpolation itself,
+but it creates an interpolation function (interpolation function
+factory).
+The reason for this is
+that the function can only be created from the moment the input data are known. 
 
 How to use it?
 --------------
 A custom interpolating function factory can be used by specifying the
-keyword `interpolating_function_factory`. If set to with a specific
-function, this function will be used for *all* parameters that are
+keyword `interpolating_function_factory`. If set to a specific
+function factory, this function will be used for *all* parameters that are
 listed to interpolated. For example:
 
 ::
