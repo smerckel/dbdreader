@@ -9,7 +9,6 @@ import setuptools
 with open("dbdreader/__init__.py", "r") as fh:
     while fh:
         line = fh.readline().strip()
-        print(line)
         if '__version__' in line:
             break
 

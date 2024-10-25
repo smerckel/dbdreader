@@ -1,6 +1,8 @@
 Selecting specific files
 ************************
 
+.. _sec_dbdpatternselect:
+
 Restricting the time frame
 ==========================
 
