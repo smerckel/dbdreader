@@ -91,8 +91,7 @@ def dbdrename():
 
 
     args = parser.parse_args()
-    print(args)
-    
+
     # override the default value of -s if -d is specified
     if args.doNotChangeNameFormat:
         args.s=False
@@ -155,12 +154,16 @@ def dbdrename():
                 if R!=0:
                     raise ValueError("Could not execute %s"%(command))
                 if args.decompress or args.decompressAndRemoveCompressed:
-                    target = dbdreader.decompress.decompress_file(new_filename)
-                    if args.decompressAndRemoveCompressed:
-                        os.unlink(new_filename)
-                        msg = f"{msg} {target}"
+                    try:
+                        target = dbdreader.decompress.decompress_file(new_filename)
+                    except Exception as e:
+                        msg = e
                     else:
-                        msg = f"{msg} {target}/{new_filename}"
+                        if args.decompressAndRemoveCompressed:
+                            os.unlink(new_filename)
+                            msg = f"{msg} {target}"
+                        else:
+                            msg = f"{msg} {target}/{new_filename}"
                 else:
                     msg = f"{msg} {target}"
                 print(msg)
