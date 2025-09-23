@@ -12,18 +12,29 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import sys, os, re
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../..'))
 
+import dbdreader
 
 autodoc_mock_imports = ["_dbdreader"]
 
 with open("../../dbdreader/__init__.py", "r") as fh:
-    __version__ = fh.readline().split("=")[1].replace('"', '')
+    while fh:
+        line = fh.readline().strip()
+        if '__version__' in line:
+            break
+
+version_match = re.match(r'^__version__\s*=\s*(.*)$', line)
+if not version_match:
+    raise ValueError("Could not determine version")
+
+__version__ = version_match.group(1).replace('"', '').replace("'", "")
+   
 
 # -- General configuration -----------------------------------------------------
 

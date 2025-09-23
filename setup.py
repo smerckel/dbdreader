@@ -1,12 +1,23 @@
 import sys
 import os
+import re
 
 import glob
 
 import setuptools
 
 with open("dbdreader/__init__.py", "r") as fh:
-    VERSION = fh.readline().strip().split("=")[1].replace('"', '')
+    while fh:
+        line = fh.readline().strip()
+        if '__version__' in line:
+            break
+
+version_match = re.match(r'^__version__\s*=\s*(.*)$', line)
+if not version_match:
+    raise ValueError("Could not determine version")
+
+VERSION = version_match.group(1).replace('"', '').replace("'", "")
+
 
 with open("README.rst", "r") as fh:
     long_description = fh.read()
@@ -23,8 +34,8 @@ library_dirs = []
 
 
 def check_header_file_version(p):
-    version=dict(MAJOR=0, MINOR=0, RELEASE=0)
-    counter=0
+    version = dict(MAJOR=0, MINOR=0, RELEASE=0)
+    counter = 0
     with open(p) as fp:
         for line in fp:
             if line.startswith("#define LZ4_VERSION"):
@@ -32,22 +43,24 @@ def check_header_file_version(p):
                 for k in version.keys():
                     if k in fields[1]:
                         version[k] = fields[2]
-                        counter+=1
-            if counter==3:
+                        counter += 1
+            if counter == 3:
                 break
-    if counter==3:
+    if counter == 3:
         v = ".".join((version["MAJOR"],
                       version["MINOR"],
                       version["RELEASE"]))
     else:
-        v=""
+        v = ""
     return v
+
 
 def version_as_int(s):
     major, minor, release = map(int, s.split('.'))
     return release + minor*1000 + major*1000000
 
-def has_header_file(header_file='lz4.h',required_version=None):
+
+def has_header_file(header_file='lz4.h', required_version=None):
     include_dirs = ['/usr/include',
                     '/usr/local/include']
     found = False
@@ -63,7 +76,7 @@ def has_header_file(header_file='lz4.h',required_version=None):
         else:
             V = version_as_int(version)
             Vreq = version_as_int(required_version)
-            return V>=Vreq
+            return V >= Vreq
     else:
         return False
 
@@ -84,9 +97,9 @@ if sys.platform.startswith('linux'):
         else:
             liblz4_found = False
 elif sys.platform.startswith("win"):
-    liblz4_found=False
+    liblz4_found = False
 else:
-    liblz4_found=False
+    liblz4_found = False
 
 if liblz4_found:
     # We are on a linux platform, and have access to system-wide
@@ -108,21 +121,21 @@ setuptools.setup(
     long_description_content_type="text/x-rst",
     url='https://dbdreader.readthedocs.io/en/latest/',
     packages=['dbdreader'],
-    package_data = {'dbdreader': glob.glob("dbdreader/data/*")},
+    package_data={'dbdreader': glob.glob("dbdreader/data/*")},
     include_package_data=True,
     py_modules=[],
-    entry_points = {'console_scripts':['dbdrename=dbdreader.scripts:dbdrename',
-                                        'cac_gen=dbdreader.scripts:cac_gen'],
-                    'gui_scripts':[]
-    },
-    scripts = [],
-    install_requires = install_requires,
-    ext_modules = [
+    entry_points={'console_scripts': ['dbdrename=dbdreader.scripts:dbdrename',
+                                      'cac_gen=dbdreader.scripts:cac_gen'],
+                    'gui_scripts': []
+                  },
+    scripts=[],
+    install_requires=install_requires,
+    ext_modules=[
            setuptools.Extension("_dbdreader",
-                                sources = sources,
-                                libraries = libraries,
-                                include_dirs = include_dirs, 
-                                library_dirs = library_dirs)
+                                sources=sources,
+                                libraries=libraries,
+                                include_dirs=include_dirs,
+                                library_dirs=library_dirs)
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

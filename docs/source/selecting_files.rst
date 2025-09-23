@@ -1,6 +1,8 @@
 Selecting specific files
 ************************
 
+.. _sec_dbdpatternselect:
+
 Restricting the time frame
 ==========================
 
@@ -17,7 +19,7 @@ For example::
 
   ps = dbdreader.PatternSelect()
 
-  # By default, dates are entered in "%d %m %Y"-format. Let's changed
+  # By default, dates are entered in "%d %m %Y"-format. Let's change
   # that to be able to specify a specific time:
   ps.set_date_format("%d %m %Y %H:%M")
 
