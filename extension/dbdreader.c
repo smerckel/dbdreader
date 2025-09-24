@@ -48,19 +48,21 @@ static int contains(int q,
 
 /* Public functions */
 
-FILE *open_dbd_file(char *filename)
+FILE *open_dbd_file(char *filename, int* errorno)
 {
   FILE *fd;
 
   const int compressed = is_file_compressed(filename);
 
   if (compressed){
-    fd=fopen_compressed_file(filename);
+    fd=fopen_compressed_file(filename, errorno);
   }
   else{
     fd=fopen(filename,"rb");
+    if (fd==NULL){
+      *errorno=ERROR_FILE_NOT_FOUND;
+    }
   }
-
   return(fd);
 }
 
@@ -250,6 +252,7 @@ static void get_by_read_per_byte(int nti,
     fp_current=ftell(FileInfo.fd);
     if (r>=1) {
       /* we found (some of) the values we want to read (at least 1) */
+
       for(i=0; i<nv; i++){
 	if (offsets[i]>=0){
 	  /* found an updated value */
@@ -318,6 +321,7 @@ static int read_state_bytes(int *vi,
   int variable_index;
   int variable_counter;
   int idx;
+  
   bitshift=bits_per_byte - bits_per_field;
   fields_per_byte=bits_per_byte/bits_per_field;
 
@@ -376,7 +380,6 @@ static int read_state_bytes(int *vi,
 	offsets[i]=offsets[i-1];
     }
   }
-
   /*return the number of variables found. */
   return (variable_counter);
 }

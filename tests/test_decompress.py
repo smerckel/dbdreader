@@ -1,5 +1,6 @@
 import os
 from hashlib import md5
+from itertools import chain
 
 if not __name__ == '__main__':
     from pytest import fixture
@@ -183,7 +184,7 @@ def test_read_compressed_files_C_code():
     pattern = 'dbdreader/data/0160000?.dcd'
     dbd = dbdreader.MultiDBD(pattern, cacheDir='dbdreader/data/cac')
     t, d = dbd.get("m_depth")
-    assert t.ptp() == pytest.approx(2511.95, 0.01)
+    assert np.ptp(t) == pytest.approx(2511.95, 0.01)
 
 
 # Test missing cac file for single dbd_label
@@ -215,6 +216,20 @@ def test_open_flight_and_science_files():
 def test_open_flight_and_science_files_finding_complement_files():
     dbd = dbdreader.MultiDBD('dbdreader/data/0160000?.dcd', complement_files=True, cacheDir='dbdreader/data/cac')
 
+# Test if we handle well a corrupted compressed file
+def test_handle_corrupt_compressed_file():
+    dbd = dbdreader.DBD('dbdreader/data/02380108.ecd', cacheDir='dbdreader/data/cac')
+    with pytest.raises(dbdreader.DbdError) as e:
+        dbd.get("sci_water_temp", "sci_water_cond")
+
+def test_handle_corrupt_compressed_file_multidbd():
+    dbd = dbdreader.MultiDBD('dbdreader/data/0238010[78].ecd', cacheDir='dbdreader/data/cac')
+    data_both = dbd.get("sci_water_temp", "sci_water_cond", continue_on_reading_error=True)
+    dbd = dbdreader.DBD('dbdreader/data/02380107.ecd', cacheDir='dbdreader/data/cac')
+    data_one = dbd.get("sci_water_temp", "sci_water_cond")
+    assert np.all([np.all(x==y) for x, y in zip(chain(*data_both), chain(*data_one))])
+
+        
     
 
     

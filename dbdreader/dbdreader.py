@@ -157,7 +157,7 @@ DBD_ERROR_INVALID_ENCODING = 10
 DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED = 11
 DBD_ERROR_NO_DATA_TO_INTERPOLATE = 12
 DBD_ERROR_NO_DATA = 13
-
+DBD_ERROR_READ_ERROR = 14
 
 class DbdError(Exception):
     MissingCacheFileData = namedtuple('MissingCacheFileData',
@@ -195,6 +195,8 @@ class DbdError(Exception):
             mesg = 'One or more parameters that are to be interpolated, does/do not have any data.'
         elif self.value == DBD_ERROR_NO_DATA:
             mesg = 'One or more parameters do not have any data.'
+        elif self.value == DBD_ERROR_READ_ERROR:
+            mesg = 'Read error.'
         else:
             mesg = f'Undefined error. ({self.value})'
         if self.mesg:
@@ -760,6 +762,7 @@ class DBD(object):
         check_for_invalid_parameters : bool, optional
             if True returns empty arrays for parameters that are marked as invalid, instead of triggering an exception.
 
+
         Returns
         -------
         tuple of (ndarray, ndarray) for each parameter requested.
@@ -961,16 +964,19 @@ class DBD(object):
         idx_sorted=numpy.sort(idx)
         vi = tuple(idx_sorted)
         self.n_sensors=self.headerInfo['sensors_per_cycle']
-        r=_dbdreader.get(self.n_state_bytes,
-                         self.n_sensors,
-                         self.fp_binary_start,
-                         self.byteSizes,
-                         self.filename,
-                         ti,
-                         vi,
-                         int(return_nans),
-                         int(self.skip_initial_line),
-                         max_values_to_read)
+        error_no, r=_dbdreader.get(self.n_state_bytes,
+                                   self.n_sensors,
+                                   self.fp_binary_start,
+                                   self.byteSizes,
+                                   self.filename,
+                                   ti,
+                                   vi,
+                                   int(return_nans),
+                                   int(self.skip_initial_line),
+                                   max_values_to_read)
+        if error_no:
+            raise DbdError(value=DBD_ERROR_READ_ERROR, mesg=f"Reading from {self.filename} failed with error code {error_no}.", data=error_no)
+            
         # map the contents of vi on timestamps and values, preserving the original order:
         idx_reorderd = [vi.index(i) for i in idx]
         # these are for good_parameters:
@@ -1331,7 +1337,7 @@ class MultiDBD(object):
 
 ##### public methods
     def get(self, *parameters, decimalLatLon=True, discardBadLatLon=True, return_nans=False, include_source=False,
-            max_values_to_read=-1):
+            max_values_to_read=-1, continue_on_reading_error=False):
         '''Returns time and value tuple(s) for requested parameter(s)
 
         This method returns time and values tuples for a list of parameters.
@@ -1365,6 +1371,9 @@ class MultiDBD(object):
         max_values_to_read : int, optional
             if > 1, then reading is stopped after this many values have been read.
             Default value : -1
+
+        continue_on_reading_error : bool, optional
+            if True, an exception will be raised when a file cannot be read. Otherwise the file will be ignored.
 
         Returns
         -------
@@ -1415,9 +1424,11 @@ class MultiDBD(object):
                 positions.append(("eng", len(eng_variables)))
                 eng_variables.append(p)
 
-        kwds=dict(decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
+        kwds=dict(decimalLatLon=decimalLatLon,
+                  discardBadLatLon=discardBadLatLon,
                   return_nans=return_nans, include_source=include_source,
-                  max_values_to_read=max_values_to_read)
+                  max_values_to_read=max_values_to_read,
+                  continue_on_reading_error=continue_on_reading_error)
 
         if len(sci_variables)>=1:
             r_sci = self._worker("sci", *sci_variables, **kwds)
@@ -2050,6 +2061,11 @@ class MultiDBD(object):
             include_source = kwds.pop("include_source")
         except KeyError:
             include_source = False
+        try:
+            continue_on_reading_error = kwds.pop("continue_on_reading_error")
+        except KeyError:
+            continue_on_reading_error = False
+            
         data = dict([(k,[]) for k in p])
         srcs = dict([(k,[]) for k in p])
         error_mesgs = []
@@ -2076,6 +2092,12 @@ class MultiDBD(object):
                         t, v = i._get(*p, **kwds)
                     else:
                         # at least one unknown parameter was aksed for. Reraise the error.    
+                        raise e
+                elif e.value==DBD_ERROR_READ_ERROR:
+                    if continue_on_reading_error:
+                        logger.warning(f"Reading from {i.filename} returned an error ({e.data}).")
+                        continue
+                    else:
                         raise e
                 else:
                     # in all other cases reraise the error..

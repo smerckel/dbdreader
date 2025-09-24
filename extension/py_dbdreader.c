@@ -1,10 +1,13 @@
 #include "Python.h"
 #include <stdlib.h>
 #include "dbdreader.h"
+#include "decompress.h"
 
 static char py_get_doc[]="to do";
 
 static PyObject *
+
+
 py_get(PyObject *self, PyObject *args)
 {
   file_info_t FileInfo; /*FileInfo, see python code */
@@ -22,10 +25,13 @@ py_get(PyObject *self, PyObject *args)
   PyObject *containerList;  /* list with [ti,vi] for each parameter */
   PyObject *tiList, *viList;
   PyObject *tmp;
-  int i,j,k;
   int return_nans;       /* int flagging to return nans in the array or not.*/
   int skip_initial_line; /* int flagging to read or not the initial data line. Default should be not -> skip_initial_line=1 */
   int max_values_to_read;
+
+  int i,j,k;
+  int errorno = 0;
+  
   if (!PyArg_ParseTuple(args,"iilOsiOiii:get",
 			&n_state_bytes,
 			&n_sensors,
@@ -40,6 +46,17 @@ py_get(PyObject *self, PyObject *args)
     {
       return NULL;
     }
+  /* New feature of science files in glider firemware 11.0 -- 11.4 is that they can be corrupted. Let's
+     see if we can open the file at all... */
+  FileInfo.fd=open_dbd_file(filename, &errorno);
+  if (errorno != 0){
+    PyObject* empty_list = PyList_New(0);
+    PyObject* result = Py_BuildValue("(iN)", errorno, empty_list);
+    return result;
+  }
+  
+  /* All seems well, lets try to read the file. */
+
   FileInfo.byteSizes=(int*)malloc(n_sensors*sizeof(int));
 
   for(i=0;i<n_sensors;i++){
@@ -55,8 +72,6 @@ py_get(PyObject *self, PyObject *args)
   FileInfo.bin_offset=bin_offset;
   FileInfo.n_state_bytes=n_state_bytes;
   FileInfo.n_sensors=n_sensors;
-  FileInfo.fd=open_dbd_file(filename);
-
   data=get_variable(ti,vi,nv,FileInfo,return_nans,ndata, skip_initial_line, max_values_to_read);
   close_dbd_file(FileInfo.fd);
   /* good, got the data, now populate the lists */
@@ -85,7 +100,7 @@ py_get(PyObject *self, PyObject *args)
     free(data[i]);
   }
   free(data);
-  return Py_BuildValue("N",containerList);
+  return Py_BuildValue("iN",0, containerList); // return errorcode 0, and the list.
 }
 
 

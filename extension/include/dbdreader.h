@@ -36,7 +36,7 @@ typedef struct {
 } file_info_t;
 
 
-FILE *open_dbd_file(char *filename);
+FILE *open_dbd_file(char *filename, int* errorno);
 void close_dbd_file(FILE *fd);
 double ***get_variable(int ti,
 		       int *vi,
