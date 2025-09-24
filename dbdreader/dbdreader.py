@@ -1386,6 +1386,8 @@ class MultiDBD(object):
 
         .. versionchanged:: 0.5.5 For a single parameter request, the number of values to be read can be limited.
 
+        .. versionadded:: 0.5.9 Added option (continue_on_reading_error) to control the behaviour when an error is encountered whilst reading a compressed file.
+
         '''
         # It only makes sense to limit the number of parameters read when a single parameter is requested. Check for this.
         if max_values_to_read>0 and len(parameters)!=1:

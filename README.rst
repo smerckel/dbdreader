@@ -14,6 +14,11 @@ binary files, so that they can be further analysed.
 Change log
 ----------
 
+version 0.5.9
+
+* Handles reading errors that can occur when a compressed file turns
+  out to be corrupted.
+
 version 0.5.8
 
 * Changes default location for cache files on linux from
@@ -51,7 +56,7 @@ Version 0.5.4
 Version 0.5.1
 
 * Adds support for reading compressed data files
-* dbdrename.py now accepts -x and -X options to rename compressed data files as uncompressed data files
+* dbdrename now accepts -x and -X options to rename compressed data files as uncompressed data files
 
 Version 0.4.15
 
