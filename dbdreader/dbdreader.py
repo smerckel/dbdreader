@@ -159,6 +159,8 @@ DBD_ERROR_NO_DATA_TO_INTERPOLATE = 12
 DBD_ERROR_NO_DATA = 13
 DBD_ERROR_READ_ERROR = 14
 
+FILLVALUE = 1e13 # See FILLVALUE setting in extension/include/dbdreader.h. These MUST match.
+
 class DbdError(Exception):
     MissingCacheFileData = namedtuple('MissingCacheFileData',
                                       'missing_cache_files cache_dir')
@@ -772,6 +774,8 @@ class DBD(object):
         ------
              DbdError when the requested parameter(s) cannot be read.
 
+        Notes
+        -----
         .. versionchanged:: 0.4.0 Multi parameters can be passed, giving a time,value tuple for each parameter.
         .. versionchanged:: 0.5.5 For a single parameter request, the number of values to be read can be limited.
 
@@ -985,7 +989,7 @@ class DBD(object):
         # convert to decimal lat lon if applicable:
         for i, p in enumerate(valid_parameters):
             if return_nans:
-                idx = numpy.where(numpy.isclose(values[i],1e9))[0]
+                idx = numpy.where(numpy.isclose(values[i],FILLVALUE))[0]
                 values[i][idx] = numpy.nan
             if self._is_latlon_parameter(p):
                 if discardBadLatLon and not return_nans: #discards and return nans is not compatible.
@@ -1384,6 +1388,9 @@ class MultiDBD(object):
             for a single parameter, for a single parameter, including source file list, for multiple parameters,
             for multiple parameters, including source file list, respectively.
 
+
+        Notes
+        ----
         .. versionchanged:: 0.5.5 For a single parameter request, the number of values to be read can be limited.
 
         .. versionadded:: 0.5.9 Added option (continue_on_reading_error) to control the behaviour when an error is encountered whilst reading a compressed file.
@@ -1497,11 +1504,9 @@ class MultiDBD(object):
         (ndarray, ndarray)
             tuple of value vectors
 
-
-        .. versionadded:: 0.5.8
-           keyword option interpolating_function_factory
-     
-
+        Notes
+        -----
+        .. versionadded:: 0.5.8 keyword option interpolating_function_factory
         '''
         _, x, y = self.get_sync(parameter_x, parameter_y, decimalLatLon=decimalLatLon,
                                 discardBadLatLon=discardBadLatLon, interpolating_function_factory=interpolating_function_factory)
@@ -1746,6 +1751,7 @@ class MultiDBD(object):
     def has_parameter(self,parameter):
 
         '''Has this file parameter?
+        
         Returns
         -------
         bool

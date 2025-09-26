@@ -60,7 +60,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'dbdreader'
-copyright = '2014-2018, Lucas Merckelbach'
+copyright = '2014-2025, Lucas Merckelbach'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

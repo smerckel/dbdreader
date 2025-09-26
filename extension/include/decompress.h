@@ -19,7 +19,7 @@
  * Essentially the extension is tested for the second character
  * to be a 'c'
  */
-const int is_file_compressed(const char *filename);
+int is_file_compressed(const char *filename);
 
 
 FILE* fopen_compressed_file(const char* filename, int* errorno);

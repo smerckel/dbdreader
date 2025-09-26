@@ -5,6 +5,13 @@
 #include "dbdreader.h"
 #include "decompress.h"
 
+
+const double T_MIN = 1262304000.0; // 1 Jan 2010
+const double T_MAX = 2524608000.0; // 1 Jan 2030
+const double V_MIN = -1000000; 
+const double V_MAX =  1000000; 
+
+
 /*
   bswap_ = functions for swapping the byte-order of shorts, floats and doubles
 */
@@ -45,6 +52,9 @@ static int contains(int q,
 		    int list[],
 		    int n);
 
+static unsigned char check_range(double v,
+				 int i,
+				 int nti);
 
 /* Public functions */
 
@@ -85,7 +95,7 @@ double ***get_variable(int ti,
   int *vit;
   int nvt;
   int nti;
-
+  
   nvt=nv+1;
   vit=(int *)malloc(nvt*sizeof(int));
 
@@ -97,6 +107,7 @@ double ***get_variable(int ti,
       data[i][j]=(double *)malloc(BLOCKSIZE*sizeof(double));
     }
   }
+
   /* Check whether the operation has succeeded:*/
   if (data==NULL){
     printf("Memory fault!\n");
@@ -110,6 +121,7 @@ double ***get_variable(int ti,
     }
     vit[i]=vi[i];
   }
+
   vit[i]=ti; /*inserts ti*/
   nti=i; /* ti is the nti'th variable */
   i++;
@@ -203,6 +215,8 @@ static void get_by_read_per_byte(int nti,
   unsigned chunksize;
   signed *offsets;
   unsigned *byteSizes;
+
+  unsigned out_of_range;
   
   int r;
   int fp_end, fp_current;
@@ -214,6 +228,8 @@ static void get_by_read_per_byte(int nti,
 
   int min_offset_value;
   int write_data = !skip_initial_line; // 0: only first line is not output; 1: all lines are output
+
+  double sensor_value;
   
   if (return_nans==1)
     min_offset_value=-2; // include the notfound/samevalue/update
@@ -246,20 +262,20 @@ static void get_by_read_per_byte(int nti,
 
   /* extract byte order from known cycle */
   unsigned char flip = read_known_cycle(FileInfo.fd);
-
+  
   while (1){
     r=read_state_bytes(vi,nv,FileInfo,offsets,&chunksize);
     fp_current=ftell(FileInfo.fd);
     if (r>=1) {
       /* we found (some of) the values we want to read (at least 1) */
-
       for(i=0; i<nv; i++){
 	if (offsets[i]>=0){
 	  /* found an updated value */
 	  fseek(FileInfo.fd,
 		fp_current+offsets[i],0);
-	  read_result[i]=read_sensor_value(FileInfo.fd,
+	  sensor_value = read_sensor_value(FileInfo.fd,
 					   byteSizes[i], flip);
+	  read_result[i]= sensor_value;
 	  memory_result[i]=read_result[i];
 	}
 	else if (offsets[i]==-1){
@@ -273,8 +289,15 @@ static void get_by_read_per_byte(int nti,
 	  read_result[i]=FILLVALUE;
 	}
       }
-      
-      if (write_data){
+      out_of_range = check_range(read_result[nti], nti, nti);
+      out_of_range += check_range(read_result[190], 190, nti);
+      out_of_range += check_range(read_result[191], 191, nti);
+      out_of_range += check_range(read_result[192], 192, nti);
+      if (out_of_range>0){
+	chunksize = 0;
+      }
+       
+      if ((write_data) && (out_of_range==0)){
 	for(i=0; i<nv; i++){
 	  if ((offsets[i]>=min_offset_value) && (i!=nti)){// && isfinite(read_result[i])){
 	    j=i-(int)(i>nti);
@@ -290,7 +313,6 @@ static void get_by_read_per_byte(int nti,
 	write_data=1; // after first line, always write the data.
       }
     }
-    /* jump to the next state block */
     fp_current+=chunksize+1;
     if (fp_current >= fp_end){
       break; /* reached end of the file */
@@ -465,4 +487,17 @@ static void add_to_array(double t,
   }
   r[0][size]=t;
   r[1][size]=x;
+}
+
+
+static unsigned char check_range(double v,
+				 int i,
+				 int nti){
+  unsigned char r=0;
+
+  if (i==nti)/* we have a time value */
+    r = (v<T_MIN) || (v>T_MAX);
+  else
+    r = (v<V_MIN) || (v>V_MAX);
+  return r;
 }

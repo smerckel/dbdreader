@@ -11,7 +11,7 @@
 #define SAME            1
 #define NOTSET          0
 
-#define FILLVALUE       1e9
+#define FILLVALUE       1e13
 #define BLOCKSIZE 1000
 
 typedef char byte;
