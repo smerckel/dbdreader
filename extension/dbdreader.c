@@ -56,6 +56,8 @@ static unsigned char check_range(double v,
 				 int i,
 				 int nti);
 
+static void copy_bytes(FILE *fd_src, FILE *fd_dest, size_t size);
+
 /* Public functions */
 
 FILE *open_dbd_file(char *filename, int* errorno)
@@ -230,6 +232,18 @@ static void get_by_read_per_byte(int nti,
   int write_data = !skip_initial_line; // 0: only first line is not output; 1: all lines are output
 
   double sensor_value;
+
+  unsigned short write_corrected_file=1;
+  
+  unsigned *buffer;
+  buffer = (unsigned*)malloc(8*nv+FileInfo.n_state_bytes);
+
+  FILE *fdc;
+
+  
+  if (write_corrected_file){
+    fdc = fopen("corrected.ebd", "wb");
+  }
   
   if (return_nans==1)
     min_offset_value=-2; // include the notfound/samevalue/update
@@ -255,6 +269,12 @@ static void get_by_read_per_byte(int nti,
   /* look up the end of the file: */
   fseek(FileInfo.fd,0,2);
   fp_end=ftell(FileInfo.fd);
+
+  /* write the head of the file to the corrected file... */
+  if (write_corrected_file){
+    fseek(FileInfo.fd,0,0);
+    copy_bytes(FileInfo.fd, fdc, FileInfo.bin_offset + 17); // + 17 includes the knowcycle bytes.
+  }
   
   /* start where binary data begin: */
   fseek(FileInfo.fd,
@@ -266,6 +286,10 @@ static void get_by_read_per_byte(int nti,
   while (1){
     r=read_state_bytes(vi,nv,FileInfo,offsets,&chunksize);
     fp_current=ftell(FileInfo.fd);
+    if (r==0){
+      printf("EEK Should not occur... %d\n", chunksize);
+      exit(1);
+    }
     if (r>=1) {
       /* we found (some of) the values we want to read (at least 1) */
       for(i=0; i<nv; i++){
@@ -500,4 +524,16 @@ static unsigned char check_range(double v,
   else
     r = (v<V_MIN) || (v>V_MAX);
   return r;
+}
+
+
+
+static void copy_bytes(FILE *fd_src, FILE *fd_dest, size_t nbytes){
+
+  unsigned char *buffer;
+
+  buffer = (unsigned char*)malloc(nbytes);
+  fread(buffer, nbytes, 1, fd_src);
+  fwrite(buffer, nbytes, 1, fd_dest);
+  free(buffer);
 }
