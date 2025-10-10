@@ -28,7 +28,8 @@ static int read_state_bytes(int *vi,
 			    int nvt,
 			    file_info_t FileInfo,
 			    signed *offsets, 
-			    unsigned *chunksize);
+			    unsigned *chunksize,
+			    unsigned *buffer);
 
 static void get_by_read_per_byte(int ti,
 				 int *vi,
@@ -42,6 +43,14 @@ static void get_by_read_per_byte(int ti,
 
 static double read_sensor_value(FILE *fd,
 				int bs, unsigned char flip);
+
+static void copy_datachunk_to_buffer(FILE *fp,
+				     unsigned int *buffer,
+				     unsigned int chunksize);
+
+static void copy_buffer_to_file(FILE *fdc,
+				unsigned int *buffer,
+				unsigned int size);
 
 static void add_to_array(double t,
 			 double x,
@@ -221,7 +230,7 @@ static void get_by_read_per_byte(int nti,
   unsigned out_of_range;
   
   int r;
-  int fp_end, fp_current;
+  int fp_end, fp_current, fp_start_state_bytes;
   int i,j;
 
   double *read_result;
@@ -282,14 +291,33 @@ static void get_by_read_per_byte(int nti,
 
   /* extract byte order from known cycle */
   unsigned char flip = read_known_cycle(FileInfo.fd);
-  
+
+  fp_start_state_bytes=ftell(FileInfo.fd);
   while (1){
-    r=read_state_bytes(vi,nv,FileInfo,offsets,&chunksize);
+    r=read_state_bytes(vi,nv,FileInfo,offsets,&chunksize, buffer);
+    printf("r: %d\n", r);
+    if (r!=194){
+      printf("skipping. r = %d %d\n", r, fp_start_state_bytes);
+      fp_start_state_bytes+=1;
+      fseek(FileInfo.fd, fp_start_state_bytes, 0);
+      continue;
+    }
+    
     fp_current=ftell(FileInfo.fd);
+    //copy_datachunk_to_buffer(FileInfo.fd, buffer, chunksize);
+
+    printf("Chunk size : %d r: %d\n", chunksize, r);
+    /*
+    if (write_corrected_file){
+      copy_buffer_to_file(fdc, buffer, (unsigned int)FileInfo.n_state_bytes + chunksize);
+    }
+    */
     if (r==0){
       printf("EEK Should not occur... %d\n", chunksize);
       exit(1);
     }
+    //TODO buffersize is FileInfo.n_state_bytes
+    // Read chunksize into buffer from position FileInfo.n_state_bytes. 
     if (r>=1) {
       /* we found (some of) the values we want to read (at least 1) */
       for(i=0; i<nv; i++){
@@ -345,18 +373,23 @@ static void get_by_read_per_byte(int nti,
     	break;
     fseek(FileInfo.fd,fp_current,0);
   }
+  free(buffer);
   free(byteSizes);
   free(offsets);
   free(read_result);
   free(memory_result);
   free(read_vi);
+  if (write_corrected_file){
+    fclose(fdc);
+  }
 }
 
 static int read_state_bytes(int *vi,
 			    int nvt,
 			    file_info_t FileInfo,
 			    signed *offsets, 
-			    unsigned *chunksize)
+			    unsigned *chunksize,
+			    unsigned *buffer)
 {
 
   static int bitshift;
@@ -367,7 +400,7 @@ static int read_state_bytes(int *vi,
   int variable_index;
   int variable_counter;
   int idx;
-  
+  int buffer_counter=0;
   bitshift=bits_per_byte - bits_per_field;
   fields_per_byte=bits_per_byte/bits_per_field;
 
@@ -380,6 +413,7 @@ static int read_state_bytes(int *vi,
   }
   for (sb=0;sb<nsb; sb++){
     c=getc(FileInfo.fd);
+    buffer[buffer_counter++]=c;
     for (fld=0;fld<fields_per_byte;fld++){
       field=(c>>bitshift) & mask;
       c<<=bits_per_field;
@@ -511,6 +545,21 @@ static void add_to_array(double t,
   }
   r[0][size]=t;
   r[1][size]=x;
+}
+
+
+
+static void copy_datachunk_to_buffer(FILE *fp,
+				     unsigned int *buffer,
+				     unsigned int chunksize){
+  fread(buffer, chunksize, 1, fp);
+  fseek(fp, -chunksize, 1);
+}
+
+static void copy_buffer_to_file(FILE *fdc,
+				unsigned int *buffer,
+				unsigned int size){
+  fwrite(buffer, size, 1, fdc);
 }
 
 
