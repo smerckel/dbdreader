@@ -238,7 +238,12 @@ def test_handle_failing_decompression_multidbd():
     assert len(t) == 126
     
 
-
+# Test handling of files that fail to decompress properly
+def test_handle_failing_decompression_dbd():
+    # when called with a DBD instance we expect an error to be raised.
+    with pytest.raises(dbdreader.DbdError) as e:
+        dbd = dbdreader.DBD('dbdreader/data/02450137.tcd', cacheDir='dbdreader/data/cac')
+    assert e.value.value == dbdreader.DBD_ERROR_DECOMPRESSION_ERROR
     
 
     
