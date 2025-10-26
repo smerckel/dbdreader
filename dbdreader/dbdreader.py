@@ -158,6 +158,7 @@ DBD_ERROR_INVALID_FILE_CRITERION_SPECIFIED = 11
 DBD_ERROR_NO_DATA_TO_INTERPOLATE = 12
 DBD_ERROR_NO_DATA = 13
 DBD_ERROR_READ_ERROR = 14
+DBD_ERROR_DECOMPRESSION_ERROR = 15
 
 class DbdError(Exception):
     MissingCacheFileData = namedtuple('MissingCacheFileData',
@@ -197,6 +198,8 @@ class DbdError(Exception):
             mesg = 'One or more parameters do not have any data.'
         elif self.value == DBD_ERROR_READ_ERROR:
             mesg = 'Read error.'
+        elif self.value == DBD_ERROR_DECOMPRESSION_ERROR:
+            mesg = 'Decompression error.'
         else:
             mesg = f'Undefined error. ({self.value})'
         if self.mesg:
@@ -622,7 +625,11 @@ class DBDHeader(object):
     def read_header(self, fp, filename=''):
         ''' read the header of the file, given by fp '''
         fp.seek(0)
-        if not self.parse(fp.readline())=='dbd_label':
+        try:
+            result = self.parse(fp.readline())
+        except dbdreader.decompress.lz4.block.LZ4BlockError:
+            return DBD_ERROR_DECOMPRESSION_ERROR
+        if not result =='dbd_label':
             return DBD_ERROR_INVALID_DBD_FILE
         n_read=1
         while True:
@@ -1075,6 +1082,9 @@ class DBD(object):
         elif result == DBD_ERROR_INVALID_ENCODING:
             raise DbdError(DBD_ERROR_INVALID_ENCODING,
                            f'{self.filename} has an invalid encoding.')
+        elif result == DBD_ERROR_DECOMPRESSION_ERROR:
+            raise DbdError(DBD_ERROR_DECOMPRESSION_ERROR,
+                           f'{self.filename} could not be decompressed.')
         # determine cache file name
         cacheID = dbdheader.info['sensor_list_crc'].lower()
         cacheFilename=os.path.join(cacheDir,cacheID+".cac")
@@ -1973,6 +1983,11 @@ class MultiDBD(object):
                     for k in e.data.missing_cache_files.keys():
                         missing_cacheIDs[k].append(fn)
                     result = "failed"
+            elif e.value == DBD_ERROR_DECOMPRESSION_ERROR:
+                # This particular file could not be decompressed, howeever, it is possible, or even likely that others scheduled
+                # to be read will be decompressed successfully. So, produce a warning so the user knows what happens, and continue.
+                logger.warning('File %s failed to be decompressed successfully.', fn)
+                result = "ignore"
             else: # some other problem. Just ignore the file but produce a warning.
                 logger.warning('File %s could not be loaded', fn)
                 logger.debug('Exception was %s', e)
