@@ -39,6 +39,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
+ext-modules = [
+	    {name = "_dbdreader", sources = ["extension/py_dbdreader.c", "extension/dbdreader.c", "extension/decompress.c"], include-dirs = ["extension/include"]}
+]	    
 packages = ["dbdreader"]
 include-package-data = true
 
