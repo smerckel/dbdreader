@@ -229,7 +229,21 @@ def test_handle_corrupt_compressed_file_multidbd():
     data_one = dbd.get("sci_water_temp", "sci_water_cond")
     assert np.all([np.all(x==y) for x, y in zip(chain(*data_both), chain(*data_one))])
 
-        
+
+# Test handling of files that fail to decompress properly
+def test_handle_failing_decompression_multidbd():
+    dbd = dbdreader.MultiDBD('dbdreader/data/0245013[37].tcd', cacheDir='dbdreader/data/cac')
+    t, T = dbd.get("sci_water_temp")
+    # we should get 126 values
+    assert len(t) == 126
+    
+
+# Test handling of files that fail to decompress properly
+def test_handle_failing_decompression_dbd():
+    # when called with a DBD instance we expect an error to be raised.
+    with pytest.raises(dbdreader.DbdError) as e:
+        dbd = dbdreader.DBD('dbdreader/data/02450137.tcd', cacheDir='dbdreader/data/cac')
+    assert e.value.value == dbdreader.DBD_ERROR_DECOMPRESSION_ERROR
     
 
     
