@@ -54,7 +54,6 @@ py_get(PyObject *self, PyObject *args)
     PyObject* result = Py_BuildValue("(iN)", errorno, empty_list);
     return result;
   }
-  
   /* All seems well, lets try to read the file. */
 
   FileInfo.byteSizes=(int*)malloc(n_sensors*sizeof(int));

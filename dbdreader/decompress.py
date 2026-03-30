@@ -3,6 +3,10 @@ from io import BytesIO as ioBytesIO
 from re import search as re_match
 import lz4.block
 
+DECOMPRESSION_ERROR_LIST = ["NO_ERROR",
+                            "ERROR_UNEXPECTED_END_OF_FILE",
+                            "ERROR_FILE_NOT_FOUND",
+                            "ERROR_FAILED_TO_WRITE_BASE_FILE"]
 
 class Decompressor:
     '''Class to decompress glider files

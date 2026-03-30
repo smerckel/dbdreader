@@ -154,7 +154,7 @@ static int write_compressed_file_to_memory(const char *filename, FILE* fpmem)
     size_t file_size = 0;
     size_t current_position;
     int errorno = 0;
-    
+    size_t number_of_blocks_read = 0;
     fp = fopen(filename, "rb");
     if (fp==NULL){
     }
@@ -166,6 +166,7 @@ static int write_compressed_file_to_memory(const char *filename, FILE* fpmem)
 	  if (errorno != NO_ERROR){
 	    break;
 	  }
+	  number_of_blocks_read++;
 	  file_size+= decompressed_block_size;
 	  for(size_t i=0; i< decompressed_block_size; ++i){
 	    fwrite(&(data[i]), 1, 1, fpmem);
@@ -174,6 +175,7 @@ static int write_compressed_file_to_memory(const char *filename, FILE* fpmem)
     }
     fclose(fp);
     rewind(fpmem);
+    //printf("write_compress_file_to_memory: number of compression blocks processed: %d.\n", number_of_blocks_read);    
     return errorno;
 }
 

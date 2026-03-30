@@ -160,6 +160,8 @@ DBD_ERROR_NO_DATA = 13
 DBD_ERROR_READ_ERROR = 14
 DBD_ERROR_DECOMPRESSION_ERROR = 15
 
+
+
 class DbdError(Exception):
     MissingCacheFileData = namedtuple('MissingCacheFileData',
                                       'missing_cache_files cache_dir')
@@ -982,7 +984,8 @@ class DBD(object):
                                    int(self.skip_initial_line),
                                    max_values_to_read)
         if error_no:
-            raise DbdError(value=DBD_ERROR_READ_ERROR, mesg=f"Reading from {self.filename} failed with error code {error_no}.", data=error_no)
+            s = dbdreader.decompress.DECOMPRESSION_ERROR_LIST[error_no]
+            raise DbdError(value=DBD_ERROR_READ_ERROR, mesg=f"Decompression of {self.filename} failed with an '{s}' error.", data=error_no)
             
         # map the contents of vi on timestamps and values, preserving the original order:
         idx_reorderd = [vi.index(i) for i in idx]
