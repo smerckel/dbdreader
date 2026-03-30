@@ -30,6 +30,7 @@ Homepage = "https://dbdreader.readthedocs.io/en/latest/"
 [dependency-groups]
 dev = [
     "black>=26.3.1",
+    "ipython>=8.39.0",
     "pytest>=9.0.2",
 ]
 
@@ -43,7 +44,7 @@ ext-modules = [
 	    {name = "_dbdreader", sources = ["extension/py_dbdreader.c", "extension/dbdreader.c", "extension/decompress.c"], include-dirs = ["extension/include"]}
 ]	    
 packages = ["dbdreader"]
-include-package-data = true
+include-package-data = false
 
 [tool.setuptools.package-data]
 dbdreader = ["data/*"]
