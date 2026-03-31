@@ -631,6 +631,8 @@ class DBDHeader(object):
             result = self.parse(fp.readline())
         except dbdreader.decompress.lz4.block.LZ4BlockError:
             return DBD_ERROR_DECOMPRESSION_ERROR
+        except UnicodeDecodeError:
+            return DBD_ERROR_INVALID_DBD_FILE
         if not result =='dbd_label':
             return DBD_ERROR_INVALID_DBD_FILE
         n_read=1
