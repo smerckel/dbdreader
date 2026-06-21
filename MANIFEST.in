@@ -1,4 +1,4 @@
-include README.rst COPYING COPYRIGHT MANIFEST.in INSTALL.rst LICENSE
+include README.md COPYING COPYRIGHT MANIFEST.in INSTALL.rst LICENSE
 include requirements.txt
 include extension/*.c
 include extension/include/*.h
