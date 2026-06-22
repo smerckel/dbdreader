@@ -11,7 +11,7 @@ import re
 import datetime
 from calendar import timegm
 from collections import defaultdict, namedtuple
-import _dbdreader
+from . import _dbdreader
 import dbdreader.decompress
 import logging
 

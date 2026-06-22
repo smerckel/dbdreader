@@ -12,7 +12,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    "Operating System :: POSIX",
+    "Operating System :: OS Independent",
 ]
 dependencies = [
     "lz4>=4.4.5",
@@ -40,9 +40,6 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-ext-modules = [
-	    {name = "_dbdreader", sources = ["extension/py_dbdreader.c", "extension/dbdreader.c", "extension/decompress.c"], include-dirs = ["extension/include"]}
-]	    
 packages = ["dbdreader"]
 include-package-data = false
 
