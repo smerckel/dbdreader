@@ -28,12 +28,15 @@ Performance strategy
 --------------------
 Two-pass approach to minimise Python overhead:
 
-Pass 1  – cheap Python loop over cycles to locate cycle boundaries.
-          Uses a pre-built per-byte-position lookup table so each cycle
-          costs only n_state_bytes Python ops (not n_sensors).
+Pass 1  – precompute per-position chunk sizes with a single vectorised
+          sweep (n_state_bytes numpy fancy-index adds over the full file),
+          then a Python while loop over cycles with ONE array lookup each.
 
-Pass 2  – batch numpy operations over ALL cycles at once:
-          • extract state bytes for every cycle in one fancy-index read
+Pass 2  – batch numpy operations over ALL cycles at once, but only for
+          sensors 0..max(requested_sensor_index).  This matches the C
+          extension's scaling: cost grows with the highest-indexed sensor
+          you request, not the total number of sensors in the file.
+          • extract state bytes for wanted sensor range in one fancy-index read
           • decode fields and compute chunk offsets with vectorised ops
           • read sensor values for wanted sensors with vectorised byte extraction
 
@@ -152,67 +155,86 @@ def get(n_state_bytes, n_sensors, bin_offset, byte_sizes,
     # ── byte-order detection ─────────────────────────────────────────────────
     endian = '<' if struct.unpack_from('<H', data, bin_offset + 2)[0] == 4660 else '>'
 
-    # ── numpy array of byte sizes (used in vectorised pass 2) ────────────────
-    bs_arr = np.array(bs_list, dtype=np.int32)    # (n_sensors,)
-    vit_arr = np.array(vit,    dtype=np.intp)     # (nvt,)
+    # ── numpy arrays ─────────────────────────────────────────────────────────
+    bs_arr  = np.array(bs_list, dtype=np.int32)    # (n_sensors,)
+    vit_arr = np.array(vit,    dtype=np.intp)      # (nvt,)
+    # Zero-copy view of the file bytes — used in both Pass 1 (numpy path) and Pass 2.
+    data_u8   = np.frombuffer(data, dtype=np.uint8)
 
     # ── chunk-size lookup table (for pass 1) ─────────────────────────────────
     chunk_lut = _build_chunk_lut(n_state_bytes, n_sensors, bs_list)
 
     # ── PASS 1: locate cycle boundaries ──────────────────────────────────────
-    # For each cycle record (state_bytes + data_chunk + separator):
-    #   * record the file position of the state bytes
-    #   * compute the data-chunk size using the lookup table
-    # Cost: O(n_cycles × n_state_bytes) pure-Python ops — cheap.
+    # Two inner-loop strategies depending on n_state_bytes:
+    #
+    #  • Small (< NP_THRESHOLD): plain Python list indexing — fast when the
+    #    inner loop is only a handful of iterations.
+    #  • Large (≥ NP_THRESHOLD): one numpy fancy-index + sum per cycle.
+    #    Break-even is roughly n_state_bytes ≈ 40; for 1696 sensors
+    #    (n_state_bytes = 424) the numpy path is ~7× faster.
+    NP_THRESHOLD = 32   # ≈ 128 sensors
 
     min_offset_value = -2 if return_nans else -1
     file_size        = len(data)
     pos              = bin_offset + 17      # skip known cycle
     write_data       = not bool(skip_initial_line)
 
-    state_positions = []    # file pos of state bytes for each cycle
-    chunk_sizes     = []    # data-chunk byte count for each cycle
-    write_flags     = []    # whether to emit output for each cycle
+    state_positions = []
+    write_flags     = []
 
-    while pos < file_size:
-        if pos + n_state_bytes > file_size:
-            break
-
-        # Chunksize via LUT: O(n_state_bytes) lookups
-        chunksize = 0
-        for bpos in range(n_state_bytes):
-            chunksize += chunk_lut[bpos][data[pos + bpos]]
-
-        state_positions.append(pos)
-        chunk_sizes.append(chunksize)
-        write_flags.append(write_data)
-
-        pos        += n_state_bytes + chunksize + 1
-        write_data  = True
+    if n_state_bytes >= NP_THRESHOLD:
+        chunk_lut_np  = np.array(chunk_lut, dtype=np.int32)   # (n_state_bytes, 256)
+        bpos_range    = np.arange(n_state_bytes, dtype=np.intp)
+        while pos < file_size:
+            if pos + n_state_bytes > file_size:
+                break
+            chunksize = int(chunk_lut_np[bpos_range, data_u8[pos:pos + n_state_bytes]].sum())
+            state_positions.append(pos)
+            write_flags.append(write_data)
+            pos       += n_state_bytes + chunksize + 1
+            write_data = True
+    else:
+        while pos < file_size:
+            if pos + n_state_bytes > file_size:
+                break
+            chunksize = 0
+            for bpos in range(n_state_bytes):
+                chunksize += chunk_lut[bpos][data[pos + bpos]]
+            state_positions.append(pos)
+            write_flags.append(write_data)
+            pos       += n_state_bytes + chunksize + 1
+            write_data = True
 
     n_cycles = len(state_positions)
     if n_cycles == 0:
         return 0, [[] for _ in range(nv)] + [[] for _ in range(nv)]
 
     # ── PASS 2: vectorised processing of all cycles at once ──────────────────
-    data_u8   = np.frombuffer(data, dtype=np.uint8)
+    # data_u8 already created above
     sp_arr    = np.array(state_positions, dtype=np.intp)   # (n_cycles,)
     cstart    = sp_arr + n_state_bytes                      # chunk start positions
+    write_arr = np.array(write_flags, dtype=bool)
 
-    # Extract state bytes for ALL cycles: shape (n_cycles, n_state_bytes)
-    sb_idx   = sp_arr[:, np.newaxis] + np.arange(n_state_bytes, dtype=np.intp)
-    all_sb   = data_u8[sb_idx]          # uint8, (n_cycles, n_state_bytes)
+    # Only decode state fields up to the highest-indexed wanted sensor.
+    # The cumsum for byte offsets only needs columns 0..n_needed-1, so we
+    # skip all sensors beyond that — matching the C extension's scaling behaviour.
+    n_needed         = int(vit_arr.max()) + 1               # ≤ n_sensors
+    n_sb_needed      = (n_needed + 3) // 4                  # ceil(n_needed/4)
 
-    # Decode 2-bit fields: (n_cycles, n_state_bytes, 4) → (n_cycles, n_sensors)
-    all_fields = ((all_sb[:, :, np.newaxis] >> _SHIFTS) & 3)   # int, (n_cycles, n_state_bytes, 4)
-    all_fields = all_fields.reshape(n_cycles, n_state_bytes * 4)[:, :n_sensors]
+    # Extract state bytes for ALL cycles: shape (n_cycles, n_sb_needed)
+    sb_idx   = sp_arr[:, np.newaxis] + np.arange(n_sb_needed, dtype=np.intp)
+    all_sb   = data_u8[sb_idx]          # uint8, (n_cycles, n_sb_needed)
 
-    # Compute byte offsets within the data chunk for every sensor in every cycle.
+    # Decode 2-bit fields: (n_cycles, n_sb_needed, 4) → (n_cycles, n_needed)
+    all_fields = ((all_sb[:, :, np.newaxis] >> _SHIFTS) & 3)   # int, (n_cycles, n_sb_needed, 4)
+    all_fields = all_fields.reshape(n_cycles, n_sb_needed * 4)[:, :n_needed]
+
+    # Compute byte offsets within the data chunk for sensors 0..n_needed-1.
     # UPDATED → cumulative offset; SAME → -1; NOTSET → -2.
-    upd_mask  = (all_fields == UPDATED)                             # bool, (n_cycles, n_sensors)
-    w_bs      = np.where(upd_mask, bs_arr[np.newaxis, :], 0)       # int32, (n_cycles, n_sensors)
-    cum_bs    = np.cumsum(w_bs, axis=1)                             # int32, (n_cycles, n_sensors)
-    all_off   = np.where(upd_mask, cum_bs - w_bs, np.int32(-1))    # (n_cycles, n_sensors)
+    upd_mask  = (all_fields == UPDATED)                                  # bool, (n_cycles, n_needed)
+    w_bs      = np.where(upd_mask, bs_arr[:n_needed][np.newaxis, :], 0) # int32, (n_cycles, n_needed)
+    cum_bs    = np.cumsum(w_bs, axis=1)                                  # int32, (n_cycles, n_needed)
+    all_off   = np.where(upd_mask, cum_bs - w_bs, np.int32(-1))         # (n_cycles, n_needed)
     all_off   = np.where(all_fields == NOTSET, np.int32(-2), all_off)
 
     # Offsets for only the wanted sensors: (n_cycles, nvt)
@@ -263,7 +285,6 @@ def get(n_state_bytes, n_sensors, bin_offset, byte_sizes,
 
     # ── read time and sensor values ───────────────────────────────────────────
     t_vals = _read_col(nti)                     # (n_cycles,) float64
-    write_arr = np.array(write_flags, dtype=bool)
 
     result_t = [None] * nv
     result_v = [None] * nv
