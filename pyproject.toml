@@ -23,6 +23,7 @@ dependencies = [
 
 [project.scripts]
 dbdrename = "dbdreader.scripts:dbdrename"
+cac_gen = "dbdreader.scripts:cac_gen"
 
 [project.urls]
 Homepage = "https://dbdreader.readthedocs.io/en/latest/"
