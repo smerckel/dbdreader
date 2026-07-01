@@ -9,8 +9,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-#        os: [ubuntu-latest, windows-latest]	
-        os: [ubuntu-latest]	
+#        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v6
@@ -22,13 +22,11 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.17.0
         env:
-          # CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-*"
-	  CIBW_BUILD: "cp313-*"
-          CIBW_SKIP: "*-win32 *-i686 *_i686 *-musllinux*"
+#          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-*"
+          CIBW_BUILD: "cp313-*"
+          CIBW_SKIP: "*-win32 *-i686 *_i686 *-musllinux"
           CIBW_BEFORE_BUILD_LINUX: "pip install uv && uv sync"
           CIBW_BEFORE_BUILD_WINDOWS: "pip install uv && uv sync"
-
-
 
       - uses: actions/upload-artifact@v4
         with:
