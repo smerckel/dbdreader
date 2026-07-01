@@ -414,18 +414,15 @@ class TestMultiDBD():
     def test_include_source_files_all_parameters(self, multiDBDData):
         # Verify that all designated files are represented in sources.
         multi = multiDBDData
-        files = multi.filenames
+        files = set(multi.filenames)
         p = multi.parameterNames['eng'] + multi.parameterNames['sci']
         output = multi.get(*p, include_source=True)
         filenames = []
         for k, (_, v) in enumerate(output):
             if len(v)>0:
                 filenames += [i.filename for i in v]
-                if k == 447 or k == 1329:
-                    breakpoint()
-        breakpoint()
         filenames = set(filenames)
-        breakpoint()
+        assert filenames == files
         
     def test_get_reading_initial_data_line(self, multiDBDData):
         # Tests whether initial data line can be read if requested.
