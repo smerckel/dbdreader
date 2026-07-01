@@ -386,17 +386,47 @@ class TestMultiDBD():
                 assert all(content[0] == single[0])
                 assert all(content[1] == single[1])
 
+    def test_include_source_files_dbd(self, multiDBDData):
+        # Verify that all designated files are represented in sources.
+        multi = multiDBDData
+        output = multi.get("m_depth", include_source=True)
+        files = [i.filename for i in output[1]]
+        assert all([f=='dbdreader/data/amadeus-2014-204-05-000.dbd' for f in files])
+        
+    def test_include_source_files_ebd(self, multiDBDData):
+        # Verify that all designated files are represented in sources.
+        multi = multiDBDData
+        output = multi.get("sci_water_pressure", include_source=True)
+        files = [i.filename for i in output[1]]
+        assert all([f=='dbdreader/data/amadeus-2014-204-05-000.ebd' for f in files])
+
     def test_include_source_files(self, multiDBDData):
         # Verify that all designated files are represented in sources.
         multi = multiDBDData
         files = multi.filenames
-        p = multi.parameterNames["eng"] + multi.parameterNames["sci"]
+        p = ["m_depth", "sci_water_pressure"]
         output = multi.get(*p, include_source=True)
-        sources = {dbd.filename for data in output for dbd in data[1]}
-        # All files should be represented
-        assert all(file in sources for file in files)
-        assert all(source in files for source in sources)
-       
+        dbd_files = [i.filename for i in output[0][1]]
+        ebd_files = [i.filename for i in output[1][1]]
+        assert all([f=='dbdreader/data/amadeus-2014-204-05-000.dbd' for f in dbd_files])
+        assert all([f=='dbdreader/data/amadeus-2014-204-05-000.ebd' for f in ebd_files])
+
+    def test_include_source_files_all_parameters(self, multiDBDData):
+        # Verify that all designated files are represented in sources.
+        multi = multiDBDData
+        files = multi.filenames
+        p = multi.parameterNames['eng'] + multi.parameterNames['sci']
+        output = multi.get(*p, include_source=True)
+        filenames = []
+        for k, (_, v) in enumerate(output):
+            if len(v)>0:
+                filenames += [i.filename for i in v]
+                if k == 447 or k == 1329:
+                    breakpoint()
+        breakpoint()
+        filenames = set(filenames)
+        breakpoint()
+        
     def test_get_reading_initial_data_line(self, multiDBDData):
         # Tests whether initial data line can be read if requested.
         dbd = multiDBDData

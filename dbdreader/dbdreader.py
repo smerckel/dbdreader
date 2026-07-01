@@ -11,9 +11,31 @@ import re
 import datetime
 from calendar import timegm
 from collections import defaultdict, namedtuple
-import _dbdreader
-import dbdreader.decompress
 import logging
+logger = logging.getLogger(os.path.basename(__file__))
+
+import dbdreader.decompress
+
+# If the environment varibale DBDREADER_C_EXTENSION is set to "1", then force to import
+# the C implementation. Let it fail if this is not successful. If not set,
+# *try * to import it, and fallback to the pure python implementation. If the
+# environment variable is set to 0 force to use the pure python implementation.
+
+match(os.environ.get("DBDREADER_C_EXTENSION")):
+    case "1":
+        import _dbdreader
+        logger.debug("Imported C-extension")
+    case "0":
+        import dbdreader._dbdreader as _dbdreader
+        logger.debug("Imported pure python implementation")
+    case _:
+        try:
+            import _dbdreader
+            logger.debug("Imported C-extension")
+        except ImportError:
+            import dbdreader._dbdreader as _dbdreader
+            logger.debug("Imported pure python implementation")
+
 
 # make sure we interpret timestamps in the english language but don't
 # bother if it cannot be import as happens on building doc on readthe
@@ -23,8 +45,6 @@ try:
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 except:
     pass
-
-logger = logging.getLogger(os.path.basename(__file__))
 
 # Parameters that a compatible with transforming from nmea to decimal format:
 LATLON_PARAMS = ["m_lat",

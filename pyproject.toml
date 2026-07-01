@@ -55,7 +55,7 @@ dbdreader = ["data/*"]
 filterwarnings = "always::UserWarning"
 #addopts = "--markdown-docs-syntax=superfences"
 log_cli = false
-log_cli_level = "WARNING"
+log_cli_level = "DEBUG"
 
 [tool.black]
 line-length = 88
