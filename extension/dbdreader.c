@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 #include "dbdreader.h"
@@ -19,8 +20,9 @@ static unsigned char read_known_cycle(FILE *fd);
 
 static int read_state_bytes(int *vi,
 			    int nvt,
+			    int *lookup,
 			    file_info_t FileInfo,
-			    signed *offsets, 
+			    signed *offsets,
 			    unsigned *chunksize);
 
 static void get_by_read_per_byte(int ti,
@@ -33,17 +35,14 @@ static void get_by_read_per_byte(int ti,
 				 int skip_initial_line,
 				 int max_values_to_read);
 
-static double read_sensor_value(FILE *fd,
-				int bs, unsigned char flip);
+static double extract_sensor_value(unsigned char *buf,
+				   int bs, unsigned char flip);
 
 static void add_to_array(double t,
 			 double x,
 			 double **r,
 			 int size);
 
-static int contains(int q,
-		    int list[],
-		    int n);
 
 
 /* Public functions */
@@ -203,28 +202,45 @@ static void get_by_read_per_byte(int nti,
   unsigned chunksize;
   signed *offsets;
   unsigned *byteSizes;
-  
+
   int r;
   int fp_end, fp_current;
   int i,j;
 
   double *read_result;
   double *memory_result;
-  int *read_vi;
+  int *lookup;
+  unsigned char *chunk;
+  unsigned max_chunksize;
 
   int min_offset_value;
   int write_data = !skip_initial_line; // 0: only first line is not output; 1: all lines are output
-  
+
   if (return_nans==1)
     min_offset_value=-2; // include the notfound/samevalue/update
   else
     min_offset_value=-1; // include samevalue/update
-  
+
   byteSizes=(unsigned *)malloc(nv*sizeof(unsigned));
   offsets=(signed *)malloc(nv*sizeof(signed));
   read_result=(double *)malloc(nv*sizeof(double));
   memory_result=(double *)malloc(nv*sizeof(double));
-  read_vi=(int *)malloc(nv*sizeof(int));
+
+  /* build O(1) reverse-lookup: sensor index -> position in vi (-1 if not requested).
+     Size covers all state byte slots (n_state_bytes * 4), which may exceed n_sensors
+     when the last byte is not fully used. */
+  int n_sensor_slots = FileInfo.n_state_bytes * (bits_per_byte / bits_per_field);
+  lookup=(int *)malloc(n_sensor_slots*sizeof(int));
+  for(i=0;i<n_sensor_slots;++i)
+    lookup[i]=-1;
+  for(i=0;i<nv;++i)
+    lookup[vi[i]]=i;
+
+  /* preallocate a chunk buffer large enough for a fully-updated cycle */
+  max_chunksize=0;
+  for(i=0;i<FileInfo.n_sensors;++i)
+    max_chunksize+=FileInfo.byteSizes[i];
+  chunk=(unsigned char *)malloc(max_chunksize*sizeof(unsigned char));
 
   /* setting for variables AND time:*/
   for(i=0;i<nv-1;++i){ /* no time */
@@ -239,7 +255,7 @@ static void get_by_read_per_byte(int nti,
   /* look up the end of the file: */
   fseek(FileInfo.fd,0,2);
   fp_end=ftell(FileInfo.fd);
-  
+
   /* start where binary data begin: */
   fseek(FileInfo.fd,
   	FileInfo.bin_offset,0);
@@ -248,18 +264,21 @@ static void get_by_read_per_byte(int nti,
   unsigned char flip = read_known_cycle(FileInfo.fd);
 
   while (1){
-    r=read_state_bytes(vi,nv,FileInfo,offsets,&chunksize);
+    r=read_state_bytes(vi,nv,lookup,FileInfo,offsets,&chunksize);
     fp_current=ftell(FileInfo.fd);
+
+    /* read the entire data section of this cycle in one call */
+    if (chunksize>0)
+      fread(chunk, 1, chunksize, FileInfo.fd);
+
     if (r>=1) {
       /* we found (some of) the values we want to read (at least 1) */
 
       for(i=0; i<nv; i++){
 	if (offsets[i]>=0){
-	  /* found an updated value */
-	  fseek(FileInfo.fd,
-		fp_current+offsets[i],0);
-	  read_result[i]=read_sensor_value(FileInfo.fd,
-					   byteSizes[i], flip);
+	  /* found an updated value: extract from in-memory chunk */
+	  read_result[i]=extract_sensor_value(chunk+offsets[i],
+					      byteSizes[i], flip);
 	  memory_result[i]=read_result[i];
 	}
 	else if (offsets[i]==-1){
@@ -273,7 +292,7 @@ static void get_by_read_per_byte(int nti,
 	  read_result[i]=FILLVALUE;
 	}
       }
-      
+
       if (write_data){
 	for(i=0; i<nv; i++){
 	  if ((offsets[i]>=min_offset_value) && (i!=nti)){// && isfinite(read_result[i])){
@@ -303,13 +322,15 @@ static void get_by_read_per_byte(int nti,
   free(offsets);
   free(read_result);
   free(memory_result);
-  free(read_vi);
+  free(lookup);
+  free(chunk);
 }
 
 static int read_state_bytes(int *vi,
 			    int nvt,
+			    int *lookup,
 			    file_info_t FileInfo,
-			    signed *offsets, 
+			    signed *offsets,
 			    unsigned *chunksize)
 {
 
@@ -321,7 +342,7 @@ static int read_state_bytes(int *vi,
   int variable_index;
   int variable_counter;
   int idx;
-  
+
   bitshift=bits_per_byte - bits_per_field;
   fields_per_byte=bits_per_byte/bits_per_field;
 
@@ -338,9 +359,9 @@ static int read_state_bytes(int *vi,
       field=(c>>bitshift) & mask;
       c<<=bits_per_field;
       if (field == UPDATED) {
-	idx=contains(variable_index,vi,nvt);
+	idx=lookup[variable_index];
 	if (idx!=-1){
-	  /* the update value is one of the wanted variables 
+	  /* the update value is one of the wanted variables
 	     so record its position */
 	  offsets[idx]=*chunksize;
 	  variable_counter+=1;
@@ -348,7 +369,7 @@ static int read_state_bytes(int *vi,
 	*chunksize+=FileInfo.byteSizes[variable_index];
       }
       else if (field==SAME) {
-	idx=contains(variable_index,vi,nvt);
+	idx=lookup[variable_index];
 	if (idx!=-1){
 	  /* this variable is asked for but has an old value.
 	     Therefore it is not being read. Offset marked -1*/
@@ -357,7 +378,7 @@ static int read_state_bytes(int *vi,
 	}
       }
       else if (field==NOTSET) {
-	idx=contains(variable_index,vi,nvt);
+	idx=lookup[variable_index];
 	if (idx!=-1){
 	  /* this variable is asked for but has no value set.
 	     Therefore it is not being read. Offset marked -2*/
@@ -384,23 +405,8 @@ static int read_state_bytes(int *vi,
   return (variable_counter);
 }
 
-static int contains(int q,
-		    int list[],
-		    int n)
-{
-  int i;
-  int r=-1;
-  for (i=0;i<n;i++){
-    if(q==list[i]){
-      r=i;
-      break;
-    }
-  }
-  return r;
-}
-
-static double read_sensor_value(FILE *fd,
-				int bs, unsigned char flip)
+static double extract_sensor_value(unsigned char *buf,
+				   int bs, unsigned char flip)
 {
   signed char   sc;
   signed short  ss;
@@ -409,28 +415,25 @@ static double read_sensor_value(FILE *fd,
   double value;
   switch (bs){
   case sizeof(char):
-    fread((void*)(&sc), sizeof(sc), 1, fd);
+    memcpy(&sc, buf, sizeof(sc));
     value = (double) sc;
     break;
   case sizeof(short):
-    fread((void*)(&ss), sizeof(ss), 1, fd);
-    if (flip == 1) {
+    memcpy(&ss, buf, sizeof(ss));
+    if (flip == 1)
       ss = bswap_s(ss);
-    }
     value = (double) ss;
     break;
   case sizeof(float):
-    fread((void*)(&sf), sizeof(sf), 1, fd);
-    if (flip == 1) {
-       sf = bswap_f(sf);
-    }
+    memcpy(&sf, buf, sizeof(sf));
+    if (flip == 1)
+      sf = bswap_f(sf);
     value = (double) sf;
     break;
   case sizeof(double):
-    fread((void*)(&sd), sizeof(sd), 1, fd);
-    if (flip == 1) {
+    memcpy(&sd, buf, sizeof(sd));
+    if (flip == 1)
       sd = bswap_d(sd);
-    }
     value = sd;
     break;
   default:
