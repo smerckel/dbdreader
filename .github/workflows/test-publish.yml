@@ -27,7 +27,7 @@ jobs:
           CIBW_BEFORE_BUILD_MACOS: "pip install uv && uv pip install -e ."
           CIBW_BEFORE_BUILD_WINDOWS: "pip install uv && uv pip install -e ."
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           path: ./wheelhouse/*.whl
 
@@ -44,7 +44,7 @@ jobs:
       - name: Build sdist
         run: uv build --sdist
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
 
@@ -52,7 +52,7 @@ jobs:
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           path: dist
 
