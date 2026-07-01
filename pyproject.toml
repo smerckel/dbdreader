@@ -41,9 +41,6 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-ext-modules = [
-	    {name = "_dbdreader", sources = ["extension/py_dbdreader.c", "extension/dbdreader.c", "extension/decompress.c"], include-dirs = ["extension/include"]}
-]	    
 packages = ["dbdreader"]
 include-package-data = false
 
@@ -54,8 +51,8 @@ dbdreader = ["data/*"]
 [tool.pytest.ini_options]
 filterwarnings = "always::UserWarning"
 #addopts = "--markdown-docs-syntax=superfences"
-log_cli = false
-log_cli_level = "WARNING"
+log_cli = true
+log_cli_level = "DEBUG"
 
 [tool.black]
 line-length = 88
