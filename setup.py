@@ -1,10 +1,34 @@
 import sys
 import os
 import re
+import warnings
 
 import glob
 
 import setuptools
+from setuptools.command.build_ext import build_ext
+from distutils.errors import CCompilerError, DistutilsExecError, DistutilsPlatformError
+
+
+class OptionalBuildExt(build_ext):
+    def run(self):
+        try:
+            super().run()
+        except Exception:
+            pass  # warning already issued in build_extension
+
+    def build_extension(self, ext):
+        try:
+            super().build_extension(ext)
+        except Exception as e:
+            warnings.warn(
+                f"\nC extension build failed: {e}\n"
+                "dbdreader will fall back to the pure Python implementation, which is slower.\n",
+                stacklevel=2,
+            )
+            # Remove the extension so the post-build copy step does not look
+            # for a .so that was never created.
+            self.extensions = [x for x in self.extensions if x != ext]
 
 with open("dbdreader/__init__.py", "r") as fh:
     while fh:
@@ -130,6 +154,7 @@ setuptools.setup(
                   },
     scripts=[],
     install_requires=install_requires,
+    cmdclass={'build_ext': OptionalBuildExt},
     ext_modules=[
            setuptools.Extension("_dbdreader",
                                 sources=sources,
