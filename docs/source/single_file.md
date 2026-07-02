@@ -1,8 +1,6 @@
-Class DBD : reading single files
-********************************
+# Class DBD : reading single files
 
-DBD API
-=======
+## DBD API
 
 The DBD class is designed to be used with a single file, either a dbd
 (sbd) or ebd (tbd) file. The actual reading of the binary files if
@@ -18,35 +16,36 @@ some sensors that are set once, and never update. Dropping the first
 data entry, also drops this information. Therefore, for specific or
 debugging purposes, the default behaviour can be altered to also
 include the first data entries of all sensors, by setting the optional
-keyword ``skip_initial_line`` to False, when calling the constructor.
+keyword `skip_initial_line` to False, when calling the constructor.
 
-.. autoclass:: dbdreader.DBD
-   :members: 
-   
-DBD Example
-===========
-::
+```{autoclass} dbdreader.DBD
+:members:
+```
 
-   import numpy as np
-   import dbdreader
+## DBD Example
 
-   # open a given file
-   dbd=dbdreader.DBD("data/amadeus-2014-204-05-000.sbd")
+```python
+import numpy as np
+import dbdreader
 
-   # print what parameters are available:
-   for i,p in enumerate(dbd.parameterNames):
-       print("%2d: %s"%(i,p))
+# open a given file
+dbd=dbdreader.DBD("data/amadeus-2014-204-05-000.sbd")
 
-   # get the measured depth
-   tm,depth=dbd.get("m_depth")
+# print what parameters are available:
+for i,p in enumerate(dbd.parameterNames):
+    print("%2d: %s"%(i,p))
 
-   # print maximum depth
-   max_depth=depth.max()
-   print("\nmax depth %f m"%(max_depth))
+# get the measured depth
+tm,depth=dbd.get("m_depth")
 
-   # get lat lon
-   lat,lon=dbd.get_xy("m_lat","m_lon")
+# print maximum depth
+max_depth=depth.max()
+print("\nmax depth %f m"%(max_depth))
 
-   # interpolate roll speed on depth time
-   tm,depth,roll,speed=dbd.get_sync("m_depth","m_roll","m_speed")
-   print("\nmax speed %f m/s"%(np.nanmax(speed)))
+# get lat lon
+lat,lon=dbd.get_xy("m_lat","m_lon")
+
+# interpolate roll speed on depth time
+tm,depth,roll,speed=dbd.get_sync("m_depth","m_roll","m_speed")
+print("\nmax speed %f m/s"%(np.nanmax(speed)))
+```

@@ -44,13 +44,23 @@ __version__ = version_match.group(1).replace('"', '').replace("'", "")
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon',
-              'sphinx_rtd_theme', 'sphinx.ext.ifconfig', 'sphinx.ext.autosectionlabel']
+              'sphinx_rtd_theme', 'sphinx.ext.ifconfig', 'sphinx.ext.autosectionlabel',
+              'myst_parser']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
-# The suffix of source filenames.
-source_suffix = '.rst'
+# The suffix(es) of source filenames.
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
+
+# MyST extensions to enable Sphinx-style roles/directives (autoclass, automodule, etc.)
+# and cross references (:ref:, :class:, :func:) from within Markdown files.
+myst_enable_extensions = [
+    "colon_fence",
+]
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
