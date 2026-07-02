@@ -9,8 +9,9 @@ As for single dbd files, using the class {class}`dbdreader.DBD`, the behaviour
 of the binary reader can be modified using the `skip_initial_line`
 keyword to the constructor. See also {ref}`Class DBD : reading single files`.
 
-```{autoclass} dbdreader.MultiDBD
-:members:
+```{eval-rst}
+.. autoclass:: dbdreader.MultiDBD
+   :members:
 ```
 
 ## MultiDBD Example

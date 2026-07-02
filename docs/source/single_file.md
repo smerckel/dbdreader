@@ -19,8 +19,9 @@ debugging purposes, the default behaviour can be altered to also
 include the first data entries of all sensors, by setting the optional
 keyword `skip_initial_line` to False, when calling the constructor.
 
-```{autoclass} dbdreader.DBD
-:members:
+```{eval-rst}
+.. autoclass:: dbdreader.DBD
+   :members:
 ```
 
 ## DBD Example

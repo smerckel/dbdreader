@@ -12,6 +12,8 @@ ctd
 interpolating_function_factory
 selecting_files
 selecting_timerange
+cache_files_and_sorting
+errors
 modules
 ```
 

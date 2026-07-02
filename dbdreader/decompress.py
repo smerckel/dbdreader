@@ -163,6 +163,19 @@ def decompress_file(filename):
     return FileDecompressor().decompress(filename)
 
 def is_compressed(filename):
+    ''' Checks whether a filename indicates an lz4-compressed glider data file.
+
+    Parameters
+    ----------
+    filename : str
+        filename to check
+
+    Returns
+    -------
+    bool
+        True if the file extension indicates a compressed
+        [demnst]bd/[demnst]cg file, False otherwise.
+    '''
     [basename,ext]=os.path.splitext(filename)
     # all compressed [demnst]bd files end in [demnst]cd
     return bool(re_match("[demnst]c[dg]$", ext))
@@ -172,21 +185,45 @@ class BytesIORW:
     ''' Helper class implementing a BytesIO buffer that can be written to and read from.
 
     Note that the methods write() and readline() are implemented only.
+
+    Parameters
+    ----------
+    source : iterator of bytes
+        iterator (typically a decompressed-blocks generator) that
+        readline() draws from once the buffer is exhausted.
     '''
     def __init__(self, source):
         self.bytesIO = ioBytesIO()
         self.pointer_start = 0
         self.pointer_end = 0
         self.source = source
-        
+
     def write(self, b):
+        ''' Writes bytes to the buffer.
+
+        Parameters
+        ----------
+        b : bytes
+            data to append to the buffer. The read pointer is reset to
+            the start of the newly written data.
+        '''
         self.pointer_start = self.bytesIO.tell()
         self.bytesIO.write(b)
         self.pointer_end = self.bytesIO.tell()
         self.bytesIO.seek(self.pointer_start)
         self.is_exhausted = False
-        
+
     def readline(self):
+        ''' Reads a single line from the buffer.
+
+        If the buffer is exhausted, the next block is pulled from
+        ``source`` and appended before returning.
+
+        Returns
+        -------
+        bytes
+            a single line, or an empty bytes object if source is exhausted.
+        '''
         line = self.bytesIO.readline()
         pointer = self.bytesIO.tell()
         if pointer == self.pointer_end:
@@ -207,8 +244,14 @@ class CompressedFile:
 
     The main reason for the class is to be able to read the header of a compressed
     glider data file.
+
+    Parameters
+    ----------
+    filename : str
+        name of the compressed file to read. This class is designed to
+        be used within a context manager, which opens the file.
     '''
-    
+
 
     def __init__(self, filename):
         self.filename = filename
@@ -221,15 +264,29 @@ class CompressedFile:
         self.bytesIO = BytesIORW(source)
         return self
 
-    
+
     def __exit__(self, *p, **kwds):
         self.fp.close()
 
     def readline(self):
+        ''' Reads and decompresses a single line from the file.
+
+        Returns
+        -------
+        bytes
+            a single decompressed line, or an empty bytes object at end of file.
+        '''
         line = self.bytesIO.readline()
         return line
-    
+
     def readlines(self):
+        ''' Generator that reads and decompresses the file line by line.
+
+        Yields
+        ------
+        bytes
+            a single decompressed line.
+        '''
         while True:
             line = self.readline()
             if not line:
@@ -237,11 +294,25 @@ class CompressedFile:
             yield line
 
     def seek(self, offset):
+        ''' Sets the read position in the (decompressed, buffered) data.
+
+        Parameters
+        ----------
+        offset : int
+            absolute byte position to seek to.
+        '''
         return self.bytesIO.bytesIO.seek(offset)
 
     def tell(self):
+        ''' Returns the current read position in the (decompressed, buffered) data.
+
+        Returns
+        -------
+        int
+        '''
         return self.bytesIO.bytesIO.tell()
-    
+
 
     def close(self):
+        ''' Closes the underlying compressed file. '''
         self.fp.close()

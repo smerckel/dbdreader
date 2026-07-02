@@ -183,6 +183,20 @@ DBD_ERROR_DECOMPRESSION_ERROR = 15
 
 
 class DbdError(Exception):
+    '''Exception raised for all dbdreader errors.
+
+    Parameters
+    ----------
+    value: int, optional
+        one of the DBD_ERROR_* constants defined in this module,
+        identifying the kind of error that occurred.
+    mesg: str or None, optional
+        additional, free-form message appended to the standard
+        message associated with ``value``.
+    data: object or None, optional
+        optional payload with extra information about the error, for
+        example a :class:`DbdError.MissingCacheFileData` namedtuple.
+    '''
     MissingCacheFileData = namedtuple('MissingCacheFileData',
                                       'missing_cache_files cache_dir')
 
@@ -420,6 +434,8 @@ class DBDPatternSelect(object):
     ----------
     date_format : str, optional
          date format used to interpret date strings.
+    cacheDir : str or None, optional
+         path to CAC file cache directory. If None, the default path is used.
 
     Note
     ----
@@ -441,9 +457,6 @@ class DBDPatternSelect(object):
         ----------
         date_format: str
             format to interpret date strings. Example "%H %d %m %Y"
-
-        cachedDir: str or None, optional
-            path to CAC file cache directory. If None, the default path is used.
 
         '''
         self.date_format=date_format
@@ -638,6 +651,13 @@ class DBDHeader(object):
 
     @property
     def factored(self):
+        ''' Value of the sensor_list_factored header field, or None if
+        the header has not been read yet.
+
+        Returns
+        -------
+        int or None
+        '''
         try:
             r = self.info['sensor_list_factored']
         except KeyError:
@@ -686,9 +706,23 @@ class DBDHeader(object):
         self.info['parameter_list'] = all_parameter_names
         return parameter
 
-    # private methods
     def parse(self,line):
-        # parses a binary datastream. So, first decode it to ascii.
+        ''' Parses a single header line.
+
+        Decodes a binary header line and, if it names a recognised
+        header keyword, stores the corresponding value in ``self.info``.
+
+        Parameters
+        ----------
+        line : bytes
+            single header line, as read from the binary file.
+
+        Returns
+        -------
+        str
+            the keyword parsed from the line. If the keyword is
+            recognised, its value is also stored in ``self.info``.
+        '''
         words=line.decode('ascii').rstrip().split(":")
         param=words[0]
         if param in self.keywords.keys():
@@ -709,7 +743,7 @@ class DBD(object):
     filename: str
         dbd filename
 
-    cachedDir: str or None, optional
+    cacheDir: str or None, optional
         path to CAC file cache directory. If None, the default path is used.
 
     skip_initial_line : bool, default: True
@@ -1292,7 +1326,7 @@ class MultiDBD(object):
     missions: list of str
         List of missions names that should be considered only.
 
-    maxfiles: int
+    max_files: int
        maximum number of files to be read, where
         >0: the first n files are read
         <0: the last n files are read.

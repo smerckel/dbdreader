@@ -16,7 +16,7 @@ For example:
 ```python
 import dbdreader
 
-ps = dbdreader.PatternSelect()
+ps = dbdreader.DBDPatternSelect()
 
 # By default, dates are entered in "%d %m %Y"-format. Let's change
 # that to be able to specify a specific time:
@@ -31,18 +31,18 @@ data = dbdreader.MultiDBD(filenames)
 
 Besides specifying the `from_date` we could also additionally
 specify the `until_date`, see also
-{func}`dbdreader.PatternSelect.select`.
+{func}`dbdreader.DBDPatternSelect.select`.
 
 ## Binning files
 
 A other use of this class is to bin files in sections of a specific
-duration. To that end we can use the {func}`dbdreader.PatternSelect.bins`,
+duration. To that end we can use the {func}`dbdreader.DBDPatternSelect.bins`,
 for example:
 
 ```python
 import dbdreader
 
-ps = dbdreader.PatternSelect()
+ps = dbdreader.DBDPatternSelect()
 
 binned_filenames = ps.bins(pattern="data/amadeus*.[st]bd", binsize=86400)
 
