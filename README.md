@@ -14,6 +14,17 @@ binary files, so that they can be further analysed.
 
 ## Change log
 
+### Version 6.0.0
+
+* Offers a python only implementation, alongside the C-extension to
+  read the binary files. At the expense of processing speed, no
+  compiler is required to use this package.
+  
+* a github workflow is implemented that generates pre-compiled wheels
+  for linux and windows platforms for python version 3.10, 3.11, 3.12
+  and 3.13.
+  
+
 ### version 0.5.9
 
 * Handles reading errors that can occur when a compressed file turns
