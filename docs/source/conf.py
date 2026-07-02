@@ -12,7 +12,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os, re
+import sys, os
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -23,18 +23,8 @@ import dbdreader
 
 autodoc_mock_imports = ["_dbdreader"]
 
-with open("../../dbdreader/__init__.py", "r") as fh:
-    while fh:
-        line = fh.readline().strip()
-        if '__version__' in line:
-            break
+__version__ = dbdreader.__version__
 
-version_match = re.match(r'^__version__\s*=\s*(.*)$', line)
-if not version_match:
-    raise ValueError("Could not determine version")
-
-__version__ = version_match.group(1).replace('"', '').replace("'", "")
-   
 
 # -- General configuration -----------------------------------------------------
 
@@ -60,7 +50,14 @@ source_suffix = {
 # and cross references (:ref:, :class:, :func:) from within Markdown files.
 myst_enable_extensions = [
     "colon_fence",
+    "substitution",
 ]
+
+# Substitutions available as {{ key }} in any .md file, e.g. {{ version }}.
+myst_substitutions = {
+    "version": __version__,
+    "release": __version__,
+}
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
