@@ -20,7 +20,9 @@ or multiple binaries. The package lets you, for example,
 
 ## Installing dbdreader
 
-dbdreader is written for python3. Python2.7 is not supported.
+dbdreader is written for python3. Python2.7 is not
+supported. Currently, python versions 3.10, 3.11, 3.12 and 3.13 are
+supported.
 
 The code is developed at github
 (https://github.com/smerckel/dbdreader) from where you can get the
@@ -30,22 +32,48 @@ Alternatively, the latest dbdreader package is available from the
 python package index (https://pypi.python.org), so that you can
 install it using pip.
 
+
+The dbdreader module contains a C extension. All versions up to 0.5.x
+require a C-compiler to be available to build the package, either from
+source or using pip. From version 0.6.0 onwards, a python only
+fallback option is available. Installing the package, without a
+C-compiler available on the system will issue a message regarding the
+subject, but it will not fail. At run-time, the slower pure python
+implementation will be used to read the binary files.
+
+For linux and windows wheels are provided for x86_64 systems, which
+would let pip install the package with a compiled C-extension by default. 
+
+Furthermore, as of version 0.5.1, dbdreader is able
+to uncompress lz4-compressed data files, which requires the lz4
+library and header files. If system libraries are available, they will
+be used. If not, for example on Windows, the library will be built
+from the code shipped with dbdreader.
+
+
+### Requirements for compiling C-extension
+
+| OS      | Command                                    |
+|---------|---------------------------------------------|
+| Fedora  | `dnf install gcc lz4-libs lz4-devel`         |
+| Ubuntu  | `apt-get install gcc liblz4-1 liblz4-dev`    |
+| Windows | Microsoft C++ build tools                    |
+
+
+### Installation using pip
 Install using pip:
 
 ```
 pip install dbdreader
 ```
 
-The dbdreader module contains a C extension, which requires a compiler
-to be installed. Furthermore, as of version 0.5.1, dbdreader is able
-to uncompress lz4-compressed data files, which requires the lz4
-library and header files.
+will install dbdreader from a wheel, if possible. To enforce a local
+compilation, use
 
-| OS      | Command                                    |
-|---------|---------------------------------------------|
-| Fedora  | `dnf install gcc lz4-libs lz4-devel`         |
-| Ubuntu  | `apt-get install gcc liblz4-1 liblz4-dev`    |
-| Windows | Microsoft C++ build tools + lz4 ?            |
+```
+pip install --no-binary dbdreader
+```
+
 
 ## Dbdreader quickstart
 
@@ -58,4 +86,110 @@ import dbdreader
 
 dbd = dbdreader.DBD("unit204-2014-212-0-0.dbd")
 t,d = dbd.get("m_depth")
+```
+
+This example opens a single file and the get() method returns a tuple
+of two numpy arrays. The first is a time vector in seconds since 1970
+and the second the value vector, of the glider depth in this case.
+
+Multiple parameters can be requested in a single call.
+```
+depth, pitch = dbd.get("m_depth", "m_pitch")
+```
+
+In this call, both ```depth``` and ```pitch``` are tuples of two numpy
+arrays, containing time and value vectors. Because the glider stores
+the value of its parameters (sensors) only when they are updated, the
+length of two different parameters are generally different. In this
+example, the time vectors for depth and pitch will not be the same.
+
+A convenience method ```dbd.get_sync``` is provided to create equally
+long parameter vectors through interpolation. The example
+```
+timestamps, depth_values, pitch_values = dbd.get("m_depth", "m_pitch")
+```
+returns three numpy arrays, that are equally long. In this case
+```timestamps``` and ```depth_values``` are identical to the variables ```t``` and ```d```,
+respectively, from the first example. The variable ```pitch_values```
+contains a numpy array where the pitch values are interpolated on to
+the time vector of the first parameter, in this case m_depth.
+
+Besides reading multiple parameters, multiple files can also be read
+using the MultiDBD class. A list of filenames or a string using
+wildcards can be used to select the files. For example,
+```
+dbd = dbdreader.MultiDBD("unit204-2014-212.*.[de]dbd")
+t,d = dbd.get("m_depth")
+```
+would read m_depth for all dbd and ebd files that match the pattern
+"unit204-2014-212.*.[de]dbd".
+
+A list of all parameters available can be found through the attribute
+```parameterNames```. For single file objects (DBD) the attribute is a
+list of strings of all parameter names. For the multi file objects
+(MultiDBD), this is a dictionary with keys "eng" and "sci" for
+dbd/mbd/sbd and ebd/nbd/tbd files, respectively. For example:
+```
+dbd.parameterNames['eng']
+```
+returns all available parameters in the dbd files.
+
+
+:::{note}
+If possible dbdreader will use the C-extension to read the binary
+files. As explained above, the pure python fallback option will be
+used if the extension cannot be compiled for whatever reason or there
+is no suitable wheel available. You can use the environment variable
+DBDREADER_C_EXTENSION to use one or the other backend:
+
+```
+DBDREADER_C_EXTENSION=0 # uses pure python backend
+DBDREADER_C_EXTENSION=1 # uses C-extension.
+```
+
+If ```DBDREADER_C_EXTENSION=1``` and the C-extension could not be
+built, then an exception will be thrown.
+:::
+
+## Dbdreader cli commands
+
+The dbdreader package also provides a command 'dbdrename'. This
+utility allows data files to be renamed between the 8x3 filename
+(for example 00030318.dbd) and
+the longfilename (for example unit204-2015-5-0-318.dbd). Usually this is done by the dockserver
+automatically when downloading files, but it can be convenient in some
+cases to do this explicitly. It is unfortunate that the long name
+convention results in filenames that do not sort properly
+alphabetically. For example a sorted list of filenames would put
+unit204-2015-5-0-318.dbd before unit204-2015-40-0-1.dbd. The problem is
+vanishes if the last three fields of the long filename would have
+leading zeros. The dbdrename utility does this by default, but can
+also be used to rename the original formatted long filenames to
+sortable long filenames. 
+
+New from version 0.5.1 is the ability to decompress compressed data
+files.
+
+```text
+usage: dbdrename [-h] [-s] [-n] [-c] [-C] [-x] [-X] [-d] [filenames ...]
+
+Program to rename dbd files and friends from numeric format to long format, or vice versa, or convert the long format into a
+sortable name or the original Webb Research long format, or decompress LZ4 compressed files.
+
+positional arguments:
+  filenames             Filename(s) to process
+
+options:
+  -h, --help            show this help message and exit
+  -s                    Ensures long format filenames are sortable
+  -n                    Keeps the original long format filenames (which do not sort correctly).
+  -c, --convertToSortable
+                        Converts files from original long format to a sortable long format
+  -C, --convertToOriginal
+                        Converts files from a sortable long format to the original long format
+  -x, --decompress      Decompresses LZ4 comrpessed files.
+  -X, --decompressAndRemoveCompressed
+                        Decompresses LZ4 comrpessed files, and removes the compressed file
+  -d, --doNotChangeNameFormat
+                        Does not change the filename format. (Only  useful in combination with -x or -X)
 ```

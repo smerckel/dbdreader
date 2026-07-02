@@ -4,7 +4,8 @@
 
 The DBD class is designed to be used with a single file, either a dbd
 (sbd) or ebd (tbd) file. The actual reading of the binary files if
-offloaded to a C-extension.
+offloaded to a C-extension, or, if not available a pure python
+fallback function.
 
 There is a small issue with the way the glider creates a new
 file. When opening a new file, all sensors are reported as updated,
