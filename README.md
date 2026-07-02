@@ -20,10 +20,11 @@ binary files, so that they can be further analysed.
   read the binary files. At the expense of processing speed, no
   compiler is required to use this package.
   
-* a github workflow is implemented that generates pre-compiled wheels
+* A github workflow is implemented that generates pre-compiled wheels
   for linux and windows platforms for python version 3.10, 3.11, 3.12
   and 3.13.
   
+* Some speed improvements of the C-extenstion
 
 ### version 0.5.9
 
