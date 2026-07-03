@@ -20,7 +20,7 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.23.3
         env:
-          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-*"
+          CIBW_BUILD: "cp311-* cp312-* cp313-*"
           CIBW_SKIP: "*-win32 *_i686 *musllinux*"
 
       - uses: actions/upload-artifact@v4
