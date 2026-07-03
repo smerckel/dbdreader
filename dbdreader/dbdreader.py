@@ -4,7 +4,6 @@ import os
 import struct
 import time
 import numpy
-from scipy.interpolate import interp1d as si_interp1d
 import glob
 import sys
 import re
@@ -306,6 +305,32 @@ def heading_interpolating_function_factory(t, v):
     xi = partial(numpy.interp, xp=t, fp=x, left=numpy.nan, right=numpy.nan)
     yi = partial(numpy.interp, xp=t, fp=y, left=numpy.nan, right=numpy.nan)
     return lambda _t: numpy.arctan2(yi(_t), xi(_t)) % (2*numpy.pi)
+
+
+def _default_interp1d_factory(x, y):
+    '''Default linear interpolating function factory used by get_sync()
+    and get_CTD_sync().
+
+    Equivalent to scipy.interpolate.interp1d(x, y, bounds_error=False,
+    fill_value=numpy.nan), implemented with numpy.interp instead so that
+    dbdreader does not require scipy as a runtime dependency. Callers that
+    want other interpolation schemes (e.g. cubic splines) can still pass
+    their own interpolating_function_factory, importing scipy themselves
+    if needed.
+
+    numpy.interp requires x to be sorted (non-decreasing); scipy's interp1d
+    sorts internally by default (assume_sorted=False), so we do the same
+    here rather than assume the caller's x is already ordered.
+    '''
+    if len(x) < 1:
+        raise ValueError("Interpolation requires at least one data point.")
+    x = numpy.asarray(x)
+    y = numpy.asarray(y)
+    if numpy.any(numpy.diff(x) < 0):
+        idx = numpy.argsort(x)
+        x = x[idx]
+        y = y[idx]
+    return partial(numpy.interp, xp=x, fp=y, left=numpy.nan, right=numpy.nan)
 
 
 class DBDCache(object):
@@ -1631,7 +1656,7 @@ class MultiDBD(object):
         tv = self.get(*parameters, decimalLatLon=decimalLatLon, discardBadLatLon=discardBadLatLon,
                       return_nans=False)
         
-        default_interpolating_function_factory = partial(si_interp1d, bounds_error=False, fill_value=numpy.nan)
+        default_interpolating_function_factory = _default_interp1d_factory
         
         t = tv[0][0]
         r = []

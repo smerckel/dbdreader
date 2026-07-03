@@ -7,17 +7,16 @@ requires-python = ">=3.10"
 authors = [
     {name = "Lucas Merckelbach", email = "lucas.merckelbach@hereon.de"}
 ]
-license = {text = "GPL-3.0"}
+license = {text = "GPL-3.0-or-later"}
 classifiers = [
     "Programming Language :: Python :: 3",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Operating System :: POSIX",
 ]
 dependencies = [
     "lz4>=4.4.5",
     "numpy>=2.2.6",
-    "scipy>=1.15.3",
 ]
 
 
