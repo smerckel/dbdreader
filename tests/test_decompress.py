@@ -1,6 +1,5 @@
 import os
 from hashlib import md5
-from itertools import chain
 
 if not __name__ == '__main__':
     from pytest import fixture
@@ -23,8 +22,8 @@ def load_verification_data():
     with open(filename_verify, 'r') as fp:
         data = fp.read()
     return data
-        
-# Open a file and lazy read block by block. Compares with 
+
+# Open a file and lazy read block by block. Compares with
 # uncompressed file
 #
 def test_read_file(load_verification_data):
@@ -36,7 +35,7 @@ def test_read_file(load_verification_data):
             data += block
     assert data.decode('ascii') == verification_data
 
-# Open a file and decompress whole file. Compares with 
+# Open a file and decompress whole file. Compares with
 # uncompressed file
 #
 def test_read_file_in_memory(load_verification_data):
@@ -46,8 +45,8 @@ def test_read_file_in_memory(load_verification_data):
         data = d.decompress()
     assert data.decode('ascii') == verification_data
 
-# Open a file and decompress first block only. 
-# 
+# Open a file and decompress first block only.
+#
 #
 def test_read_file_one_block_only():
     filename = 'dbdreader/data/01600000.mcg'
@@ -55,7 +54,7 @@ def test_read_file_one_block_only():
         blocks = [block for block in d.decompressed_blocks(n=1)]
     assert len(blocks) == 1
 
-# Open a file and lazy read block by block. Compares with 
+# Open a file and lazy read block by block. Compares with
 # uncompressed file. Instead of using with statement, open file
 # explicitly
 def test_read_file_explicit_file_opener(load_verification_data):
@@ -68,7 +67,7 @@ def test_read_file_explicit_file_opener(load_verification_data):
             data += block
     assert data.decode('ascii') == verification_data
 
-# Open a file and decompress whole file. Compares with 
+# Open a file and decompress whole file. Compares with
 # uncompressed file. Instead of using with statement, open file
 # explicitly
 def test_read_file_in_memory_explicit_file_opener(load_verification_data):
@@ -130,8 +129,8 @@ def test_extension_generator_with_invalid_extension():
         s = fd._generate_filename_for_output('01600000.cd')
 
 
-        
-# Open a file and lazy read block by block. Check cac filesCompares with 
+
+# Open a file and lazy read block by block. Check cac filesCompares with
 # uncompressed file
 #
 def test_read_ccc_file():
@@ -167,8 +166,8 @@ def test_CompressedFileReadlines(load_verification_data):
         data = b"".join(lines)
     assert data.decode('ascii') == verification_data
 
-    
-    
+
+
 # Test reading of data/01600001.dcd and check it is identical to data/01600001.dbd
 def test_read_compressed_file_C_code():
     compressed_filename = 'dbdreader/data/01600001.dcd'
@@ -178,7 +177,7 @@ def test_read_compressed_file_C_code():
     compressed_data = compressed_dbd.get("m_depth")
     regular_data = regular_dbd.get("m_depth")
     assert np.all(compressed_data[0]==regular_data[0]) and np.all(compressed_data[1]==regular_data[1])
-    
+
 # Test reading of data/0160000?.dcd MultiDBD
 def test_read_compressed_files_C_code():
     pattern = 'dbdreader/data/0160000?.dcd'
@@ -193,7 +192,7 @@ def test_missing_cac_file_for_single_compressed_file():
         os.unlink('dbdreader/data/cac/daad1b20.cac')
     except:
         pass
-    
+
     with pytest.raises(dbdreader.DbdError):
         dbd = dbdreader.DBD('dbdreader/data/01600000.ecd', cacheDir='dbdreader/data/cac')
 
@@ -203,7 +202,7 @@ def test_missing_cac_file_for_compressed_file_multidbd():
         os.unlink('dbdreader/data/cac/daad1b20.cac')
     except:
         pass
-    
+
     dbd = dbdreader.MultiDBD('dbdreader/data/0160000?.ecd', cacheDir='dbdreader/data/cac')
     assert os.path.exists('dbdreader/data/cac/daad1b20.cac')
 
@@ -227,7 +226,23 @@ def test_handle_corrupt_compressed_file_multidbd():
     data_both = dbd.get("sci_water_temp", "sci_water_cond", continue_on_reading_error=True)
     dbd = dbdreader.DBD('dbdreader/data/02380107.ecd', cacheDir='dbdreader/data/cac')
     data_one = dbd.get("sci_water_temp", "sci_water_cond")
-    assert np.all([np.all(x==y) for x, y in zip(chain(*data_both), chain(*data_one))])
+    labels = [
+        "time[sci_water_temp]",
+        "sci_water_temp",
+        "time[sci_water_cond]",
+        "sci_water_cond",
+    ]
+    assert len(data_both) == len(data_one), (
+        f"Returned tuple length differs: {len(data_both)} vs {len(data_one)}"
+    )
+
+    for idx, (arr_both, arr_one) in enumerate(zip(data_both, data_one)):
+        label = labels[idx] if idx < len(labels) else f"output[{idx}]"
+        np.testing.assert_array_equal(
+            arr_both,
+            arr_one,
+            err_msg=f"Mismatch in {label}",
+        )
 
 
 # Test handling of files that fail to decompress properly
@@ -236,7 +251,7 @@ def test_handle_failing_decompression_multidbd():
     t, T = dbd.get("sci_water_temp")
     # we should get 126 values
     assert len(t) == 126
-    
+
 
 # Test handling of files that fail to decompress properly
 def test_handle_failing_decompression_dbd():
@@ -244,7 +259,7 @@ def test_handle_failing_decompression_dbd():
     with pytest.raises(dbdreader.DbdError) as e:
         dbd = dbdreader.DBD('dbdreader/data/02450137.tcd', cacheDir='dbdreader/data/cac')
     assert e.value.value == dbdreader.DBD_ERROR_DECOMPRESSION_ERROR
-    
 
-    
-        
+
+
+
