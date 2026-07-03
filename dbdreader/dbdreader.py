@@ -322,8 +322,8 @@ def _default_interp1d_factory(x, y):
     sorts internally by default (assume_sorted=False), so we do the same
     here rather than assume the caller's x is already ordered.
     '''
-    if len(x) < 2:
-        raise ValueError("Interpolation requires at least two data points.")
+    if len(x) < 1:
+        raise ValueError("Interpolation requires at least one data point.")
     x = numpy.asarray(x)
     y = numpy.asarray(y)
     if numpy.any(numpy.diff(x) < 0):
