@@ -14,6 +14,10 @@ binary files, so that they can be further analysed.
 
 ## Change log
 
+### Version 6.0.1
+
+* Drops dependency on scipy.
+
 ### Version 6.0.0
 
 * Offers a python only implementation, alongside the C-extension to
