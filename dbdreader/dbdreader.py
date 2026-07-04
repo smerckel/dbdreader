@@ -5,6 +5,7 @@ import struct
 import time
 import numpy
 import glob
+import fnmatch
 import sys
 import re
 import datetime
@@ -407,6 +408,33 @@ class DBDCache(object):
     
 
 
+def _glob(pattern):
+    ''' Case-sensitive glob.
+
+    glob.glob() matches filenames case-insensitively on platforms with a
+    case-insensitive filesystem (notably Windows). For glider data files
+    this is a problem: lower and upper case extensions (.sbd/.SBD,
+    .tbd/.TBD, and so on) denote different (full resolution vs.
+    compact/telemetered) data files and must not be confused. This
+    wrapper filters glob.glob()'s result so that only names matching the
+    pattern case-sensitively are kept, giving the same result on every
+    platform.
+
+    Parameters
+    ----------
+    pattern : str
+        search pattern, as passed to glob.glob()
+
+    Returns
+    -------
+    list of str
+        filenames matching pattern, case-sensitively.
+    '''
+    normalised_pattern = os.path.normpath(pattern)
+    return [fn for fn in glob.glob(pattern)
+            if fnmatch.fnmatchcase(os.path.normpath(fn), normalised_pattern)]
+
+
 class DBDList(list):
 
     ''' List that properly sorts dbd files.
@@ -621,7 +649,7 @@ class DBDPatternSelect(object):
         if not pattern and not filenames:
             raise ValueError("Expected some pattern to search files for or file list.")
         if pattern:
-            all_filenames=DBDList(glob.glob(pattern))
+            all_filenames=DBDList(_glob(pattern))
         elif filenames:
             all_filenames=DBDList(filenames)
         else:
@@ -1403,7 +1431,7 @@ class MultiDBD(object):
         if filenames:
             fns+=filenames
         if pattern:
-            fns+=glob.glob(pattern)
+            fns+=_glob(pattern)
         if len(fns)==0:
             raise DbdError(DBD_ERROR_NO_FILES_FOUND)
         fns.sort()
