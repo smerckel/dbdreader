@@ -431,8 +431,13 @@ def _glob(pattern):
         filenames matching pattern, case-sensitively.
     '''
     normalised_pattern = os.path.normpath(pattern)
-    return [fn for fn in glob.glob(pattern)
-            if fnmatch.fnmatchcase(os.path.normpath(fn), normalised_pattern)]
+    matches = [fn for fn in glob.glob(pattern)
+               if fnmatch.fnmatchcase(os.path.normpath(fn), normalised_pattern)]
+    # glob.glob() returns filenames built with the OS-native separator
+    # (e.g. backslashes on Windows), even when the pattern itself uses
+    # forward slashes. Normalise to forward slashes so that filenames
+    # are stable and comparable across platforms.
+    return [fn.replace(os.sep, '/') for fn in matches]
 
 
 class DBDList(list):
