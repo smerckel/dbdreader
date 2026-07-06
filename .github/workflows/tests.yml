@@ -1,0 +1,65 @@
+name: Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / py${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      # setuptools isn't a runtime/dev dependency, only needed transiently
+      # to drive build_ext here.
+      - name: Build C extension in place
+        run: uv run --with setuptools python setup.py build_ext --inplace
+
+      - name: Confirm C extension is importable
+        shell: bash
+        run: uv run python -c "import _dbdreader; print('C extension:', _dbdreader.__file__)"
+
+      - name: Run tests (C extension)
+        shell: bash
+        env:
+          DBDREADER_C_EXTENSION: "1"
+        run: uv run pytest tests -v
+
+      - name: Run tests (pure-Python fallback)
+        shell: bash
+        env:
+          DBDREADER_C_EXTENSION: "0"
+        run: uv run pytest tests -v
+
+  docs:
+    name: Build docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Build Sphinx docs
+        run: uv run sphinx-build -W -b html docs/source docs/build/html

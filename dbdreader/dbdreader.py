@@ -5,6 +5,7 @@ import struct
 import time
 import numpy
 import glob
+import fnmatch
 import sys
 import re
 import datetime
@@ -407,6 +408,38 @@ class DBDCache(object):
     
 
 
+def _glob(pattern):
+    ''' Case-sensitive glob.
+
+    glob.glob() matches filenames case-insensitively on platforms with a
+    case-insensitive filesystem (notably Windows). For glider data files
+    this is a problem: lower and upper case extensions (.sbd/.SBD,
+    .tbd/.TBD, and so on) denote different (full resolution vs.
+    compact/telemetered) data files and must not be confused. This
+    wrapper filters glob.glob()'s result so that only names matching the
+    pattern case-sensitively are kept, giving the same result on every
+    platform.
+
+    Parameters
+    ----------
+    pattern : str
+        search pattern, as passed to glob.glob()
+
+    Returns
+    -------
+    list of str
+        filenames matching pattern, case-sensitively.
+    '''
+    normalised_pattern = os.path.normpath(pattern)
+    matches = [fn for fn in glob.glob(pattern)
+               if fnmatch.fnmatchcase(os.path.normpath(fn), normalised_pattern)]
+    # glob.glob() returns filenames built with the OS-native separator
+    # (e.g. backslashes on Windows), even when the pattern itself uses
+    # forward slashes. Normalise to forward slashes so that filenames
+    # are stable and comparable across platforms.
+    return [fn.replace(os.sep, '/') for fn in matches]
+
+
 class DBDList(list):
 
     ''' List that properly sorts dbd files.
@@ -621,7 +654,7 @@ class DBDPatternSelect(object):
         if not pattern and not filenames:
             raise ValueError("Expected some pattern to search files for or file list.")
         if pattern:
-            all_filenames=DBDList(glob.glob(pattern))
+            all_filenames=DBDList(_glob(pattern))
         elif filenames:
             all_filenames=DBDList(filenames)
         else:
@@ -1403,7 +1436,7 @@ class MultiDBD(object):
         if filenames:
             fns+=filenames
         if pattern:
-            fns+=glob.glob(pattern)
+            fns+=_glob(pattern)
         if len(fns)==0:
             raise DbdError(DBD_ERROR_NO_FILES_FOUND)
         fns.sort()
@@ -2028,7 +2061,7 @@ class MultiDBD(object):
         time_limits[1]=min(time_limits[1],time_limits_dataset[1])
 
     def _format_time(self,t,fmt):
-        tmp = datetime.datetime.fromtimestamp(t, datetime.UTC)
+        tmp = datetime.datetime.fromtimestamp(t, datetime.timezone.utc)
         return tmp.strftime(fmt)
 
     def _get_time_range(self,time_limits,fmt):
