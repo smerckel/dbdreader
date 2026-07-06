@@ -2061,7 +2061,7 @@ class MultiDBD(object):
         time_limits[1]=min(time_limits[1],time_limits_dataset[1])
 
     def _format_time(self,t,fmt):
-        tmp = datetime.datetime.fromtimestamp(t, datetime.UTC)
+        tmp = datetime.datetime.fromtimestamp(t, datetime.timezone.utc)
         return tmp.strftime(fmt)
 
     def _get_time_range(self,time_limits,fmt):
