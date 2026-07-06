@@ -72,6 +72,6 @@ exclude = '''
 '''
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.14"
 strict = true  # Enable all checks
 disallow_untyped_calls = true
