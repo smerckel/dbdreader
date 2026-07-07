@@ -14,16 +14,18 @@ binary files, so that they can be further analysed.
 
 ## Change log
 
-### Version 6.0.2
+### Version 0.6.2
 
 * Builds wheels for python versions 3.10 -- 3.14, including macos
+* Removes the get_list() method from the DBD class
 * Adds CI tests for all platforms (contributed by jklymak).
+* Typehinting introduced
 
-### Version 6.0.1
+### Version 0.6.1
 
 * Drops dependency on scipy.
 
-### Version 6.0.0
+### Version 0.6.0
 
 * Offers a python-only implementation, alongside the C-extension to
   read the binary files. At the expense of processing speed, no

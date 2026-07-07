@@ -63,13 +63,6 @@ def test_get_xy():
         np.allclose(y, np.array([7.41679603, 7.42362288]))
 
 
-def test_get_list():
-    dbd = dbdreader.DBD("dbdreader/data/amadeus-2014-204-05-000.sbd")
-    x, y = dbd.get_list("m_lat", "m_lon")
-    xp, yp = dbd.get("m_lat", "m_lon")
-    assert np.allclose(x[1], xp[1]) and np.allclose(y[1], yp[1])
-
-
 def test_file_open_time():
     dbd = dbdreader.DBD("dbdreader/data/amadeus-2014-204-05-000.sbd")
     t = dbd.get_fileopen_time()

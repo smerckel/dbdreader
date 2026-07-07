@@ -985,58 +985,6 @@ class DBD(object):
         else:
             return r
 
-    def get_list(
-        self,
-        *parameters: str,
-        decimalLatLon: bool = True,
-        discardBadLatLon: bool = True,
-        return_nans: bool = False,
-    ) -> Any:
-        """Returns time and value tuples for a list of requested parameters
-
-
-        This method returns time and values tuples for a list of parameters. It
-        is basically a short-hand for a looped get() method.
-
-        Note that each parameter comes with its own time base. No interpolation
-        is done. Use get_sync() for that in stead.
-
-        Parameters
-        ----------
-        *parameters: list of str
-            list of parameter names
-
-        decimalLatLon : bool, optional
-            If True (default), latitiude and longitude related parameters are converted to
-            decimal format, as opposed to nmea format.
-
-        discardBadLatLon : bool, optional
-            If True (default), bogus latitiude and longitude values are ignored.
-
-        return_nans : bool
-            If True, nan's are returned for those timestamps where no new value is available.
-            Default value: False
-
-        Returns
-        -------
-        list of (ndarray, ndarray)
-            list of tuples of time and value vectors for each parameter requested.
-
-        .. deprecated:: 0.4.0
-
-        .. note::
-            This function will be removed in a future version. Use .get() instead.
-        """
-        logger.info(
-            "get_list has been deprecated in version 0.4.0 and may be removed in the future. Use get instead."
-        )
-        return self.get(
-            *parameters,
-            decimalLatLon=decimalLatLon,
-            discardBadLatLon=discardBadLatLon,
-            return_nans=return_nans,
-        )
-
     def get_xy(
         self,
         parameter_x: str,

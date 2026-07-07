@@ -106,7 +106,7 @@ example, the time vectors for depth and pitch will not be the same.
 A convenience method ```dbd.get_sync``` is provided to create equally
 long parameter vectors through interpolation. The example
 ```
-timestamps, depth_values, pitch_values = dbd.get("m_depth", "m_pitch")
+timestamps, depth_values, pitch_values = dbd.get_sync("m_depth", "m_pitch")
 ```
 returns three numpy arrays, that are equally long. In this case
 ```timestamps``` and ```depth_values``` are identical to the variables ```t``` and ```d```,
@@ -118,11 +118,11 @@ Besides reading multiple parameters, multiple files can also be read
 using the MultiDBD class. A list of filenames or a string using
 wildcards can be used to select the files. For example,
 ```
-dbd = dbdreader.MultiDBD("unit204-2014-212.*.[de]dbd")
+dbd = dbdreader.MultiDBD("unit204-2014-212.*.[de]bd")
 t,d = dbd.get("m_depth")
 ```
 would read m_depth for all dbd and ebd files that match the pattern
-"unit204-2014-212.*.[de]dbd".
+"unit204-2014-212.*.[de]bd".
 
 A list of all parameters available can be found through the attribute
 ```parameterNames```. For single file objects (DBD) the attribute is a
