@@ -14,15 +14,21 @@ binary files, so that they can be further analysed.
 
 ## Change log
 
+### Version 6.0.2
+
+* Builds wheels for python versions 3.10 -- 3.14, including macos
+* Adds CI tests for all platforms (contributed by jklymak).
+
 ### Version 6.0.1
 
 * Drops dependency on scipy.
 
 ### Version 6.0.0
 
-* Offers a python only implementation, alongside the C-extension to
+* Offers a python-only implementation, alongside the C-extension to
   read the binary files. At the expense of processing speed, no
-  compiler is required to use this package.
+  compiler is required to use this package. Python-only code
+  contributed by jklymak.
   
 * A github workflow is implemented that generates pre-compiled wheels
   for linux and windows platforms for python version 3.10, 3.11, 3.12
