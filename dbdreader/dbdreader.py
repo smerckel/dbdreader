@@ -11,7 +11,10 @@ import re
 import datetime
 from calendar import timegm
 from collections import defaultdict, namedtuple
+from typing import Any, Callable, Iterator
 import logging
+
+import lz4.block  # type: ignore[import-untyped]
 
 logger = logging.getLogger(os.path.basename(__file__))
 
@@ -24,7 +27,7 @@ import dbdreader.decompress
 
 match (os.environ.get("DBDREADER_C_EXTENSION")):
     case "1":
-        import _dbdreader
+        import _dbdreader  # type: ignore[import-not-found]
 
         logger.debug("Imported C-extension")
     case "0":
@@ -85,7 +88,7 @@ LATLON_PARAMS = [
 ]
 
 
-def strptimeToEpoch(datestr, fmt):
+def strptimeToEpoch(datestr: str, fmt: str) -> int:
     """Converts datestr into seconds
 
     Function to convert a date string into seconds since Epoch.
@@ -110,7 +113,9 @@ def strptimeToEpoch(datestr, fmt):
     return timegm(ts)
 
 
-def epochToDateTimeStr(seconds, dateformat="%Y%m%d", timeformat="%H:%M"):
+def epochToDateTimeStr(
+    seconds: float, dateformat: str = "%Y%m%d", timeformat: str = "%H:%M"
+) -> tuple[str, str]:
     """Converts seconds since Epoch to date string
 
     This function converts seconds since Epoch to a datestr and timestr
@@ -136,7 +141,7 @@ def epochToDateTimeStr(seconds, dateformat="%Y%m%d", timeformat="%H:%M"):
     return datestr, timestr
 
 
-def _convertToDecimal(x):
+def _convertToDecimal(x: Any) -> Any:
     """Converts a latitiude or longitude in NMEA format to decimale degrees"""
     sign = numpy.sign(x)
     xAbs = numpy.abs(x)
@@ -146,7 +151,7 @@ def _convertToDecimal(x):
     return decimalFormat * sign
 
 
-def toDec(x, y=None):
+def toDec(x: Any, y: Any = None) -> Any:
     """NMEA style to decimal degree converter
 
     Parameters
@@ -209,12 +214,14 @@ class DbdError(Exception):
         "MissingCacheFileData", "missing_cache_files cache_dir"
     )
 
-    def __init__(self, value=9, mesg=None, data=None):
+    def __init__(
+        self, value: int = 9, mesg: str | None = None, data: Any = None
+    ) -> None:
         self.value = value
         self.mesg = mesg
         self.data = data
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.value == DBD_ERROR_NO_VALID_PARAMETERS:
             mesg = "The requested parameter(s) was(were) not found."
         elif self.value == DBD_ERROR_NO_TIME_VARIABLE:
@@ -291,7 +298,7 @@ class DBD:
 """
 
 
-def heading_interpolating_function_factory(t, v):
+def heading_interpolating_function_factory(t: Any, v: Any) -> Callable[[Any], Any]:
     """Interpolating function factory for heading
 
     This function returns a function that is to be called with one
@@ -318,7 +325,7 @@ def heading_interpolating_function_factory(t, v):
     return lambda _t: numpy.arctan2(yi(_t), xi(_t)) % (2 * numpy.pi)
 
 
-def _default_interp1d_factory(x, y):
+def _default_interp1d_factory(x: Any, y: Any) -> Callable[..., Any]:
     """Default linear interpolating function factory used by get_sync()
     and get_CTD_sync().
 
@@ -377,9 +384,9 @@ class DBDCache(object):
 
     """
 
-    CACHEDIR = None
+    CACHEDIR: str | None = None
 
-    def __init__(self, cachedir=None):
+    def __init__(self, cachedir: str | None = None) -> None:
         if cachedir is None:
             if DBDCache.CACHEDIR is None:
                 HOME = os.path.expanduser("~")  # <- multiplatform proof
@@ -394,7 +401,7 @@ class DBDCache(object):
             DBDCache.set_cachedir(cachedir, force_makedirs=False)
 
     @classmethod
-    def set_cachedir(cls, path, force_makedirs=False):
+    def set_cachedir(cls, path: str, force_makedirs: bool = False) -> None:
         """Set the cache directory path
 
         Parameters
@@ -414,7 +421,7 @@ class DBDCache(object):
         DBDCache.CACHEDIR = path
 
 
-def _glob(pattern):
+def _glob(pattern: str) -> list[str]:
     """Case-sensitive glob.
 
     glob.glob() matches filenames case-insensitively on platforms with a
@@ -449,7 +456,7 @@ def _glob(pattern):
     return [fn.replace(os.sep, "/") for fn in matches]
 
 
-class DBDList(list):
+class DBDList(list[str]):
     """List that properly sorts dbd files.
 
     Object subclassed from list. The sort method defaults to sorting dbd
@@ -463,10 +470,10 @@ class DBDList(list):
 
     REGEX = re.compile(r"-[0-9]+-[0-9]+-[0-9]+-[0-9]+\.[demnstDEMNST][bB][dD]")
 
-    def __init__(self, *p):
+    def __init__(self, *p: Any) -> None:
         list.__init__(self, *p)
 
-    def _keyFilename(self, key):
+    def _keyFilename(self, key: str) -> str:
         match = DBDList.REGEX.search(key)
         if match:
             s, extension = os.path.splitext(match.group())
@@ -479,7 +486,9 @@ class DBDList(list):
             r = key.lower()
         return r
 
-    def sort(self, cmp=None, key=None, reverse=False):
+    def sort(
+        self, cmp: Any = None, key: Any = None, reverse: bool = False
+    ) -> None:
         """sorts filenames ensuring dbd files are in chronological order in place
 
         Parameters
@@ -513,13 +522,15 @@ class DBDPatternSelect(object):
 
     """
 
-    cache = {}
+    cache: dict[Any, Any] = {}
 
-    def __init__(self, date_format="%d %m %Y", cacheDir=None):
+    def __init__(
+        self, date_format: str = "%d %m %Y", cacheDir: str | None = None
+    ) -> None:
         self.set_date_format(date_format)
         self.cacheDir = cacheDir
 
-    def set_date_format(self, date_format):
+    def set_date_format(self, date_format: str) -> None:
         """Set date format
 
         Sets the date format used to interpret the from_date and until_dates.
@@ -532,7 +543,7 @@ class DBDPatternSelect(object):
         """
         self.date_format = date_format
 
-    def get_date_format(self):
+    def get_date_format(self) -> str:
         """Returns date format string.
 
         Returns
@@ -542,7 +553,13 @@ class DBDPatternSelect(object):
         """
         return self.date_format
 
-    def select(self, pattern=None, filenames=[], from_date=None, until_date=None):
+    def select(
+        self,
+        pattern: str | None = None,
+        filenames: list[str] = [],
+        from_date: str | None = None,
+        until_date: str | None = None,
+    ) -> "DBDList":
         """Select file names from pattern or list.
 
         This method selects the filenames given a filename list or search
@@ -582,7 +599,6 @@ class DBDPatternSelect(object):
 
         if not from_date and not until_date:
             # just get all files.
-            t0 = t1 = None
             return all_filenames
         else:
             if from_date:
@@ -592,12 +608,17 @@ class DBDPatternSelect(object):
             if until_date:
                 t1 = strptimeToEpoch(until_date, self.date_format)
             else:
-                t1 = 1e11
+                t1 = int(1e11)
             return self._select(all_filenames, t0, t1)
 
     def bins(
-        self, pattern=None, filenames=None, binsize=86400, t_start=None, t_end=None
-    ):
+        self,
+        pattern: str | None = None,
+        filenames: list[str] | None = None,
+        binsize: float = 86400,
+        t_start: float | None = None,
+        t_end: float | None = None,
+    ) -> list[tuple[Any, "DBDList"]]:
         """Return a list of filenames, in time bins
 
         The method makes a list of all filenames, matching either
@@ -652,7 +673,12 @@ class DBDPatternSelect(object):
         ]
         return bins
 
-    def get_filenames(self, pattern, filenames, cacheDir=None):
+    def get_filenames(
+        self,
+        pattern: str | None,
+        filenames: list[str] | None,
+        cacheDir: str | None = None,
+    ) -> "DBDList":
         """Get filenames (sorted) and update CAC cache directory.
 
         Parameters
@@ -679,7 +705,7 @@ class DBDPatternSelect(object):
         self._update_cache(all_filenames, cacheDir)
         return all_filenames
 
-    def _update_cache(self, fns, cacheDir):
+    def _update_cache(self, fns: "DBDList", cacheDir: str | None) -> None:
         cached_filenames = DBDList(self.cache.values())
         cached_filenames.sort()
         for fn in fns:
@@ -688,14 +714,14 @@ class DBDPatternSelect(object):
                 t_open = dbd.get_fileopen_time()
                 self.cache[t_open] = fn
 
-    def _select(self, all_fns, t0, t1):
+    def _select(self, all_fns: Any, t0: float, t1: float) -> "DBDList":
         open_times = numpy.array(list(self.cache.keys()))
         open_times = numpy.sort(open_times)
         selected_times = open_times.compress(
             numpy.logical_and(open_times >= t0, open_times <= t1)
         )
-        fns = set([self.cache[t] for t in selected_times]).intersection(all_fns)
-        fns = DBDList(fns)
+        selected = set([self.cache[t] for t in selected_times]).intersection(all_fns)
+        fns = DBDList(selected)
         fns.sort()
         return fns
 
@@ -705,7 +731,7 @@ class DBDHeader(object):
     by DBD and MultiDBD and not directly.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.keywords = {
             "dbd_label": "string",
             "total_num_sensors": "int",
@@ -720,10 +746,10 @@ class DBDHeader(object):
             "full_filename": "string",
             "the8x3_filename": "string",
         }
-        self.info = {}
+        self.info: dict[str, Any] = {}
 
     @property
-    def factored(self):
+    def factored(self) -> int | None:
         """Value of the sensor_list_factored header field, or None if
         the header has not been read yet.
 
@@ -731,18 +757,19 @@ class DBDHeader(object):
         -------
         int or None
         """
+        r: int | None
         try:
             r = self.info["sensor_list_factored"]
         except KeyError:
             r = None
         return r
 
-    def read_header(self, fp, filename=""):
+    def read_header(self, fp: Any, filename: str = "") -> int:
         """read the header of the file, given by fp"""
         fp.seek(0)
         try:
             result = self.parse(fp.readline())
-        except dbdreader.decompress.lz4.block.LZ4BlockError:
+        except lz4.block.LZ4BlockError:
             return DBD_ERROR_DECOMPRESSION_ERROR
         except UnicodeDecodeError:
             return DBD_ERROR_INVALID_DBD_FILE
@@ -758,15 +785,17 @@ class DBDHeader(object):
             return DBD_ERROR_INVALID_ENCODING
         return 0
 
-    def read_cache(self, fp, fpcopy=None):
+    def read_cache(
+        self, fp: Any, fpcopy: Any = None
+    ) -> list[tuple[int, str, str]]:
         """read cache file"""
-        parameter = []
+        parameter: list[tuple[int, str, str]] = []
         all_parameter_names = []
         for i in range(self.info["total_num_sensors"]):
             line = fp.readline().decode("ascii")
             if fpcopy != None:
                 fpcopy.write(line)
-                parameters = {}
+                parameters: dict[str, Any] = {}
             words = line.split()
             j = int(words[3])  # >=0? used : not used
             name = words[5]
@@ -778,7 +807,7 @@ class DBDHeader(object):
         self.info["parameter_list"] = all_parameter_names
         return parameter
 
-    def parse(self, line):
+    def parse(self, line: bytes) -> str:
         """Parses a single header line.
 
         Decodes a binary header line and, if it names a recognised
@@ -830,8 +859,16 @@ class DBD(object):
 
     SKIP_INITIAL_LINE = True
 
-    def __init__(self, filename, cacheDir=None, skip_initial_line=True):
+    def __init__(
+        self,
+        filename: str,
+        cacheDir: str | None = None,
+        skip_initial_line: bool = True,
+    ) -> None:
 
+        self.fp: Any
+        self.ti: Any
+        self.vi: Any
         self.filename = filename
         self.skip_initial_line = skip_initial_line
         logger.debug("Opening %s", filename)
@@ -864,27 +901,28 @@ class DBD(object):
             )
             raise DbdError(DBD_ERROR_CACHE_NOT_FOUND, mesg=mesg, data=data)
 
-    def get_mission_name(self):
+    def get_mission_name(self) -> str:
         """Returns the mission name such as micro.mi"""
-        return self.headerInfo["mission_name"].lower()
+        name: str = self.headerInfo["mission_name"].lower()
+        return name
 
-    def get_fileopen_time(self):
+    def get_fileopen_time(self) -> int:
         """Returns the time stamp of opening the file in UTC"""
         return self._get_fileopen_time()
 
-    def close(self):
+    def close(self) -> Any:
         """Closes a DBD file"""
         return self.fp.close()
 
     def get(
         self,
-        *parameters,
-        decimalLatLon=True,
-        discardBadLatLon=True,
-        return_nans=False,
-        max_values_to_read=-1,
-        check_for_invalid_parameters=True,
-    ):
+        *parameters: str,
+        decimalLatLon: bool = True,
+        discardBadLatLon: bool = True,
+        return_nans: bool = False,
+        max_values_to_read: int = -1,
+        check_for_invalid_parameters: bool = True,
+    ) -> Any:
         """Returns time and parameter data for requested parameter
 
         This method reads the requested parameter, and convert it
@@ -948,8 +986,12 @@ class DBD(object):
             return r
 
     def get_list(
-        self, *parameters, decimalLatLon=True, discardBadLatLon=True, return_nans=False
-    ):
+        self,
+        *parameters: str,
+        decimalLatLon: bool = True,
+        discardBadLatLon: bool = True,
+        return_nans: bool = False,
+    ) -> Any:
         """Returns time and value tuples for a list of requested parameters
 
 
@@ -996,8 +1038,12 @@ class DBD(object):
         )
 
     def get_xy(
-        self, parameter_x, parameter_y, decimalLatLon=True, discardBadLatLon=True
-    ):
+        self,
+        parameter_x: str,
+        parameter_y: str,
+        decimalLatLon: bool = True,
+        discardBadLatLon: bool = True,
+    ) -> tuple[Any, Any]:
         """Returns values of parameter_x and paramter_y
 
         For parameters parameter_x and parameter_y this method returns a tuple
@@ -1032,7 +1078,12 @@ class DBD(object):
         )
         return x, y
 
-    def get_sync(self, *sync_parameters, decimalLatLon=True, discardBadLatLon=True):
+    def get_sync(
+        self,
+        *sync_parameters: Any,
+        decimalLatLon: bool = True,
+        discardBadLatLon: bool = True,
+    ) -> tuple[Any, ...]:
         """Returns a list of values from parameters, all interpolated to the
             time base of the first paremeter
 
@@ -1076,14 +1127,14 @@ class DBD(object):
         ):
             # obsolete calling signature.
             logger.info("Calling signature of get_sync() has changed in version 0.4.0.")
-            sync_parameters = [sync_parameters[0]] + sync_parameters[1]
+            sync_parameters = (sync_parameters[0], *sync_parameters[1])
         return self._get_sync(
             *sync_parameters,
             decimalLatLon=decimalLatLon,
             discardBadLatLon=discardBadLatLon,
         )
 
-    def has_parameter(self, parameter):
+    def has_parameter(self, parameter: str) -> bool:
         """Check wheter this file contains parameter
 
         Parameters
@@ -1100,13 +1151,13 @@ class DBD(object):
 
     # Private methods:
 
-    def _get_fileopen_time(self):
+    def _get_fileopen_time(self) -> int:
         datestr = self.headerInfo["fileopen_time"].replace("_", " ")
         fmt = "%a %b %d %H:%M:%S %Y"
         seconds = strptimeToEpoch(datestr, fmt)
         return seconds
 
-    def _set_timeVariable(self):
+    def _set_timeVariable(self) -> str:
         if "m_present_time" in self.parameterNames:
             return "m_present_time"
         else:
@@ -1114,13 +1165,13 @@ class DBD(object):
 
     def _get(
         self,
-        *parameters,
-        decimalLatLon=True,
-        discardBadLatLon=False,
-        return_nans=False,
-        max_values_to_read=-1,
-        check_for_invalid_parameters=True,
-    ):
+        *parameters: str,
+        decimalLatLon: bool = True,
+        discardBadLatLon: bool = False,
+        return_nans: bool = False,
+        max_values_to_read: int = -1,
+        check_for_invalid_parameters: bool = True,
+    ) -> tuple[list[Any], list[Any]]:
         """returns time and parameter data for requested parameter"""
         invalid_parameters = self._get_valid_parameters(
             parameters, invert=True, global_scope=True
@@ -1148,7 +1199,7 @@ class DBD(object):
             )
 
         ti = self.parameterNames.index(self.timeVariable)
-        idx = [self.parameterNames.index(p) for p in valid_parameters]
+        idx: Any = [self.parameterNames.index(p) for p in valid_parameters]
         idx_sorted = numpy.sort(idx)
         vi = tuple(idx_sorted)
         self.n_sensors = self.headerInfo["sensors_per_cycle"]
@@ -1203,12 +1254,12 @@ class DBD(object):
         if return_nans:
             n_timestamps = timestamps[0].shape[0]
 
-            def get_empty_array():
+            def get_empty_array() -> Any:
                 return numpy.ones(n_timestamps) * numpy.nan
 
         else:
 
-            def get_empty_array():
+            def get_empty_array() -> Any:
                 return numpy.array([])
 
         for missing_parameter in missing_parameters:
@@ -1217,7 +1268,12 @@ class DBD(object):
             values.insert(idx, get_empty_array())
         return timestamps, values
 
-    def _get_sync(self, *params, decimalLatLon=True, discardBadLatLon=True):
+    def _get_sync(
+        self,
+        *params: str,
+        decimalLatLon: bool = True,
+        discardBadLatLon: bool = True,
+    ) -> tuple[Any, ...]:
         """
         x: dbdparameter name
 
@@ -1255,7 +1311,9 @@ class DBD(object):
 
         return tuple(r)
 
-    def _get_valid_parameters(self, parameters, invert=False, global_scope=False):
+    def _get_valid_parameters(
+        self, parameters: Any, invert: bool = False, global_scope: bool = False
+    ) -> list[str]:
         if global_scope:
             p = self.headerInfo["parameter_list"]
         else:
@@ -1266,10 +1324,12 @@ class DBD(object):
             validParameters = [i for i in parameters if not i in p]
         return validParameters
 
-    def _is_latlon_parameter(self, x):
+    def _is_latlon_parameter(self, x: str) -> bool:
         return x in LATLON_PARAMS
 
-    def _read_header(self, cacheDir):
+    def _read_header(
+        self, cacheDir: Any
+    ) -> tuple[dict[str, Any], list[tuple[int, str, str]], bool, str]:
         if not os.path.exists(cacheDir):
             raise DbdError(DBD_ERROR_CACHEDIR_NOT_FOUND, " (%s)" % (cacheDir))
         dbdheader = DBDHeader()
@@ -1292,11 +1352,11 @@ class DBD(object):
         cacheID = dbdheader.info["sensor_list_crc"].lower()
         cacheFilename = os.path.join(cacheDir, cacheID + ".cac")
         cacheFound = True  # unless proven otherwise...
-        parameter = []
+        parameter: list[tuple[int, str, str]] = []
         if dbdheader.factored == 1:
             # read sensorlist from cache
             if os.path.exists(cacheFilename):
-                fpCache = open(cacheFilename, "br")
+                fpCache: Any = open(cacheFilename, "br")
                 parameter = dbdheader.read_cache(fpCache)
                 fpCache.close()
             else:
@@ -1315,7 +1375,7 @@ class DBD(object):
         # binary part of the file
         return (dbdheader.info, parameter, cacheFound, cacheID)
 
-    def _get_by_read_per_byte(self, parameter):
+    def _get_by_read_per_byte(self, parameter: Any) -> list[Any]:
         """method that reads the file byte by byte and processes
         accordingly. As opposed to read the whole file in memory and do the
         processing then."""
@@ -1351,7 +1411,7 @@ class DBD(object):
             self.fp.seek(fp + chunksize + 1)
         return [R[i] for i in paramidx]
 
-    def _get_by_read_per_chunk(self, parameter):
+    def _get_by_read_per_chunk(self, parameter: Any) -> list[Any]:
         """method that reads the file chunk by chunk."""
         # first n bytes are not used?
         self.n_sensors = self.headerInfo["sensors_per_cycle"]
@@ -1386,7 +1446,9 @@ class DBD(object):
                 break
         return [R[i] for i in paramidx]
 
-    def _read_state_bytes(self, reqd_variables):
+    def _read_state_bytes(
+        self, reqd_variables: Any
+    ) -> tuple[list[int] | None, int]:
         """reads state bytes and returns:
         offsets, chunksize
         offsets: list of offsets to read the variables
@@ -1427,7 +1489,7 @@ class DBD(object):
         else:
             return None, offset
 
-    def _convert_bytearray(self, bs):
+    def _convert_bytearray(self, bs: bytes) -> Any:
         """converts a byte sequence of length 4 or 8 bytes
         to a floating point."""
         # the byte sequence read should be reversed and then unpacked.
@@ -1497,27 +1559,31 @@ class MultiDBD(object):
 
     def __init__(
         self,
-        filenames=None,
-        pattern=None,
-        cacheDir=None,
-        complemented_files_only=False,
-        complement_files=False,
-        banned_missions=[],
-        missions=[],
-        max_files=None,
-        skip_initial_line=True,
-    ):
+        filenames: list[str] | None = None,
+        pattern: str | None = None,
+        cacheDir: str | None = None,
+        complemented_files_only: bool = False,
+        complement_files: bool = False,
+        banned_missions: list[str] = [],
+        missions: list[str] = [],
+        max_files: int | None = None,
+        skip_initial_line: bool = True,
+    ) -> None:
 
-        self._ignore_cache = (
+        self._ignore_cache: list[DBD] = (
             []
         )  # list of files that should be ignored because out of set time limits
-        self._accept_cache = []  # list of files that have data within set time limits
-        self._parameter_names = dict(globally=set(), locally=set())
+        self._accept_cache: list[DBD] = (
+            []
+        )  # list of files that have data within set time limits
+        self._parameter_names: dict[str, set[str]] = dict(
+            globally=set(), locally=set()
+        )
         if cacheDir is None:
             cacheDir = DBDCache.CACHEDIR
         self.banned_missions = banned_missions
         self.missions = missions
-        self.mission_list = []
+        self.mission_list: list[str] = []
         if not filenames and not pattern:
             raise DbdError(DBD_ERROR_NO_FILE_CRITERIUM_SPECIFIED)
         fns = DBDList()
@@ -1558,21 +1624,21 @@ class MultiDBD(object):
         )
         self.parameterUnits = self._getParameterUnits()
         #
-        self.time_limits_dataset = (None, None)
-        self.time_limits = [None, None]
+        self.time_limits_dataset: tuple[Any, ...] = (None, None)
+        self.time_limits: list[Any] = [None, None]
         self.set_time_limits()
 
     ##### public methods
     def get(
         self,
-        *parameters,
-        decimalLatLon=True,
-        discardBadLatLon=True,
-        return_nans=False,
-        include_source=False,
-        max_values_to_read=-1,
-        continue_on_reading_error=False,
-    ):
+        *parameters: str,
+        decimalLatLon: bool = True,
+        discardBadLatLon: bool = True,
+        return_nans: bool = False,
+        include_source: bool = False,
+        max_values_to_read: int = -1,
+        continue_on_reading_error: bool = False,
+    ) -> Any:
         """Returns time and value tuple(s) for requested parameter(s)
 
         This method returns time and values tuples for a list of parameters.
@@ -1630,9 +1696,9 @@ class MultiDBD(object):
                 "Limiting the values to be read for multiple parameters potentially yields undefined behaviour.\n"
             )
 
-        eng_variables = []
-        sci_variables = []
-        positions = []
+        eng_variables: list[str] = []
+        sci_variables: list[str] = []
+        positions: list[tuple[str, int]] = []
         invalid_parameters = self._get_valid_parameters(
             parameters, invert=True, global_scope=True
         )
@@ -1682,7 +1748,7 @@ class MultiDBD(object):
             r_sci = self._worker("sci", *sci_variables, **kwds)
         if len(eng_variables) >= 1:
             r_eng = self._worker("eng", *eng_variables, **kwds)
-        r = []
+        r: list[Any] = []
         for target, idx in positions:
             if target == "sci":
                 r.append(r_sci[idx])
@@ -1696,7 +1762,9 @@ class MultiDBD(object):
         else:
             return r
 
-    def _get_valid_parameters(self, parameters, invert=False, global_scope=False):
+    def _get_valid_parameters(
+        self, parameters: Any, invert: bool = False, global_scope: bool = False
+    ) -> list[str]:
         parameters = set(parameters)
         if global_scope:
             p = self._parameter_names["globally"]
@@ -1709,12 +1777,12 @@ class MultiDBD(object):
 
     def get_xy(
         self,
-        parameter_x,
-        parameter_y,
-        decimalLatLon=True,
-        discardBadLatLon=True,
-        interpolating_function_factory=None,
-    ):
+        parameter_x: str,
+        parameter_y: str,
+        decimalLatLon: bool = True,
+        discardBadLatLon: bool = True,
+        interpolating_function_factory: Any = None,
+    ) -> tuple[Any, Any]:
         """Returns values of parameter_x and paramter_y
 
         For parameters parameter_x and parameter_y this method returns a tuple
@@ -1764,11 +1832,11 @@ class MultiDBD(object):
 
     def get_sync(
         self,
-        *parameters,
-        decimalLatLon=True,
-        discardBadLatLon=True,
-        interpolating_function_factory=None,
-    ):
+        *parameters: Any,
+        decimalLatLon: bool = True,
+        discardBadLatLon: bool = True,
+        interpolating_function_factory: Any = None,
+    ) -> tuple[Any, ...]:
         """Returns a list of values from parameters, all interpolated to the
             time base of the first paremeter
 
@@ -1821,7 +1889,7 @@ class MultiDBD(object):
         ):
             # obsolete calling signature.
             logger.info("Calling signature of get_sync() has changed in version 0.4.0.")
-            parameters = [parameters[0]] + parameters[1]
+            parameters = (parameters[0], *parameters[1])
         tv = self.get(
             *parameters,
             decimalLatLon=decimalLatLon,
@@ -1832,7 +1900,7 @@ class MultiDBD(object):
         default_interpolating_function_factory = _default_interp1d_factory
 
         t = tv[0][0]
-        r = []
+        r: list[Any] = []
         for i, (p, (_t, _v)) in enumerate(zip(parameters, tv)):
             if i == 0:
                 r.append(_t)
@@ -1864,11 +1932,11 @@ class MultiDBD(object):
 
     def get_CTD_sync(
         self,
-        *parameters,
-        decimalLatLon=True,
-        discardBadLatLon=True,
-        interpolating_function_factory=None,
-    ):
+        *parameters: str,
+        decimalLatLon: bool = True,
+        discardBadLatLon: bool = True,
+        interpolating_function_factory: Any = None,
+    ) -> tuple[Any, ...]:
         """Returns a list of values from CTD and optionally other parameters,
         all interpolated to the time base of the CTD timestamp.
 
@@ -1914,7 +1982,7 @@ class MultiDBD(object):
         ]
         offset = len(CTDparameters) + 1  # because of m_present_time is
         # also returned.
-        tmp = self.get_sync(
+        tmp: Any = self.get_sync(
             *CTDparameters,
             *parameters,
             decimalLatLon=decimalLatLon,
@@ -1940,7 +2008,7 @@ class MultiDBD(object):
         _, tctd, C, T, P, *v = numpy.compress(condition, tmp, axis=1)
         return tuple([tctd, C, T, P] + v)
 
-    def determine_ctd_type(self):
+    def determine_ctd_type(self) -> str:
         """
         Determines CTD type installed from the presence of CTD specific name for the time stamp.
 
@@ -1972,7 +2040,7 @@ class MultiDBD(object):
         # ctd. An exception will be thrown elsewhere.
         return ctd_types[0]
 
-    def _has_ctd_installed(self, ctd_type):
+    def _has_ctd_installed(self, ctd_type: str) -> bool:
         """
         Parameters
         ----------
@@ -2012,7 +2080,7 @@ class MultiDBD(object):
                 result = False
         return result
 
-    def set_skip_initial_line(self, skip_initial_line):
+    def set_skip_initial_line(self, skip_initial_line: bool) -> None:
         """Sets the reading mode of the binary reader to skip the initial data entry or not.
 
         Parameters
@@ -2025,7 +2093,7 @@ class MultiDBD(object):
         for i in chain(*self.dbds.values()):
             i.skip_initial_line = skip_initial_line
 
-    def has_parameter(self, parameter):
+    def has_parameter(self, parameter: str) -> bool:
         """Has this file parameter?
         Returns
         -------
@@ -2038,7 +2106,7 @@ class MultiDBD(object):
         )
 
     @classmethod
-    def isScienceDataFile(cls, fn):
+    def isScienceDataFile(cls, fn: str) -> bool:
         """Is file a science file?
 
         Parameters
@@ -2061,7 +2129,7 @@ class MultiDBD(object):
             | fn.endswith("ncd")
         )
 
-    def get_time_range(self, fmt="%d %b %Y %H:%M"):
+    def get_time_range(self, fmt: str = "%d %b %Y %H:%M") -> Any:
         """Get start and end date of the time range selection set
 
         Parameters
@@ -2076,7 +2144,7 @@ class MultiDBD(object):
         """
         return self._get_time_range(self.time_limits, fmt)
 
-    def get_global_time_range(self, fmt="%d %b %Y %H:%M"):
+    def get_global_time_range(self, fmt: str = "%d %b %Y %H:%M") -> Any:
         """Returns start and end dates of data set (all files)
 
         Parameters
@@ -2091,7 +2159,9 @@ class MultiDBD(object):
         """
         return self._get_time_range(self.time_limits_dataset, fmt)
 
-    def set_time_limits(self, minTimeUTC=None, maxTimeUTC=None):
+    def set_time_limits(
+        self, minTimeUTC: str | None = None, maxTimeUTC: str | None = None
+    ) -> None:
         """Set time limits for data to be returned by get() and friends.
 
         Parameters
@@ -2118,17 +2188,17 @@ class MultiDBD(object):
             self.time_limits[1] = self._convert_seconds(maxTimeUTC)
         self._refresh_cache()
 
-    def close(self):
+    def close(self) -> None:
         """Close all open files"""
         for i in self.dbds["eng"] + self.dbds["sci"]:
             i.close()
 
     #### private methods
 
-    def _get_matching_fn(self, fn):
+    def _get_matching_fn(self, fn: str) -> str:
         sci_extensions = ".ebd .tbd .nbd .ecd .tcd .ncd".split()
         _, extension = os.path.splitext(fn)
-        matchingExtension = list(extension)  # make the string mutable.
+        matchingExtension: Any = list(extension)  # make the string mutable.
         if extension not in sci_extensions:
             matchingExtension[1] = chr(ord(extension[1]) + 1)
         else:
@@ -2137,15 +2207,15 @@ class MultiDBD(object):
         matchingFn = fn.replace(extension, matchingExtension)
         return matchingFn
 
-    def _add_paired_filenames(self):
-        to_add = []
+    def _add_paired_filenames(self) -> None:
+        to_add: list[str] = []
         for fn in self.filenames:
             mfn = self._get_matching_fn(fn)
             if os.path.exists(mfn):
                 to_add.append(mfn)
         self.filenames += to_add
 
-    def _get_matching_dbd(self, fn):
+    def _get_matching_dbd(self, fn: str) -> str | None:
         """returns matching dbd object corresponding to fn. If fn is not in the current list
         of accepted dbds, then None is returned."""
 
@@ -2158,20 +2228,20 @@ class MultiDBD(object):
         else:
             return None
 
-    def _prune(self, filelist, cacheDir=None):
+    def _prune(self, filelist: Any, cacheDir: str | None = None) -> None:
         """prune all files in filelist."""
         for tbr in filelist:
             self.filenames.remove(tbr)
 
-    def _prune_unmatched(self, cacheDir=None):
+    def _prune_unmatched(self, cacheDir: str | None = None) -> tuple[str, ...]:
         """prune all files which don't have a science/engineering partner
         returns list of removed files."""
         to_be_removed = [fn for fn in self.filenames if not self._get_matching_dbd(fn)]
         self._prune(to_be_removed, cacheDir)
         return tuple(to_be_removed)
 
-    def _convert_seconds(self, timestring):
-        t_epoch = None
+    def _convert_seconds(self, timestring: str) -> int:
+        t_epoch: int | None = None
         try:
             t_epoch = strptimeToEpoch(timestring, "%d %b %Y")
         except:
@@ -2186,7 +2256,7 @@ class MultiDBD(object):
             )
         return t_epoch
 
-    def _refresh_cache(self):
+    def _refresh_cache(self) -> None:
         """Internal. Sets global and selected time limits, and a cache with those files
         that matche the time selection criterion
         """
@@ -2224,11 +2294,11 @@ class MultiDBD(object):
         time_limits[0] = max(time_limits[0], time_limits_dataset[0])
         time_limits[1] = min(time_limits[1], time_limits_dataset[1])
 
-    def _format_time(self, t, fmt):
+    def _format_time(self, t: float, fmt: str) -> str:
         tmp = datetime.datetime.fromtimestamp(t, datetime.timezone.utc)
         return tmp.strftime(fmt)
 
-    def _get_time_range(self, time_limits, fmt):
+    def _get_time_range(self, time_limits: Any, fmt: str) -> Any:
         if fmt == "%s":
             return time_limits
         else:
@@ -2236,13 +2306,13 @@ class MultiDBD(object):
 
     def _safely_open_dbd_file(
         self,
-        fn,
-        cacheDir,
-        skip_initial_lines,
-        missing_cacheIDs,
-        check_for_compressed_cac=True,
-    ):
-        dbd = None
+        fn: str,
+        cacheDir: Any,
+        skip_initial_lines: bool,
+        missing_cacheIDs: Any,
+        check_for_compressed_cac: bool = True,
+    ) -> tuple["DBD | None", str]:
+        dbd: "DBD | None" = None
         try:
             dbd = DBD(fn, cacheDir, skip_initial_lines)
         except DbdError as e:
@@ -2290,10 +2360,12 @@ class MultiDBD(object):
             dbd.close()
         return dbd, result
 
-    def _update_dbd_inventory(self, cacheDir, skip_initial_lines):
-        self.dbds = {"eng": [], "sci": []}
+    def _update_dbd_inventory(
+        self, cacheDir: str | None, skip_initial_lines: bool
+    ) -> None:
+        self.dbds: dict[str, list[DBD]] = {"eng": [], "sci": []}
         filenames = list(self.filenames)
-        missing_cacheIDs = defaultdict(list)
+        missing_cacheIDs: defaultdict[str, list[str]] = defaultdict(list)
         for fn in self.filenames:
             dbd, result = self._safely_open_dbd_file(
                 fn, cacheDir, skip_initial_lines, missing_cacheIDs
@@ -2312,6 +2384,7 @@ class MultiDBD(object):
                     filenames.remove(fn)
             if result != "ok":
                 continue
+            assert dbd is not None
             mission_name = dbd.get_mission_name()
             if mission_name in self.banned_missions:
                 filenames.remove(fn)
@@ -2350,9 +2423,9 @@ class MultiDBD(object):
                 DBD_ERROR_ALL_FILES_BANNED, " (Read %d files.)" % (len(self.filenames))
             )
 
-    def _getParameterUnits(self):
+    def _getParameterUnits(self) -> dict[str, str]:
         dbds = self.dbds["eng"]
-        units = []
+        units: list[Any] = []
         for i in dbds:
             units += [j for j in i.parameterUnits.items()]
         dbds = self.dbds["sci"]
@@ -2360,13 +2433,13 @@ class MultiDBD(object):
             units += [j for j in i.parameterUnits.items()]
         return dict(i for i in (set(units)))
 
-    def _getParameterList(self, dbds):
+    def _getParameterList(self, dbds: Any) -> list[str]:
         if len(dbds) == 0:  # no parameters in here.
             return []
-        cacheIDs = []
+        cacheIDs: list[Any] = []
         for i, dbd in enumerate(dbds):
             if i == 0:
-                parameter_names = dbd.parameterNames.copy()
+                parameter_names: list[str] = dbd.parameterNames.copy()
                 cacheIDs.append(dbd.cacheID)
             elif not dbd.cacheID in cacheIDs:
                 for pn in dbd.parameterNames:
@@ -2376,7 +2449,7 @@ class MultiDBD(object):
         parameter_names.sort()
         return parameter_names
 
-    def _worker(self, ft, *p, **kwds):
+    def _worker(self, ft: str, *p: str, **kwds: Any) -> list[Any]:
         try:
             include_source = kwds.pop("include_source")
         except KeyError:
@@ -2386,9 +2459,9 @@ class MultiDBD(object):
         except KeyError:
             continue_on_reading_error = False
 
-        data = dict([(k, []) for k in p])
-        srcs = dict([(k, []) for k in p])
-        error_mesgs = []
+        data: dict[str, list[Any]] = dict([(k, []) for k in p])
+        srcs: dict[str, list[Any]] = dict([(k, []) for k in p])
+        error_mesgs: list[Any] = []
         time_values_read_sofar = 0
         for i in self.dbds[ft]:
             if i in self._ignore_cache:
@@ -2443,7 +2516,7 @@ class MultiDBD(object):
             # nothing has been added, so all files should have returned nothing:
             raise (DbdError(DBD_ERROR_NO_VALID_PARAMETERS, "\n".join(error_mesgs)))
         if not include_source:
-            data_arrays = [
+            data_arrays: list[Any] = [
                 (
                     numpy.hstack([_d[0] for _d in data[_p]]),
                     numpy.hstack([_d[1] for _d in data[_p]]),

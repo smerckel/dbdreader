@@ -42,6 +42,8 @@ inside a Python loop, which dominated runtime for files with many cycles.
 """
 
 import struct
+from typing import Any
+
 import numpy as np
 
 # ── constants (mirror dbdreader.h) ───────────────────────────────────────────
@@ -69,7 +71,7 @@ def _read_file(filename: str) -> bytes:
         return fh.read()
 
 
-def _insert_ti(vi_list: list, ti: int):
+def _insert_ti(vi_list: list[int], ti: int) -> tuple[list[int], int]:
     """
     Insert *ti* into sorted *vi_list* before the first element > ti,
     replicating the C code in get_variable().
@@ -91,7 +93,9 @@ def _insert_ti(vi_list: list, ti: int):
     return vit, nti
 
 
-def _build_chunk_lut(n_state_bytes: int, n_sensors: int, bs_list: list) -> list:
+def _build_chunk_lut(
+    n_state_bytes: int, n_sensors: int, bs_list: list[int]
+) -> list[list[int]]:
     """
     Build a lookup table: lut[byte_pos][byte_value] = total data bytes
     contributed to the chunk by the four sensors encoded in that state byte.
@@ -115,17 +119,17 @@ def _build_chunk_lut(n_state_bytes: int, n_sensors: int, bs_list: list) -> list:
 
 
 def get(
-    n_state_bytes,
-    n_sensors,
-    bin_offset,
-    byte_sizes,
-    filename,
-    ti,
-    vi,
-    return_nans,
-    skip_initial_line,
-    max_values_to_read,
-):
+    n_state_bytes: int,
+    n_sensors: int,
+    bin_offset: int,
+    byte_sizes: tuple[int, ...],
+    filename: str,
+    ti: int,
+    vi: tuple[int, ...],
+    return_nans: int,
+    skip_initial_line: int,
+    max_values_to_read: int,
+) -> tuple[int, list[Any]]:
     """
     Read one or more sensor time-series from a glider binary data file.
 
@@ -233,7 +237,7 @@ def get(
     wanted_off = all_off[:, vit_arr]  # int32, (n_cycles, nvt)
 
     # ── helper: read all values for one column of wanted_off ─────────────────
-    def _read_col(col: int) -> np.ndarray:
+    def _read_col(col: int) -> np.ndarray[Any, Any]:
         """
         Return float64 array (n_cycles,) for wanted sensor at column *col*.
         UPDATED cycles → actual data value.
@@ -279,8 +283,8 @@ def get(
     t_vals = _read_col(nti)  # (n_cycles,) float64
     write_arr = np.array(write_flags, dtype=bool)
 
-    result_t = [None] * nv
-    result_v = [None] * nv
+    result_t: list[Any] = [None] * nv
+    result_v: list[Any] = [None] * nv
 
     for col in range(nvt):
         if col == nti:

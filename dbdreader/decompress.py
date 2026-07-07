@@ -1,7 +1,9 @@
 import os
 from io import BytesIO as ioBytesIO
 from re import search as re_match
-import lz4.block
+from typing import Any, BinaryIO, Iterator, Literal
+
+import lz4.block  # type: ignore[import-untyped]
 
 DECOMPRESSION_ERROR_LIST = [
     "NO_ERROR",
@@ -33,15 +35,17 @@ class Decompressor:
     """
 
     SIZEFIELDSIZE = 2
-    ENDIANESS = "big"
+    ENDIANESS: Literal["big"] = "big"
     COMPRESSION_FACTOR = 10
     CHUNKSIZE = 1024 * 32
 
-    def __init__(self, filename=None, fp=None):
+    def __init__(
+        self, filename: str | None = None, fp: BinaryIO | None = None
+    ) -> None:
         self.filename = filename
         self.fp = fp
 
-    def __enter__(self, *p, **kwds):
+    def __enter__(self, *p: Any, **kwds: Any) -> "Decompressor":
         # Try to open file is self.filename is given, otherwise check wheter self.fp is given.
         # if not, raise an error.
         if not self.filename is None:
@@ -52,13 +56,16 @@ class Decompressor:
             )
         return self
 
-    def __exit__(self, *p, **kwds):
+    def __exit__(self, *p: Any, **kwds: Any) -> None:
         # close the file and leave.
+        assert self.fp is not None
         self.fp.close()
 
-    def _decompress_block(self, fp=None):
+    def _decompress_block(self, fp: BinaryIO | None = None) -> bytes | None:
         fp = fp or self.fp
+        assert fp is not None
         sb = fp.read(Decompressor.SIZEFIELDSIZE)
+        b: bytes | None
         if sb:
             size = int.from_bytes(sb, Decompressor.ENDIANESS)
             b = lz4.block.decompress(fp.read(size), Decompressor.CHUNKSIZE)
@@ -66,7 +73,9 @@ class Decompressor:
             b = None
         return b
 
-    def decompressed_blocks(self, n=None, fp=None):
+    def decompressed_blocks(
+        self, n: int | None = None, fp: BinaryIO | None = None
+    ) -> Iterator[bytes]:
         """Generator that returns decompressed data blocks
 
         Parameters
@@ -94,7 +103,7 @@ class Decompressor:
             yield block
             counter += counter_increment
 
-    def decompress(self, fp=None):
+    def decompress(self, fp: BinaryIO | None = None) -> bytes:
         """Decompresses a an entire file (in memory)
 
         Parameters
@@ -133,7 +142,7 @@ class FileDecompressor:
 
     """
 
-    def _generate_filename_for_output(self, filename):
+    def _generate_filename_for_output(self, filename: str) -> str:
         base, ext = os.path.splitext(filename)
         if len(ext) != 4:
             raise ValueError("Unhandled file extension.")
@@ -147,7 +156,7 @@ class FileDecompressor:
             raise ValueError("Unhandled file extension.")
         return "".join((base, ext[:-2], s))
 
-    def decompress(self, filename):
+    def decompress(self, filename: str) -> str:
         """Decompresses a file
 
         Parameters
@@ -168,12 +177,12 @@ class FileDecompressor:
         return output_filename
 
 
-def decompress_file(filename):
+def decompress_file(filename: str) -> str:
     """Decompreses a glider data file and writes the normal binary file."""
     return FileDecompressor().decompress(filename)
 
 
-def is_compressed(filename):
+def is_compressed(filename: str) -> bool:
     """Checks whether a filename indicates an lz4-compressed glider data file.
 
     Parameters
@@ -204,13 +213,13 @@ class BytesIORW:
         readline() draws from once the buffer is exhausted.
     """
 
-    def __init__(self, source):
+    def __init__(self, source: Iterator[bytes]) -> None:
         self.bytesIO = ioBytesIO()
         self.pointer_start = 0
         self.pointer_end = 0
         self.source = source
 
-    def write(self, b):
+    def write(self, b: bytes) -> None:
         """Writes bytes to the buffer.
 
         Parameters
@@ -225,7 +234,7 @@ class BytesIORW:
         self.bytesIO.seek(self.pointer_start)
         self.is_exhausted = False
 
-    def readline(self):
+    def readline(self) -> bytes:
         """Reads a single line from the buffer.
 
         If the buffer is exhausted, the next block is pulled from
@@ -264,21 +273,21 @@ class CompressedFile:
         be used within a context manager, which opens the file.
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename: str) -> None:
         self.filename = filename
         self.decompressor = Decompressor()
-        self.bytesIO = None
+        self.bytesIO: BytesIORW | None = None
 
-    def __enter__(self, *p, **kwds):
+    def __enter__(self, *p: Any, **kwds: Any) -> "CompressedFile":
         self.fp = open(self.filename, "rb")
         source = self.decompressor.decompressed_blocks(fp=self.fp)
         self.bytesIO = BytesIORW(source)
         return self
 
-    def __exit__(self, *p, **kwds):
+    def __exit__(self, *p: Any, **kwds: Any) -> None:
         self.fp.close()
 
-    def readline(self):
+    def readline(self) -> bytes:
         """Reads and decompresses a single line from the file.
 
         Returns
@@ -286,10 +295,11 @@ class CompressedFile:
         bytes
             a single decompressed line, or an empty bytes object at end of file.
         """
+        assert self.bytesIO is not None
         line = self.bytesIO.readline()
         return line
 
-    def readlines(self):
+    def readlines(self) -> Iterator[bytes]:
         """Generator that reads and decompresses the file line by line.
 
         Yields
@@ -303,7 +313,7 @@ class CompressedFile:
                 break
             yield line
 
-    def seek(self, offset):
+    def seek(self, offset: int) -> int:
         """Sets the read position in the (decompressed, buffered) data.
 
         Parameters
@@ -311,17 +321,19 @@ class CompressedFile:
         offset : int
             absolute byte position to seek to.
         """
+        assert self.bytesIO is not None
         return self.bytesIO.bytesIO.seek(offset)
 
-    def tell(self):
+    def tell(self) -> int:
         """Returns the current read position in the (decompressed, buffered) data.
 
         Returns
         -------
         int
         """
+        assert self.bytesIO is not None
         return self.bytesIO.bytesIO.tell()
 
-    def close(self):
+    def close(self) -> None:
         """Closes the underlying compressed file."""
         self.fp.close()
