@@ -3,13 +3,16 @@ from io import BytesIO as ioBytesIO
 from re import search as re_match
 import lz4.block
 
-DECOMPRESSION_ERROR_LIST = ["NO_ERROR",
-                            "ERROR_UNEXPECTED_END_OF_FILE",
-                            "ERROR_FILE_NOT_FOUND",
-                            "ERROR_FAILED_TO_WRITE_BASE_FILE"]
+DECOMPRESSION_ERROR_LIST = [
+    "NO_ERROR",
+    "ERROR_UNEXPECTED_END_OF_FILE",
+    "ERROR_FILE_NOT_FOUND",
+    "ERROR_FAILED_TO_WRITE_BASE_FILE",
+]
+
 
 class Decompressor:
-    '''Class to decompress glider files
+    """Class to decompress glider files
 
     Parameters
     ----------
@@ -27,29 +30,32 @@ class Decompressor:
     >>> d = Decompressor()
     >>> fd = open(filename ,'rb')
     >>> data = d.decompress(fd)
-    '''
+    """
+
     SIZEFIELDSIZE = 2
-    ENDIANESS = 'big'
-    COMPRESSION_FACTOR=10
-    CHUNKSIZE = 1024*32
+    ENDIANESS = "big"
+    COMPRESSION_FACTOR = 10
+    CHUNKSIZE = 1024 * 32
+
     def __init__(self, filename=None, fp=None):
         self.filename = filename
         self.fp = fp
-    
-        
+
     def __enter__(self, *p, **kwds):
         # Try to open file is self.filename is given, otherwise check wheter self.fp is given.
         # if not, raise an error.
         if not self.filename is None:
-            self.fp = open(self.filename,'rb')
+            self.fp = open(self.filename, "rb")
         if self.fp is None:
-            raise ValueError('Supply either a filename or file descriptor to the class constructor.')
+            raise ValueError(
+                "Supply either a filename or file descriptor to the class constructor."
+            )
         return self
 
     def __exit__(self, *p, **kwds):
         # close the file and leave.
         self.fp.close()
-        
+
     def _decompress_block(self, fp=None):
         fp = fp or self.fp
         sb = fp.read(Decompressor.SIZEFIELDSIZE)
@@ -59,9 +65,9 @@ class Decompressor:
         else:
             b = None
         return b
-    
+
     def decompressed_blocks(self, n=None, fp=None):
-        ''' Generator that returns decompressed data blocks
+        """Generator that returns decompressed data blocks
 
         Parameters
         ----------
@@ -74,7 +80,7 @@ class Decompressor:
         ------
         bytes:
              decompressed data block
-        '''
+        """
         counter = 0
         if n is None:
             counter_increment = 0
@@ -86,10 +92,10 @@ class Decompressor:
             if block is None:
                 break
             yield block
-            counter+=counter_increment
+            counter += counter_increment
 
     def decompress(self, fp=None):
-        ''' Decompresses a an entire file (in memory)
+        """Decompresses a an entire file (in memory)
 
         Parameters
         ----------
@@ -100,18 +106,20 @@ class Decompressor:
         -------
         bytes:
             decompressed file data as bytes
-        '''
+        """
         fp = fp or self.fp
         if fp is None:
-            raise ValueError('Supply a file handler or use this class within a context manager')
-        data =b''
+            raise ValueError(
+                "Supply a file handler or use this class within a context manager"
+            )
+        data = b""
         for block in self.decompressed_blocks(fp=fp):
             data += block
         return data
-        
+
 
 class FileDecompressor:
-    '''Class that provides an easy way to automatically decompress a compressed glider
+    """Class that provides an easy way to automatically decompress a compressed glider
        data file and write it into a normal binary data file.
 
     The factual decompressing is done by decompress method.
@@ -122,24 +130,25 @@ class FileDecompressor:
     >>> FileDecompressor.decompress("01600000.dcd")
 
     which would result in the writing of a decompressed file 01600000.dbd.
-    
-    '''
+
+    """
+
     def _generate_filename_for_output(self, filename):
         base, ext = os.path.splitext(filename)
-        if len(ext)!=4:
-            raise ValueError('Unhandled file extension.')
-        if ext.endswith('cg'):
-            s = 'lg'
-        elif ext.endswith('cd'):
-            s = 'bd'
-        elif ext.endswith('cc'):
-            s = 'ac'
+        if len(ext) != 4:
+            raise ValueError("Unhandled file extension.")
+        if ext.endswith("cg"):
+            s = "lg"
+        elif ext.endswith("cd"):
+            s = "bd"
+        elif ext.endswith("cc"):
+            s = "ac"
         else:
-            raise ValueError('Unhandled file extension.')
+            raise ValueError("Unhandled file extension.")
         return "".join((base, ext[:-2], s))
-                         
+
     def decompress(self, filename):
-        ''' Decompresses a file
+        """Decompresses a file
 
         Parameters
         ----------
@@ -151,19 +160,21 @@ class FileDecompressor:
         str:
             uncompressed filename
 
-       '''
+        """
         output_filename = self._generate_filename_for_output(filename)
-        with Decompressor(filename) as d, open(output_filename, 'wb') as fp_out:
+        with Decompressor(filename) as d, open(output_filename, "wb") as fp_out:
             for block in d.decompressed_blocks():
                 fp_out.write(block)
         return output_filename
 
+
 def decompress_file(filename):
-    '''Decompreses a glider data file and writes the normal binary file.'''
+    """Decompreses a glider data file and writes the normal binary file."""
     return FileDecompressor().decompress(filename)
 
+
 def is_compressed(filename):
-    ''' Checks whether a filename indicates an lz4-compressed glider data file.
+    """Checks whether a filename indicates an lz4-compressed glider data file.
 
     Parameters
     ----------
@@ -175,14 +186,14 @@ def is_compressed(filename):
     bool
         True if the file extension indicates a compressed
         [demnst]bd/[demnst]cg file, False otherwise.
-    '''
-    [basename,ext]=os.path.splitext(filename)
+    """
+    [basename, ext] = os.path.splitext(filename)
     # all compressed [demnst]bd files end in [demnst]cd
     return bool(re_match("[demnst]c[dg]$", ext))
 
 
 class BytesIORW:
-    ''' Helper class implementing a BytesIO buffer that can be written to and read from.
+    """Helper class implementing a BytesIO buffer that can be written to and read from.
 
     Note that the methods write() and readline() are implemented only.
 
@@ -191,7 +202,8 @@ class BytesIORW:
     source : iterator of bytes
         iterator (typically a decompressed-blocks generator) that
         readline() draws from once the buffer is exhausted.
-    '''
+    """
+
     def __init__(self, source):
         self.bytesIO = ioBytesIO()
         self.pointer_start = 0
@@ -199,14 +211,14 @@ class BytesIORW:
         self.source = source
 
     def write(self, b):
-        ''' Writes bytes to the buffer.
+        """Writes bytes to the buffer.
 
         Parameters
         ----------
         b : bytes
             data to append to the buffer. The read pointer is reset to
             the start of the newly written data.
-        '''
+        """
         self.pointer_start = self.bytesIO.tell()
         self.bytesIO.write(b)
         self.pointer_end = self.bytesIO.tell()
@@ -214,7 +226,7 @@ class BytesIORW:
         self.is_exhausted = False
 
     def readline(self):
-        ''' Reads a single line from the buffer.
+        """Reads a single line from the buffer.
 
         If the buffer is exhausted, the next block is pulled from
         ``source`` and appended before returning.
@@ -223,7 +235,7 @@ class BytesIORW:
         -------
         bytes
             a single line, or an empty bytes object if source is exhausted.
-        '''
+        """
         line = self.bytesIO.readline()
         pointer = self.bytesIO.tell()
         if pointer == self.pointer_end:
@@ -232,12 +244,12 @@ class BytesIORW:
             except StopIteration:
                 pass
             else:
-                line+=self.bytesIO.readline()
+                line += self.bytesIO.readline()
         return line
-        
+
 
 class CompressedFile:
-    ''' Class to access a compressed file, providing a method
+    """Class to access a compressed file, providing a method
 
     readline() that returns a decompressed line of data. The compressed
     file is read block by block, as long as needed.
@@ -250,8 +262,7 @@ class CompressedFile:
     filename : str
         name of the compressed file to read. This class is designed to
         be used within a context manager, which opens the file.
-    '''
-
+    """
 
     def __init__(self, filename):
         self.filename = filename
@@ -259,34 +270,33 @@ class CompressedFile:
         self.bytesIO = None
 
     def __enter__(self, *p, **kwds):
-        self.fp = open(self.filename, 'rb')
+        self.fp = open(self.filename, "rb")
         source = self.decompressor.decompressed_blocks(fp=self.fp)
         self.bytesIO = BytesIORW(source)
         return self
-
 
     def __exit__(self, *p, **kwds):
         self.fp.close()
 
     def readline(self):
-        ''' Reads and decompresses a single line from the file.
+        """Reads and decompresses a single line from the file.
 
         Returns
         -------
         bytes
             a single decompressed line, or an empty bytes object at end of file.
-        '''
+        """
         line = self.bytesIO.readline()
         return line
 
     def readlines(self):
-        ''' Generator that reads and decompresses the file line by line.
+        """Generator that reads and decompresses the file line by line.
 
         Yields
         ------
         bytes
             a single decompressed line.
-        '''
+        """
         while True:
             line = self.readline()
             if not line:
@@ -294,25 +304,24 @@ class CompressedFile:
             yield line
 
     def seek(self, offset):
-        ''' Sets the read position in the (decompressed, buffered) data.
+        """Sets the read position in the (decompressed, buffered) data.
 
         Parameters
         ----------
         offset : int
             absolute byte position to seek to.
-        '''
+        """
         return self.bytesIO.bytesIO.seek(offset)
 
     def tell(self):
-        ''' Returns the current read position in the (decompressed, buffered) data.
+        """Returns the current read position in the (decompressed, buffered) data.
 
         Returns
         -------
         int
-        '''
+        """
         return self.bytesIO.bytesIO.tell()
 
-
     def close(self):
-        ''' Closes the underlying compressed file. '''
+        """Closes the underlying compressed file."""
         self.fp.close()
