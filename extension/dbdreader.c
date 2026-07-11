@@ -356,6 +356,14 @@ static int read_state_bytes(int *vi,
   for (sb=0;sb<nsb; sb++){
     c=getc(FileInfo.fd);
     for (fld=0;fld<fields_per_byte;fld++){
+      /* The number of sensors need not be a multiple of fields_per_byte, so the
+	 last state byte can contain padding slots (variable_index >= n_sensors)
+	 that do not map to a real sensor.  These must be skipped: their bits are
+	 not guaranteed to be zero, and if such a slot decodes to UPDATED we would
+	 read FileInfo.byteSizes (sized n_sensors) out of bounds and inflate
+	 chunksize, overflowing the fixed-size chunk buffer in the caller. */
+      if (variable_index >= FileInfo.n_sensors)
+	break;
       field=(c>>bitshift) & mask;
       c<<=bits_per_field;
       if (field == UPDATED) {
