@@ -14,6 +14,10 @@ binary files, so that they can be further analysed.
 
 ## Change log
 
+### Version 0.6.3
+
+* Fixes a memory corruption bug in the C-extension that surfaces in some edge cases. The bug was introduced in version V0.6.0.
+  
 ### Version 0.6.2
 
 * Builds wheels for python versions 3.10 -- 3.14, including macos
