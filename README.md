@@ -14,11 +14,27 @@ binary files, so that they can be further analysed.
 
 ## Change log
 
-### Version 6.0.0
+### Version 0.6.3
 
-* Offers a python only implementation, alongside the C-extension to
+* Fixes a memory corruption bug in the C-extension that surfaces in some edge cases. The bug was introduced in version V0.6.0.
+  
+### Version 0.6.2
+
+* Builds wheels for python versions 3.10 -- 3.14, including macos
+* Removes the get_list() method from the DBD class
+* Adds CI tests for all platforms (contributed by jklymak).
+* Typehinting introduced
+
+### Version 0.6.1
+
+* Drops dependency on scipy.
+
+### Version 0.6.0
+
+* Offers a python-only implementation, alongside the C-extension to
   read the binary files. At the expense of processing speed, no
-  compiler is required to use this package.
+  compiler is required to use this package. Python-only code
+  contributed by jklymak.
   
 * A github workflow is implemented that generates pre-compiled wheels
   for linux and windows platforms for python version 3.10, 3.11, 3.12

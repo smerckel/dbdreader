@@ -90,15 +90,23 @@ static FILE* fopen_compressed_file_fopen(const char* filename, int* errorno){
 	fpmem = fopen(base, "rb");
       }
       else{
+	/* Decompression failed partway through, so the base file on
+	   disk is incomplete/corrupt. Remove it -- otherwise a later
+	   call would find this partial file, mistake it for a
+	   complete, previously-decompressed file, and silently return
+	   truncated data instead of re-reporting the error. */
+	remove(base);
 	fpmem=NULL;
       }
     }
+    else {
+      /* Could not create the base file for writing. This is fatal. */
+      *errorno = ERROR_FAILED_TO_WRITE_BASE_FILE;
+    }
   }
-  else {
-    /* Writing operation failed. This is fatal. */
-    *errorno = ERROR_FAILED_TO_WRITE_BASE_FILE;
-    fpmem=NULL;
-  }
+  /* else: the decompressed file already exists on disk (written by
+     a previous call), so just use it as-is -- fpmem is already open
+     for reading and *errorno is NO_ERROR. */
   /* Here fpmem is either NULL (and all failed, or it points to the
      decompressed file.*/
   free(extension_decompressed);

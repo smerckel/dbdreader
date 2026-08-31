@@ -4,7 +4,7 @@ The methods {func}`dbdreader.MultiDBD.get_sync`,
 {func}`dbdreader.MultiDBD.get_CTD_sync` and
 {func}`dbdreader.MultiDBD.get_xy`
 apply an interpolation algorithm to the second and any following
-parameter requrested. The keyword `interpolating_function_factor` can
+parameter requrested. The keyword `interpolating_function_factory` can
 be used to specify the interpolating function to be used for this. If
 the keyword is not set (default value `None`), then
 {func}`numpy.interp` is used with keywords `left=numpy.nan` and

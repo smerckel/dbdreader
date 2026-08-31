@@ -17,3 +17,13 @@ MANIFEST
 *.so
 # this cac file gets created anyway.
 data/cac/daad1b20.cac
+uv.lock
+dbdreader/data/01600000.dbd
+dbdreader/data/02380108.ebd
+
+# pixi things in case user puts those in:
+pixi.lock
+pixi.toml
+.pixi/
+
+.gitattributes
