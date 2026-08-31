@@ -308,6 +308,33 @@ def heading_interpolating_function_factory(t, v):
     return lambda _t: numpy.arctan2(yi(_t), xi(_t)) % (2*numpy.pi)
 
 
+
+def discrete_interpolating_function_factory(t, v):
+    '''Interpolating function factory for timeseries of discrete parameters.
+
+    This function returns a function that is to be called with one
+    argument, time, (float or array of floats) and returns a nearest (previous value).
+
+    Parameters
+    ----------
+    t : array-like of float
+        base time vector
+    v : array-like of float
+        base value vector
+
+    Returns
+    -------
+        interpolating function of time
+
+    '''
+    idx_max = len(t) - 1
+    def ifun(_t):
+        idx = numpy.searchsorted(t, _t, side='right')
+        idx = numpy.clip(idx, 0, idx_max)  # clip the indices so that they are within the range of x indices.
+        return v[idx]
+    return ifun
+
+
 class DBDCache(object):
 
     '''DBDCache manager

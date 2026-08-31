@@ -553,7 +553,14 @@ def test_multidbd_get_CTD_sync_heading(sebastianData):
     # this is slightly different from other tests, because some values
     # are dropped in get_CTD_sync.
 
-
+def test_discrete_interpolator(sebastianData):
+    dbd = sebastianData
+    _, target_version = dbd.get("sci_software_ver") 
+    assert target_version.shape[0] == 1 # should get one value only.
+    iff_dict = dict(sci_software_ver=dbdreader.discrete_interpolating_function_factory)
+    _, _, version = dbd.get_sync("m_depth", "sci_software_ver", interpolating_function_factory=iff_dict)
+    assert np.all(np.isclose(version, target_version[0])) # many values, but all the same.
+    
 class TestDBDPatternSelect():
 
     def test_select_from_pattern(self):
